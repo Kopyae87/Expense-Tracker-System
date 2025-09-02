@@ -43,6 +43,10 @@
     <class>org.ace.accounting.system.chartaccount.LymSrcRate</class>
     <class>org.ace.accounting.system.chartaccount.MonthlyRate</class>
     
+    <class>org.ace.accounting.expense.Entity.Category</class>
+    <class>org.ace.accounting.expense.Entity.Expense</class>
+    <class>org.ace.accounting.expense.Entity.Budget</class>
+    
     <!-- Exchange Config -->
     <class>org.ace.accounting.system.gainloss.ExchangeConfig</class>
     

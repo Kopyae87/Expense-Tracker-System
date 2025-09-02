@@ -196,6 +196,11 @@
 			<redirect />
 		</navigation-case>
 
+		<navigation-case>
+			<from-outcome>expense</from-outcome>
+			<to-view-id>/ui/system/AddExpense.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
 
 		<!-- Transaction Entry -->
 		<navigation-case>
