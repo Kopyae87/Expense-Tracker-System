@@ -16,9 +16,10 @@
     <class prefix="ISSYS013" name="org.ace.accounting.occupation.Occupation" />
     <class prefix="ISSYS014" name="org.ace.accounting.customer.Customer" /> 
     <class prefix="ISSYS015" name="org.ace.accounting.excelUpload.Proposal" />
-    <class prefix="EU001" name="org.ace.accounting.expense.Entity.Expense" />
-    <class prefix="EC002" name="org.ace.accounting.expense.Entity.Category" />
-    
+    <class prefix="ETSE001" name="org.ace.accounting.expense.Entity.Expense" />
+    <class prefix="ETSC002" name="org.ace.accounting.expense.Entity.Category" />
+    <class prefix="ETSU003" name="org.ace.accounting.expense.Entity.ExpenseUser" />
+    <class prefix="ETSB004" name="org.ace.accounting.expense.Entity.Budget" />
     
     <!-- Chart Of Account -->
     <class prefix="ISCOA001" name="org.ace.accounting.system.chartaccount.ChartOfAccount" />

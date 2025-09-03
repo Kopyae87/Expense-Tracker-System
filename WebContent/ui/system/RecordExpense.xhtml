@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+	<ui:define name="content">
+		<h:form id="expenseForm" style="color: black;">
+			<p:growl escape="false" globalOnly="true" life="5000"
+				showDetail="true" />
+			<p:panel style="margin: 0 auto; width: 60%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
+				<p:panelGrid columns="2" columnClasses="label,value"
+					styleClass="ui-panelgrid-blank" style="width: 100%; text-align:left;">
+					<p:panelGrid>
+						<h:outputLabel for="category" value="Category: " />
+						<p:selectOneMenu id="category"
+							value="#{ManageExpenseActionBean.selectedCategory}"
+							required="true">
+							<f:selectItem itemLabel="Select Category" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{ManageExpenseActionBean.categoryList}" var="cat"
+								itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					<p:panelGrid>
+						<h:outputLabel for="expensedate" value="Expense Date: " />
+						<p:calendar id="expensedate"
+							maxdate="#{ManageExpenseActionBean.currentDate}"
+							value="#{ManageExpenseActionBean.expenseDate}"></p:calendar>
+					</p:panelGrid>
+					<p:panelGrid>
+						<h:outputLabel for="amount" value="Amount : " />
+						<p:inputText value="#{ManageExpenseActionBean.amount}">
+						</p:inputText>
+					</p:panelGrid>
+
+					<p:panelGrid>
+						<p:inputTextarea value="#{ManageExpenseActionBean.description}"
+							rows="5" cols="40" autoResize="true" counter="displayCounter"
+							maxlength="200" counterTemplate="{0}characters."
+							style="width:70%;"></p:inputTextarea>
+						<h:outputText id="displayCounter" />
+					</p:panelGrid>
+					
+				</p:panelGrid>
+				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}" value="Save"></p:commandButton>
+			</p:panel>
+
+
+			<p:panel >
+				<p:dataTable value="#{budgetBean.budgets}" var="b" border="1"
+					style="width:100%">
+
+					<p:column headerText="Category">
+						<h:outputText value="#{b.category.category_name}" />
+					</p:column>
+
+					<p:column headerText="Yearly Limit">
+						<h:outputText value="#{b.yearly}" />
+					</p:column>
+
+					<p:column headerText="Monthly Limit">
+						<h:outputText value="#{b.monthly}" />
+					</p:column>
+
+					<p:column headerText="Daily Limit">
+						<h:outputText value="#{b.daily}" />
+					</p:column>
+
+					<p:column headerText="Amount Limit">
+						<h:outputText value="#{b.amount_limit}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

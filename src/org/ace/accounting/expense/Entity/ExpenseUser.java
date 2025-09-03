@@ -1,22 +1,110 @@
 package org.ace.accounting.expense.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 
+import org.ace.accounting.common.BasicEntity;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
-@Table(name = "User")
-@TableGenerator(name = "USER_GEN", table = "ID_GEN" ,pkColumnValue = "GEN_NAME" , valueColumnName = "GEN_VAL" , allocationSize = 10)
+@Table(name = "ExpenseUser")
+@TableGenerator(name = "EXPENSEUSER_GEN", table = "ID_GEN" , pkColumnName = "GEN_NAME" , valueColumnName = "GEN_VAL" , pkColumnValue = "EXPENSEUSER_GEN" , allocationSize = 10)
 @EntityListeners(IDInterceptor.class)
-public class ExpenseUser {
+public class ExpenseUser{
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "USER_GEN")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "EXPENSEUSER_GEN")
 	private String id;
+	
+	@Column(name = "user_name", nullable = false)
+	private String name;
+	
+	@Column(name = "password", nullable = false)
+	private String password;
+	
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Budget> budgets = new ArrayList<>();
+	
+	@Version
+	private int version;
+	
+	@Embedded
+	private BasicEntity basicEntity;
+
+    public void addExpense(Expense expense) {
+        expenses.add(expense);
+        expense.setUser(this);
+    }
+
+    public void removeExpense(Expense expense) {
+        expenses.remove(expense);
+        expense.setUser(null);
+    }
+
+    public void addBudget(Budget budget) {
+        budgets.add(budget);
+        budget.setUser(this);
+    }
+
+    public void removeBudget(Budget budget) {
+        budgets.remove(budget);
+        budget.setUser(null);
+    }
+    
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public BasicEntity getBasicEntity() {
+		return basicEntity;
+	}
+
+	public void setBasicEntity(BasicEntity basicEntity) {
+		this.basicEntity = basicEntity;
+	}
+	
+	
 }

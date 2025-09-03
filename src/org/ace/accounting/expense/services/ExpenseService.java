@@ -1,10 +1,21 @@
 package org.ace.accounting.expense.services;
 
-import javax.annotation.Resource;
+import java.util.List;
 
+import javax.annotation.Resource;
+import javax.persistence.PersistenceException;
+
+import org.ace.accounting.expense.Entity.Category;
+import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.IDAO.IExpenseDAO;
 import org.ace.accounting.expense.Iservices.IExpenseService;
+import org.ace.accounting.system.branch.Branch;
+import org.ace.java.component.SystemException;
+import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service(value = "ExpenseService")
 public class ExpenseService implements IExpenseService{
@@ -17,5 +28,40 @@ public class ExpenseService implements IExpenseService{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Category> findAllCategory() throws SystemException {
+		List<Category>result = null;
+		try {
+			result = expenseDAO.findCategoryList();
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find Category Names", e);
+		}	
+		return result;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void saveCategory(Category c) {
+		try {
+			expenseDAO.saveCategory(c);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find Category Names", e);
+		}	
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void saveExpense(Expense expense) {
+		// TODO Auto-generated method stub
+		try {
+			expenseDAO.saveExpense(expense);
+		} catch (DAOException e) {
+			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't save Expense", e);
+		}
+		
+	}
+
 }

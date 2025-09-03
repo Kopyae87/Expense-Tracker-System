@@ -16,14 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
-
 import org.ace.accounting.common.BasicEntity;
-import org.ace.accounting.user.User;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
 @Table(name = "Expense")
-@TableGenerator(name = "EXPENSE_GEN", table = "ID_GEN" ,pkColumnValue = "GEN_NAME" , valueColumnName = "GEN_VAL" , allocationSize = 10)
+@TableGenerator(name = "EXPENSE_GEN", table = "ID_GEN" , pkColumnName = "GEN_NAME" , valueColumnName = "GEN_VAL" , pkColumnValue = "EXPENSE_GEN" , allocationSize = 10)
 @EntityListeners(IDInterceptor.class)
 public class Expense {
 	
@@ -33,14 +31,14 @@ public class Expense {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	private ExpenseUser user;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = true)
 	private Category category;
 	
 	@Column(name = "expense_amount", nullable = false)
-	private int amount;
+	private double amount;
 	
 	@Column(name = "expense_date")
 	private Date expense_date;
@@ -65,11 +63,11 @@ public class Expense {
 		this.id = id;
 	}
 
-	public User getUser() {
+	public ExpenseUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(ExpenseUser user) {
 		this.user = user;
 	}
 
@@ -81,11 +79,11 @@ public class Expense {
 		this.category = category;
 	}
 
-	public int getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(int amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 

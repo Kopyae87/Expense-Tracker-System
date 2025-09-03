@@ -7,6 +7,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.servlet.http.HttpSession;
 
 import org.ace.accounting.common.validation.MessageId;
+import org.ace.accounting.expense.Iservices.IExpenseUserService;
 import org.ace.accounting.process.interfaces.IUserProcessService;
 import org.ace.accounting.role.Role;
 import org.ace.accounting.system.webPage.WebPage;
@@ -32,6 +33,13 @@ public class LoginBean extends BaseBean {
 	public void setUserService(IUserService userService) {
 		this.userService = userService;
 	}
+	
+	@ManagedProperty(value = "#{ExpenseUserService}")
+	private IExpenseUserService expenseUserService;
+
+	public void setExpenseUserService(IExpenseUserService expenseUserService) {
+		this.expenseUserService = expenseUserService;
+	}
 
 	private String username;
 	private String password;
@@ -53,7 +61,7 @@ public class LoginBean extends BaseBean {
 	}
 
 	public String authenticate() {
-		boolean authenticate = userService.authenticate(username, password);
+		boolean authenticate = expenseUserService.loginCheck(username, password);
 		if (authenticate) {
 			User user = userService.findUser(username);
 			putParam(ParamId.LOGIN_USER, user);

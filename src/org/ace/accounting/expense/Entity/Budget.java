@@ -19,7 +19,7 @@ import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
 @Table(name = "Budget")
-@TableGenerator(name = "BUDGET_GEN", table = "ID_GEN" ,pkColumnValue = "GEN_NAME" , valueColumnName = "GEN_VAL" , allocationSize = 10)
+@TableGenerator(name = "BUDGET_GEN", table = "ID_GEN" , pkColumnName = "GEN_NAME" , valueColumnName = "GEN_VAL" , pkColumnValue = "BUDGET_GEN" ,allocationSize = 10)
 @EntityListeners(IDInterceptor.class)
 public class Budget {
 	
@@ -27,20 +27,25 @@ public class Budget {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "BUDGET_GEN")
 	private String id;
 	
-	@Column(name = "yearly")
+	@Column(name = "yearly", nullable = false)
 	private Integer yearly;
 	
 	@Column(name = "monthly")
-	private Integer monlthy;
+	private Integer monthly;
 	
 	@Column(name = "daily")
 	private Integer daily;
 	
+	@Column(name = "amount_limit", nullable = false)
 	private double amountLimit;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = true)
 	private Category category;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private ExpenseUser user;
 	
 	@Version
 	private int version;
@@ -65,11 +70,11 @@ public class Budget {
 	}
 
 	public Integer getMonlthy() {
-		return monlthy;
+		return getMonlthy();
 	}
 
 	public void setMonlthy(Integer monlthy) {
-		this.monlthy = monlthy;
+		this.monthly = monlthy;
 	}
 
 	public double getAmountLimit() {
@@ -94,6 +99,38 @@ public class Budget {
 
 	public void setBasicEntity(BasicEntity basicEntity) {
 		this.basicEntity = basicEntity;
+	}
+
+	public Integer getMonthly() {
+		return monthly;
+	}
+
+	public void setMonthly(Integer monthly) {
+		this.monthly = monthly;
+	}
+
+	public Integer getDaily() {
+		return daily;
+	}
+
+	public void setDaily(Integer daily) {
+		this.daily = daily;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public ExpenseUser getUser() {
+		return user;
+	}
+
+	public void setUser(ExpenseUser user) {
+		this.user = user;
 	}
 
 	
