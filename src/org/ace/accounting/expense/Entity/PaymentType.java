@@ -1,7 +1,7 @@
 package org.ace.accounting.expense.Entity;
 
 public enum PaymentType {
-	CASH("Cash"),CARD("Card"),Online("Online"),BANK_TRANSFER("Bank Transfer");
+	CASH("Cash"),CARD("Card"),ONLINE("Online"),BANK_TRANSFER("Bank Transfer");
 	
 	private String label;
 

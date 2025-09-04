@@ -46,26 +46,26 @@ public class ExpenseUser{
 	@Embedded
 	private BasicEntity basicEntity;
 
-    public void addExpense(Expense expense) {
-        expenses.add(expense);
-        expense.setUser(this);
-    }
-
-    public void removeExpense(Expense expense) {
-        expenses.remove(expense);
-        expense.setUser(null);
-    }
-
-    public void addBudget(Budget budget) {
-        budgets.add(budget);
-        budget.setUser(this);
-    }
-
-    public void removeBudget(Budget budget) {
-        budgets.remove(budget);
-        budget.setUser(null);
-    }
-    
+//    public void addExpense(Expense expense) {
+//        expenses.add(expense);
+//        expense.setUser(this);
+//    }
+//
+//    public void removeExpense(Expense expense) {
+//        expenses.remove(expense);
+//        expense.setUser(null);
+//    }
+//
+//    public void addBudget(Budget budget) {
+//        budgets.add(budget);
+//        budget.setUser(this);
+//    }
+//
+//    public void removeBudget(Budget budget) {
+//        budgets.remove(budget);
+//        budget.setUser(null);
+//    }
+//    
 	public String getId() {
 		return id;
 	}

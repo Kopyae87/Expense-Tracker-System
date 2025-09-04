@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.ace.accounting.dto.CCOADialogDTO;
+import org.ace.accounting.expense.Entity.ExpenseUser;
 import org.ace.accounting.process.interfaces.IUserProcessService;
 import org.ace.accounting.system.chartaccount.CurrencyChartOfAccount;
 import org.ace.accounting.system.chartaccount.service.interfaces.ICcoaService;
@@ -48,7 +49,8 @@ public class CCOAAccountDialogActionBean extends BaseBean {
 	@PostConstruct
 	public void init() {
 		User user = userProcessService.getLoginUser();
-		Currency currency = (Currency) getParam(ParamId.CURRENCY_DATA);
+//		ExpenseUser user = userProcessService.getLoginUser();
+		Currency currency = (Currency) getParam(ParamId.CURRENCY_DATA);// comment to change Expense User
 		ccoaList = ccoaService.findAllCCOADialogDTO(currency, user.getBranch());
 	}
 

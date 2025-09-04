@@ -15,8 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import org.ace.accounting.common.BasicEntity;
+import org.ace.accounting.user.User;
 import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
@@ -29,9 +32,13 @@ public class Expense {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "EXPENSE_GEN")
 	private String id;
 	
+//	@ManyToOne
+//	@JoinColumn(name = "user_id", nullable = true)// dont forget to change back to false for nullable
+//	private ExpenseUser user;
+	
 	@ManyToOne
-	@JoinColumn(name = "user_id", nullable = false)
-	private ExpenseUser user;
+	@JoinColumn(name = "user_id", nullable = false)// dont forget to change back to false for nullable
+	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = true)
@@ -40,14 +47,16 @@ public class Expense {
 	@Column(name = "expense_amount", nullable = false)
 	private double amount;
 	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "expense_date")
 	private Date expense_date;
 	
 	@Column(name = "description")
 	private String description;
 	
-	@Enumerated(EnumType.STRING)
-	private PaymentType paymenttype;
+//	@Enumerated(EnumType.STRING)
+//	private PaymentType paymenttype;
+	private String paymenttype;
 	
 	@Version
 	private int version;
@@ -63,11 +72,11 @@ public class Expense {
 		this.id = id;
 	}
 
-	public ExpenseUser getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(ExpenseUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
@@ -111,13 +120,29 @@ public class Expense {
 		this.basicEntity = basicEntity;
 	}
 
-	public PaymentType getPaymenttype() {
+	public String getPaymenttype() {
 		return paymenttype;
 	}
 
-	public void setPaymenttype(PaymentType paymenttype) {
+	public void setPaymenttype(String paymenttype) {
 		this.paymenttype = paymenttype;
 	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+//	public PaymentType getPaymenttype() {
+//		return paymenttype;
+//	}
+//
+//	public void setPaymenttype(PaymentType paymenttype) {
+//		this.paymenttype = paymenttype;
+//	}
 	
 	
 }

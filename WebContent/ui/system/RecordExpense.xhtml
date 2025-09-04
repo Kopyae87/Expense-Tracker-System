@@ -8,69 +8,103 @@
 		<h:form id="expenseForm" style="color: black;">
 			<p:growl escape="false" globalOnly="true" life="5000"
 				showDetail="true" />
-			<p:panel style="margin: 0 auto; width: 60%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
-				<p:panelGrid columns="2" columnClasses="label,value"
-					styleClass="ui-panelgrid-blank" style="width: 100%; text-align:left;">
-					<p:panelGrid>
-						<h:outputLabel for="category" value="Category: " />
-						<p:selectOneMenu id="category"
-							value="#{ManageExpenseActionBean.selectedCategory}"
-							required="true">
-							<f:selectItem itemLabel="Select Category" itemValue=""
-								noSelectionOption="true" />
-							<f:selectItems
-								value="#{ManageExpenseActionBean.categoryList}" var="cat"
-								itemLabel="#{cat.name}" itemValue="#{cat.id}" />
-						</p:selectOneMenu>
-					</p:panelGrid>
-					<p:panelGrid>
-						<h:outputLabel for="expensedate" value="Expense Date: " />
-						<p:calendar id="expensedate"
-							maxdate="#{ManageExpenseActionBean.currentDate}"
-							value="#{ManageExpenseActionBean.expenseDate}"></p:calendar>
-					</p:panelGrid>
-					<p:panelGrid>
-						<h:outputLabel for="amount" value="Amount : " />
-						<p:inputText value="#{ManageExpenseActionBean.amount}">
-						</p:inputText>
-					</p:panelGrid>
+			<p:panel id="addExpenseFormPanel"
+				style="margin: 0 auto; width: 60%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
+				<h4 style="margin: 0px">Add Expense</h4>
+				<p:panelGrid columns="4"
+					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,"
+					styleClass="ui-panelgrid-blank"
+					style="width: 100%; text-align:left;">
 
-					<p:panelGrid>
-						<p:inputTextarea value="#{ManageExpenseActionBean.description}"
-							rows="5" cols="40" autoResize="true" counter="displayCounter"
-							maxlength="200" counterTemplate="{0}characters."
-							style="width:70%;"></p:inputTextarea>
-						<h:outputText id="displayCounter" />
-					</p:panelGrid>
-					
+
+					<h:outputLabel for="category" value="Category: " />
+					<p:selectOneMenu id="category" style="width:80%;"
+						value="#{ManageExpenseActionBean.selectedCategoryId}"
+						required="true">
+						<f:selectItem itemLabel="Select Category" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItems value="#{ManageExpenseActionBean.categoryList}"
+							var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="expensedate" value="Expense Date: " />
+					<p:calendar id="expensedate" style="width:80%;"
+						maxdate="#{ManageExpenseActionBean.currentDate}"
+						value="#{ManageExpenseActionBean.currentExpense.expense_date}"
+						 pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+
+					<h:outputLabel for="amount" value="Amount : " />
+					<p:inputText
+						value="#{ManageExpenseActionBean.currentExpense.amount}"
+						style="width:80%;">
+					</p:inputText>
+
+					<h:outputLabel for="paymenttype" value="Description : " />
+					<p:selectOneMenu id="paymenttype" style="width:80%;"
+						value="#{ManageExpenseActionBean.currentExpense.paymenttype}"
+						required="true">
+						<f:selectItem itemLabel="Select Payment Method" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
+							var="p" itemLabel="#{p}" itemValue="#{p.label}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel for="desc" value="Description : "
+						style="vertical-align: top;" />
+					<p:inputTextarea id="desc" style="width:95%;"
+						value="#{ManageExpenseActionBean.currentExpense.description}"
+						rows="5" cols="40" autoResize="true" maxlength="200" />
+					<!-- <h:outputText id="displayCounter" /> counter="displayCounter" counterTemplate="{0}characters."-->
+
 				</p:panelGrid>
-				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}" value="Save"></p:commandButton>
+				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
+					value="Save" process="@form" update="@form"
+					rendered="#{!ManageExpenseActionBean.iseditMode}"></p:commandButton>
+				<p:commandButton action="#{ManageExpenseActionBean.updateExpense}"
+					value="update" process="@form" update="@form"
+					rendered="#{ManageExpenseActionBean.iseditMode}"></p:commandButton>
+				<p:commandButton action="#{ManageExpenseActionBean.cancelExpense}"
+					value="Cancel" process="@form" update="expenseForm:addExpenseFormPanel"></p:commandButton>
 			</p:panel>
 
 
-			<p:panel >
-				<p:dataTable value="#{budgetBean.budgets}" var="b" border="1"
-					style="width:100%">
+			<p:panel>
+				<p:dataTable value="#{ManageExpenseActionBean.allExpenses}"
+					var="expense" border="1" style="width:100%;border: black;">
 
 					<p:column headerText="Category">
-						<h:outputText value="#{b.category.category_name}" />
+						<h:outputText value="#{expense.category.name}" />
 					</p:column>
 
-					<p:column headerText="Yearly Limit">
-						<h:outputText value="#{b.yearly}" />
+					<p:column headerText="Amount">
+						<h:outputText value="#{expense.amount}" />
 					</p:column>
 
-					<p:column headerText="Monthly Limit">
-						<h:outputText value="#{b.monthly}" />
+					<p:column headerText="Description" width="25%">
+						<h:outputText value="#{expense.description}" />
 					</p:column>
 
-					<p:column headerText="Daily Limit">
-						<h:outputText value="#{b.daily}" />
+					<p:column headerText="Expense date">
+						<h:outputText value="#{expense.expense_date}">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Amount Limit">
-						<h:outputText value="#{b.amount_limit}" />
+					<p:column headerText="Payment Type">
+						<h:outputText value="#{expense.paymenttype}" />
 					</p:column>
+
+					<p:column headerText="Actions">
+						<p:commandButton value="Edit"
+							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
+							process="@this" update="expenseForm:addExpenseFormPanel"></p:commandButton>
+
+						<p:commandButton value="Delete"></p:commandButton>
+					</p:column>
+
+
+
+
 				</p:dataTable>
 			</p:panel>
 		</h:form>

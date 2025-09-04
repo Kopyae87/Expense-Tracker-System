@@ -36,4 +36,9 @@ public class ExpenseUserService implements IExpenseUserService{
 		return false;
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED)
+	public ExpenseUser findExpenseUser(String userCode) throws SystemException {
+		ExpenseUser user = expenseUserDAO.find(userCode);
+		return user;
+	}
 }

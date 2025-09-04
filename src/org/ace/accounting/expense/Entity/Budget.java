@@ -43,9 +43,13 @@ public class Budget {
 	@JoinColumn(name = "category_id", nullable = true)
 	private Category category;
 	
+//	@ManyToOne
+//	@JoinColumn(name = "user_id", nullable = false)
+//	private ExpenseUser user;
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
-	private ExpenseUser user;
+	private User user;
 	
 	@Version
 	private int version;
@@ -125,11 +129,11 @@ public class Budget {
 		this.category = category;
 	}
 
-	public ExpenseUser getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(ExpenseUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 

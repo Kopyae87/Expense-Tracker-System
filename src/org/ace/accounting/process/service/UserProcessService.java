@@ -1,5 +1,6 @@
 package org.ace.accounting.process.service;
 
+import org.ace.accounting.expense.Entity.ExpenseUser;
 import org.ace.accounting.process.interfaces.IUserProcessService;
 import org.ace.accounting.user.User;
 import org.springframework.context.annotation.Scope;
@@ -21,4 +22,18 @@ public class UserProcessService implements IUserProcessService {
 	public User getLoginUser() {
 		return user;
 	}
+	
+//	private ExpenseUser user;
+//
+//	@Override
+//	public void registerUser(ExpenseUser user) {
+//		// TODO Auto-generated method stub
+//		this.user = user;
+//	}
+//
+//	@Override
+//	public ExpenseUser getLoginUser() {
+//		// TODO Auto-generated method stub
+//		return user;
+//	}
 }

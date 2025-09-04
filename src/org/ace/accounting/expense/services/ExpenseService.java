@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
+import org.ace.accounting.expense.Entity.ExpenseUser;
 import org.ace.accounting.expense.IDAO.IExpenseDAO;
 import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.system.branch.Branch;
+import org.ace.accounting.user.User;
 import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class ExpenseService implements IExpenseService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -60,6 +64,29 @@ public class ExpenseService implements IExpenseService{
 		} catch (DAOException e) {
 			// TODO: handle exception
 			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't save Expense", e);
+		}
+		
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Expense> findAllExpense(String userid) {
+		try {
+			return expenseDAO.findAllExpense(userid);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
+
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Boolean updateExpense(Expense currentexpense) {
+		// TODO Auto-generated method stub
+		try {
+			return expenseDAO.updateExpense(currentexpense);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
 		}
 		
 	}

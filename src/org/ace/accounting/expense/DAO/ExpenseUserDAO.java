@@ -32,7 +32,7 @@ public class ExpenseUserDAO extends BasicDAO implements IExpenseUserDAO{
 		return result;
 	}
 	
-
+	
 	
 	
 }

@@ -4,9 +4,11 @@ import javax.enterprise.context.RequestScoped;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.ace.accounting.common.validation.MessageId;
+import org.ace.accounting.expense.Entity.ExpenseUser;
 import org.ace.accounting.expense.Iservices.IExpenseUserService;
 import org.ace.accounting.process.interfaces.IUserProcessService;
 import org.ace.accounting.role.Role;
@@ -61,11 +63,17 @@ public class LoginBean extends BaseBean {
 	}
 
 	public String authenticate() {
-		boolean authenticate = expenseUserService.loginCheck(username, password);
+		//boolean authenticate = expenseUserService.loginCheck(username, password);
+		boolean authenticate = userService.authenticate(username, password);
 		if (authenticate) {
 			User user = userService.findUser(username);
 			putParam(ParamId.LOGIN_USER, user);
 			userProcessService.registerUser(user);
+			
+//			ExpenseUser expenseuser = expenseUserService.findExpenseUser(username);
+//			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("LoginUser", expenseuser);
+//			putParam(ParamId.LOGIN_USER, expenseuser);
+//			userProcessService.registerUser(expenseuser);
 			return "home";
 		} else {
 			addInfoMessage(null, MessageId.LOGIN_FAILED);
@@ -92,6 +100,12 @@ public class LoginBean extends BaseBean {
 		}
 
 		return permit;
+//		boolean permit = true;
+//
+//		ExpenseUser user = new ExpenseUser();
+//		user = (ExpenseUser) getParam(ParamId.LOGIN_USER);
+//		// User user = userService.findUser(username);
+//		return permit;
 	}
 
 	public boolean hasSubmenuPermission(String menu) {
@@ -110,6 +124,12 @@ public class LoginBean extends BaseBean {
 			}
 		}
 		return subpermit;
+//		boolean subpermit = true;
+//		ExpenseUser user = new ExpenseUser();
+//		user = (ExpenseUser) getParam(ParamId.LOGIN_USER);
+//		// User user = userService.findUser(username);
+//
+//		return subpermit;
 	}
 
 	public String logout() {
