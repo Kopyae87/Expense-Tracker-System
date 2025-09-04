@@ -29,7 +29,7 @@
 
 					<h:outputLabel for="expensedate" value="Expense Date: " />
 					<p:calendar id="expensedate" style="width:80%;"
-						maxdate="#{ManageExpenseActionBean.currentDate}"
+						maxdate="#{ManageExpenseActionBean.maxDate}"
 						value="#{ManageExpenseActionBean.currentExpense.expense_date}"
 						 pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
 
