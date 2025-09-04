@@ -87,6 +87,7 @@ public class ManageExpenseActionBean extends BaseBean {
 		expenseService.saveExpense(currentexpense);
 		createNewExpense();
 		getAllExpenses();
+		selectedCategoryId = "";
 //		resetExpenseForm();
 	}
 
@@ -114,6 +115,7 @@ public class ManageExpenseActionBean extends BaseBean {
 //		 create
 //	}
 	public void cancelExpense() {
+		selectedCategoryId = "";
 		createNewExpense();
 		iseditMode = false;
 	}
