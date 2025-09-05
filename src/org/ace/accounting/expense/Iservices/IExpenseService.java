@@ -7,7 +7,7 @@ import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.ExpenseUser;
 
 public interface IExpenseService {
-	public Boolean deleteExpense();
+	public Boolean deleteExpense(Expense e);
 	
 	public List<Category> findAllCategory();
 

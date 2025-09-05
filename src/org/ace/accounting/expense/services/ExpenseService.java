@@ -27,9 +27,15 @@ public class ExpenseService implements IExpenseService{
 	private IExpenseDAO expenseDAO;
 	
 	@Override
-	public Boolean deleteExpense() {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean deleteExpense(Expense expense) {
+		Boolean success = false;
+		try {
+			expenseDAO.deleteExpense(expense);
+		} catch (DAOException e) {
+			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Cant find Category Names", e);
+		}
+		return success;
 	}
 
 

@@ -1,0 +1,11 @@
+package org.ace.accounting.expense.Iservices;
+
+import java.util.Date;
+import java.util.List;
+
+import org.ace.accounting.expense.Entity.Expense;
+
+public interface IEnquiryExpenseService {
+	
+	public List<Expense> find(Date startDate,Date endDate,String categoryName,String paymentType, String userid);
+}

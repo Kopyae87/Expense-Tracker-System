@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
 	<ui:define name="content">
-		<h:form id="expenseForm" style="color: black;">
+		<h:form id="addExpenseForm" style="color: black;">
 			<p:growl escape="false" globalOnly="true" life="5000"
 				showDetail="true" />
 			<p:panel id="addExpenseFormPanel"
@@ -31,7 +31,7 @@
 					<p:calendar id="expensedate" style="width:80%;"
 						maxdate="#{ManageExpenseActionBean.maxDate}"
 						value="#{ManageExpenseActionBean.currentExpense.expense_date}"
-						 pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
 
 					<h:outputLabel for="amount" value="Amount : " />
 					<p:inputText
@@ -46,7 +46,7 @@
 						<f:selectItem itemLabel="Select Payment Method" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
-							var="p" itemLabel="#{p}" itemValue="#{p.label}" />
+							var="p" itemLabel="#{p.label}" itemValue="#{p.label}" />
 					</p:selectOneMenu>
 
 					<h:outputLabel for="desc" value="Description : "
@@ -58,22 +58,39 @@
 
 				</p:panelGrid>
 				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
-					value="Save" process="@form" update="@form"
+					value="Save" process="addExpenseForm:addExpenseFormPanel"
+					update="addExpenseForm:addExpenseFormPanel :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{!ManageExpenseActionBean.iseditMode}"></p:commandButton>
 				<p:commandButton action="#{ManageExpenseActionBean.updateExpense}"
-					value="update" process="@form" update="@form"
+					value="update" process="addExpenseForm:addExpenseFormPanel"
+					update="addExpenseForm:addExpenseFormPanel :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{ManageExpenseActionBean.iseditMode}"></p:commandButton>
 				<p:commandButton action="#{ManageExpenseActionBean.cancelExpense}"
-					value="Cancel" process="@form" update="expenseForm:addExpenseFormPanel"></p:commandButton>
+					value="Cancel" process="@form"
+					update="addExpenseForm:addExpenseFormPanel"></p:commandButton>
+				<!--  -->
 			</p:panel>
+		</h:form>
+		<h:form id="recentExpenseTableForm" style="margin-top: 20px;">
+			<p:panel id="recentExpenseTablePanel">
+				<p:dataTable id="recentExpenseTable"
+					widgetVar="recentExpenseTableWidget"
+					value="#{ManageExpenseActionBean.allExpenses}" var="expense"
+					rowKey="#{expense.id}" border="4" style="width:100%;border: black;">
 
-
-			<p:panel>
-				<p:dataTable value="#{ManageExpenseActionBean.allExpenses}"
-					var="expense" border="1" style="width:100%;border: black;">
+					<f:facet name="header">
+						<h:panelGroup
+							style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+							<h:outputText value="Recent Expenses"
+								style="font-weight:bold; font-size:14px;" />
+							<p:button value="Go to Enquiry" icon="fa fa-search"
+								outcome="enquiryExpense" styleClass="ui-button-primary" />
+						</h:panelGroup>
+					</f:facet>
 
 					<p:column headerText="Category">
-						<h:outputText value="#{expense.category.name}" />
+						<h:outputText
+							value="#{expense.category != null ? expense.category.name : 'N/A'}" />
 					</p:column>
 
 					<p:column headerText="Amount">
@@ -97,16 +114,28 @@
 					<p:column headerText="Actions">
 						<p:commandButton value="Edit"
 							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
-							process="@this" update="expenseForm:addExpenseFormPanel"></p:commandButton>
-
-						<p:commandButton value="Delete"></p:commandButton>
+							process="@this" update=":addExpenseForm:addExpenseFormPanel"></p:commandButton>
+						<!-- </p:column>
+					<p:column> -->
+						<p:commandButton value="Delete"
+							action="#{ManageExpenseActionBean.deleteExpense(expense)}"
+							update=":recentExpenseTableForm:recentExpenseTablePanel :addExpenseForm:addExpenseFormPanel"
+							oncomplete="PF('recentExpenseTableWidget').clearFilters();"
+							process="@this">
+							<p:confirm header="Confirmation"
+								message="Are you sure want to delete this expense?"
+								icon="fa fa-exclamation-triangle" />
+						</p:commandButton>
 					</p:column>
-
-
-
-
 				</p:dataTable>
 			</p:panel>
 		</h:form>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+			<p:commandButton value="No" type="button"
+				styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+		</p:confirmDialog>
 	</ui:define>
 </ui:composition>

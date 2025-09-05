@@ -16,9 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExpenseDAO extends BasicDAO implements IExpenseDAO{
 
 	@Override
-	public Boolean deleteExpense() {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Boolean deleteExpense(Expense expense) {
+		Boolean deletesuccess = false;
+		try {
+			expense = em.merge(expense);
+			em.remove(expense);
+			em.flush();
+			deletesuccess = true;
+		} catch (PersistenceException e) {
+			throw translate("Failed to delete expense", e);
+		}
+		return deletesuccess;
 	}
 
 	@Override
@@ -63,7 +72,7 @@ public class ExpenseDAO extends BasicDAO implements IExpenseDAO{
 		// TODO Auto-generated method stub
 		List<Expense> result = null;
 		try {
-			TypedQuery<Expense> q = em.createQuery("select e from Expense e where e.user.id = :userid",Expense.class);
+			TypedQuery<Expense> q = em.createQuery("select e from Expense e LEFT JOIN FETCH e.category where e.user.id = :userid",Expense.class);
 			q.setParameter("userid", userid);
 			result = q.getResultList();
 		} catch (PersistenceException e) {

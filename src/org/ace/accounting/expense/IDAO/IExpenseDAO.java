@@ -7,7 +7,7 @@ import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.ExpenseUser;
 
 public interface IExpenseDAO {
-	public Boolean deleteExpense();
+	public Boolean deleteExpense(Expense expense);
 
 	public List<Category> findCategoryList();
 

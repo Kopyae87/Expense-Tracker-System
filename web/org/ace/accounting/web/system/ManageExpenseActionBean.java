@@ -32,24 +32,25 @@ public class ManageExpenseActionBean extends BaseBean {
 	private String selectedCategoryId;
 	private Expense currentexpense;
 	private List<Expense> expenseList;
-	private String userId;
+	public static String currenseUserId;
 	private User currentUser;
 	private Category cat;
 	private Boolean iseditMode;
 
 	@PostConstruct
 	public void init() {
-		getCategoryNames();
+		currentUser = (User) getParam(ParamId.LOGIN_USER);
+		currenseUserId = currentUser.getId();
+		loadCategoryNames();
 		setMaxDate();
 		createNewExpense();
-		getAllExpenses();
-		currentUser = (User) getParam(ParamId.LOGIN_USER);
-		userId = currentUser.getId();
+		createNewExpenseList();
+		loadExpenses();
 	}
 
 	public void createNewExpense() {
 		this.currentexpense = new Expense();
-		currentexpense.setExpense_date(new Date());
+//		currentexpense.setExpense_date(new Date());
 	}
 
 	public void createNewExpenseList() {
@@ -59,8 +60,12 @@ public class ManageExpenseActionBean extends BaseBean {
 	public void setMaxDate() {
 		maxDate = new Date();
 	}
-
-	private void getCategoryNames() {
+	
+	public void loadExpenses() {
+		expenseList = expenseService.findAllExpense(currenseUserId);
+	}
+	
+	private void loadCategoryNames() {
 		categoryList = expenseService.findAllCategory();
 		System.out.println("in get");
 		if (categoryList == null || categoryList.isEmpty()) {
@@ -81,23 +86,30 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void saveExpense() {
 		System.out.println("in the save Expense");
+		
 		changeCategoryIdToObject();
+	    if (cat == null) {
+	        addErrorMessage("Please select a category before saving.");
+	        return;
+	    }
 		currentexpense.setUser(currentUser);
 		currentexpense.setCategory(cat);
 		expenseService.saveExpense(currentexpense);
 		createNewExpense();
-		getAllExpenses();
+		loadExpenses();
 		selectedCategoryId = "";
-//		resetExpenseForm();
 	}
 
 	public void updateExpense() {
 		changeCategoryIdToObject();
 //		currentexpense.setUser(currentUser);
+	    if (cat == null) {
+	        addErrorMessage("Please select a category before updating.");
+	        return;
+	    }
 		currentexpense.setCategory(cat);
 		expenseService.updateExpense(currentexpense);
 		cancelExpense();
-		;
 	}
 
 	public void changeCategoryIdToObject() {
@@ -110,24 +122,47 @@ public class ManageExpenseActionBean extends BaseBean {
 		}
 	}
 
-//	public void resetExpenseForm() {
-//		 selectedCategoryId = null;
-//		 create
-//	}
 	public void cancelExpense() {
 		selectedCategoryId = "";
 		createNewExpense();
 		iseditMode = false;
 	}
 
-	public void openeditExpense(Expense e) {
-		currentexpense = e;
-		selectedCategoryId = e.getCategory().getId();
-		iseditMode = true;
+	public void deleteExpense(Expense expense) {
+		try {
+			if(expense == null) {
+				System.out.println("expense is null");
+				return;
+			}
+			expenseService.deleteExpense(expense);
+			
+			if(iseditMode && currentexpense.getId().equals(expense.getId())) {
+				cancelExpense();
+			}
+			expenseList = expenseService.findAllExpense(currenseUserId);
+			System.out.println("delete succcessfully");
+		} catch (Exception e) {
+			// TODO: handle exception
+			addErrorMessage("delete failed");
+		}
+	}
+	
+	public void openeditExpense(Expense expense) {
+	    if (expense == null) {
+	        addErrorMessage("Cannot edit: expense is null");
+	        return;
+	    }
+	    currentexpense = expense;
+	    if (expense.getCategory() != null && expense.getCategory().getId() != null) {
+	        selectedCategoryId = expense.getCategory().getId();
+	    } else {
+	        selectedCategoryId = ""; // no category selected
+	        addErrorMessage("This expense has no category. Please select one.");
+	    }
+	    iseditMode = true;
 	}
 
 	public List<Expense> getAllExpenses() {
-		expenseList = expenseService.findAllExpense(userId);
 		return expenseList;
 	}
 
@@ -180,11 +215,11 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 
 	public String getUserId() {
-		return userId;
+		return currenseUserId;
 	}
 
 	public void setUserId(String userId) {
-		this.userId = userId;
+		ManageExpenseActionBean.currenseUserId = userId;
 	}
 
 	public User getCurrentUser() {
