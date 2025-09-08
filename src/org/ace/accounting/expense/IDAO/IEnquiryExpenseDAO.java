@@ -6,5 +6,5 @@ import java.util.List;
 import org.ace.accounting.expense.Entity.Expense;
 
 public interface IEnquiryExpenseDAO {
-	public List<Expense> find(Date startDate,Date endDate,String categoryName,String paymentType, String userid);
+	public List<Expense> find(Date startDate,Date endDate,String categoryId,String paymentType, String userid);
 }

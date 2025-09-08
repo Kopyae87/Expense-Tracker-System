@@ -22,11 +22,11 @@ public class EnquiryExpenseService implements IEnquiryExpenseService{
 	
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public List<Expense> find(Date startDate, Date endDate, String categoryName, String paymentType , String userid) {
+	public List<Expense> find(Date startDate, Date endDate, String categoryId, String paymentType , String userid) {
 		// TODO Auto-generated method stub
 		List<Expense> expenseList = null;
 		try {
-			expenseList = enquiryExpenseDAO.find(startDate, endDate, categoryName, paymentType, userid);
+			expenseList = enquiryExpenseDAO.find(startDate, endDate, categoryId, paymentType, userid);
 		} catch (DAOException e) {
 			// TODO: handle exception
 			throw new SystemException(e.getErrorCode(), "Cant find Expenses", e);

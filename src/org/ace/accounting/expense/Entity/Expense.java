@@ -49,14 +49,15 @@ public class Expense {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "expense_date")
-	private Date expense_date;
+	private Date expenseDate;
 	
 	@Column(name = "description")
 	private String description;
 	
 //	@Enumerated(EnumType.STRING)
 //	private PaymentType paymenttype;
-	private String paymenttype;
+	@Column(name = "paymentType", nullable = false)
+	private String paymentType;
 	
 	@Version
 	private int version;
@@ -97,11 +98,11 @@ public class Expense {
 	}
 
 	public Date getExpense_date() {
-		return expense_date;
+		return expenseDate;
 	}
 
 	public void setExpense_date(Date expense_date) {
-		this.expense_date = expense_date;
+		this.expenseDate = expense_date;
 	}
 
 	public String getDescription() {
@@ -120,12 +121,12 @@ public class Expense {
 		this.basicEntity = basicEntity;
 	}
 
-	public String getPaymenttype() {
-		return paymenttype;
+	public String getPaymentType() {
+		return paymentType;
 	}
 
-	public void setPaymenttype(String paymenttype) {
-		this.paymenttype = paymenttype;
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
 	}
 
 	public int getVersion() {

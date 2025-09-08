@@ -41,7 +41,7 @@
 
 					<h:outputLabel for="paymenttype" value="Description : " />
 					<p:selectOneMenu id="paymenttype" style="width:80%;"
-						value="#{ManageExpenseActionBean.currentExpense.paymenttype}"
+						value="#{ManageExpenseActionBean.currentExpense.paymentType}"
 						required="true">
 						<f:selectItem itemLabel="Select Payment Method" itemValue=""
 							noSelectionOption="true" />
@@ -108,7 +108,7 @@
 					</p:column>
 
 					<p:column headerText="Payment Type">
-						<h:outputText value="#{expense.paymenttype}" />
+						<h:outputText value="#{expense.paymentType}" />
 					</p:column>
 
 					<p:column headerText="Actions">

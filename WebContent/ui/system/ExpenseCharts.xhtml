@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+	<ui:define name="content">
+		<p:panelGrid columns="2" styleClass="ui-panelgrid-blank ui-fluid"
+			columnClasses="ui-grid-col-3,ui-grid-col-9"
+			style="width:100%; gap:14px;">
+
+			<!-- Categories Form -->
+			<h:form id="expenseCategoriesForm"
+				style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 340px;">
+				<h:outputText value="Categories"
+					style="font-weight:bold; margin-bottom:10px; display:block;" />
+				<!-- <h3>Categories</h3> -->
+				<ui:repeat value="#{ManageExpenseChartActionBean.categoryList}"
+					var="cat">
+					<p:commandButton value="#{cat.name}"
+						action="#{ManageExpenseChartActionBean.setSelectedCategory(cat.name)}"
+						process="@this" update=":expenseChartForm:chartPanel"
+						style="margin-bottom:8px; width:90%;" styleClass="ui-panelgrid-blank ui-fluid"/>
+				</ui:repeat>
+			</h:form>
+
+			<!-- Chart Form -->
+			<h:form id="expenseChartForm"
+				style="border:1px solid #ccc; padding:10px; border-radius:8px;height: 350px;">
+				<p:panelGrid columns="1"
+					style="padding-left:10px; width:100%; justify-content:center;"
+					styleClass="ui-panelgrid-blank">
+
+					<!-- Time period dropdown -->
+					<p:panelGrid
+						style="margin-bottom:20px; border:none; background:none;">
+						<h:outputLabel value="View: " style="margin-bottom:5px;" />
+						<p:selectOneMenu
+							value="#{ManageExpenseChartActionBean.timeperiod}"
+							style="margin-bottom:15px; width:200px;">
+							<f:selectItem itemLabel="Select Time Period" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItem itemLabel="Daily" itemValue="DAILY" />
+							<f:selectItem itemLabel="Monthly" itemValue="MONTHLY" />
+							<f:selectItem itemLabel="Yearly" itemValue="YEARLY" />
+							<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
+								update=":expenseChartForm:chartPanel" />
+						</p:selectOneMenu>
+						<p:outputLabel value="#{ManageExpenseChartActionBean.selectedCategory}" />
+						<hr />
+						<!-- Chart -->
+						<p:chart type="bar" id="chartPanel"
+							model="#{ManageExpenseChartActionBean.expenseChart}"
+							widgetVar="expenseChart"
+							style="margin-top:20px; width:80%; height:240px;" />
+					</p:panelGrid>
+				</p:panelGrid>
+			</h:form>
+		</p:panelGrid>
+	</ui:define>
+
+</ui:composition>

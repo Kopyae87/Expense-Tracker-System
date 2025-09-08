@@ -34,19 +34,22 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 		this.enquiryExpenseService = enquiryExpenseService;
 	}
 	
-	private String categoryName;
+	private String categoryId;
 	private String paymentType;
 	private Date startDate;
 	private Date endDate;
 	private List<Category> categoryList;
 	private List<Expense> expenseList;
 	private String userid;
+	private User currentUser;
 
 	@PostConstruct
 	public void init() {
-		userid = ManageExpenseActionBean.currenseUserId;
+		currentUser = (User) getParam(ParamId.LOGIN_USER);
+		userid = currentUser.getId();
 		createNewCategoriesList();
 		loadCategories();
+		createNewExpenseList();
 	}
 	
 	public void createNewCategoriesList() {
@@ -57,28 +60,34 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 		categoryList = expenseService.findAllCategory();
 	}
 	
+	public void createNewExpenseList() {
+		expenseList = new ArrayList<>();
+	}
+	
 	public List<Expense> search(){
-		expenseList = enquiryExpenseService.find(startDate, endDate, categoryName, paymentType, userid);
-		if(expenseList != null) {
+		System.out.println("paymentype:" + paymentType);
+		createNewExpenseList();
+		expenseList = enquiryExpenseService.find(startDate, endDate, categoryId, paymentType, userid);
+		if(expenseList != null && !expenseList.isEmpty()) {
 			System.out.println("success");
 		}
 		return expenseList;
 	}
 
 	public void cancel() {
-		categoryName = "";
+		categoryId = "";
 		startDate = null;
 		endDate = null;
 		paymentType = "";
 	}
 	
 	
-	public String getCategoryName() {
-		return categoryName;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
+	public void setCategoryId(String categoryName) {
+		this.categoryId = categoryName;
 	}
 
 	public String getPaymentType() {

@@ -16,8 +16,7 @@
 
 					<h:outputLabel for="category" value="Category: " />
 					<p:selectOneMenu id="category" style="width:80%;"
-						value="#{ManageEnquiryExpenseActionBean.categoryName}"
-						required="true">
+						value="#{ManageEnquiryExpenseActionBean.categoryId}">
 						<f:selectItem itemLabel="Select Category" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItems
@@ -38,7 +37,7 @@
 					<h:outputLabel for="paymenttype" value="Description : " />
 					<p:selectOneMenu id="paymenttype" style="width:80%;"
 						value="#{ManageEnquiryExpenseActionBean.paymentType}"
-						required="true">
+						>
 						<f:selectItem itemLabel="Select Payment Method" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItems
@@ -50,10 +49,10 @@
 				<p:panelGrid>
 					<p:commandButton value="Search"
 						action="#{ManageEnquiryExpenseActionBean.search}" process="@form"
-						update=":allExpenseTableForm:allExpenseTablePanel"></p:commandButton>
+						update=":allExpenseTableForm:allExpenseTablePanel "></p:commandButton>
 					<p:commandButton value="Cancel"
 						action="#{ManageEnquiryExpenseActionBean.cancel}" process="@this"
-						update="@form"></p:commandButton>
+						update="@form :allExpenseTableForm:allExpenseTablePanel"></p:commandButton>
 				</p:panelGrid>
 			</p:panel>
 		</h:form>
@@ -83,7 +82,7 @@
 					</p:column>
 
 					<p:column headerText="Payment Type">
-						<h:outputText value="#{expense.paymenttype}" />
+						<h:outputText value="#{expense.paymentType}" />
 					</p:column>
 
 					<p:column headerText="Actions">

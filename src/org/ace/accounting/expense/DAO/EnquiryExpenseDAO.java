@@ -18,7 +18,7 @@ public class EnquiryExpenseDAO extends BasicDAO implements IEnquiryExpenseDAO{
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-	public List<Expense> find(Date startDate, Date endDate, String categoryName, String paymentType, String userid) {
+	public List<Expense> find(Date startDate, Date endDate, String categoryId, String paymentType, String userid) {
 		List<Expense> list = null;
 		try {
 			
@@ -28,21 +28,31 @@ public class EnquiryExpenseDAO extends BasicDAO implements IEnquiryExpenseDAO{
 			paramMap.put("userid", userid);
 			
 			if(startDate != null) {
-				str.append(" and e.expense_date >= :startDate");
+				System.out.println("in 1");
+				str.append(" and e.expenseDate >= :startDate");
 				paramMap.put("startDate", startDate);
 			}
 			if(endDate != null) {
-				str.append(" and e.expense_date <= :endDate");
+				System.out.println("in 2");
+				str.append(" and e.expenseDate <= :endDate");
 				paramMap.put("endDate", endDate);
 			}
-			if(categoryName != null && !categoryName.isEmpty()) {
-				str.append(" and e.category.id = :categoryName");
-				paramMap.put("categoryName", categoryName);
+			if(categoryId != null && !categoryId.isEmpty()) {
+				System.out.println("in 3");
+				str.append(" and e.category.id = :categoryId");
+				paramMap.put("categoryId", categoryId);
 			}
 			if(paymentType != null && !paymentType.isEmpty()) {
-				str.append(" and e.paymenttype = :paymentType");
+				System.out.println("searching with paymenttype " + paymentType);
+				paymentType = paymentType.trim();
+				str.append(" and e.paymentType = :paymentType");
 				paramMap.put("paymentType", paymentType);
 			}
+			System.out.println("Searching Expenses:");
+			System.out.println("CategoryId: " + categoryId);
+			System.out.println("PaymentType: " + paymentType);
+			System.out.println("StartDate: " + startDate);
+			System.out.println("EndDate: " + endDate);
 			
 			TypedQuery<Expense> q = em.createQuery(str.toString(), Expense.class);			
 			for(Map.Entry<String, Object> m : paramMap.entrySet()) {
