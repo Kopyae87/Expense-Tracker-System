@@ -19,7 +19,7 @@
 					var="cat">
 					<p:commandButton value="#{cat.name}"
 						action="#{ManageExpenseChartActionBean.setSelectedCategory(cat.name)}"
-						process="@this" update=":expenseChartForm:chartPanel"
+						process="@this" update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel"
 						style="margin-bottom:8px; width:90%;" styleClass="ui-panelgrid-blank ui-fluid"/>
 				</ui:repeat>
 			</h:form>
@@ -46,7 +46,8 @@
 							<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
 								update=":expenseChartForm:chartPanel" />
 						</p:selectOneMenu>
-						<p:outputLabel value="#{ManageExpenseChartActionBean.selectedCategory}" />
+						<br/>
+						<p:outputLabel id="selectedCategoryLabel" value="#{ManageExpenseChartActionBean.selectedCategory}" ></p:outputLabel> 
 						<hr />
 						<!-- Chart -->
 						<p:chart type="bar" id="chartPanel"
