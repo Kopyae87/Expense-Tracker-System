@@ -18,15 +18,17 @@
 				<ui:repeat value="#{ManageExpenseChartActionBean.categoryList}"
 					var="cat">
 					<p:commandButton value="#{cat.name}"
-						action="#{ManageExpenseChartActionBean.setSelectedCategory(cat.name)}"
-						process="@this" update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel"
-						style="margin-bottom:8px; width:90%;" styleClass="ui-panelgrid-blank ui-fluid"/>
+						action="#{ManageExpenseChartActionBean.selectCategory(cat.id,cat.name)}"
+						process="@this"
+						update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel "
+						style="margin-bottom:8px; width:90%;"
+						styleClass="ui-panelgrid-blank ui-fluid" />
 				</ui:repeat>
 			</h:form>
 
 			<!-- Chart Form -->
 			<h:form id="expenseChartForm"
-				style="border:1px solid #ccc; padding:10px; border-radius:8px;height: 350px;">
+				style="border:1px solid #ccc; padding:10px; border-radius:8px;height: 450px;">
 				<p:panelGrid columns="1"
 					style="padding-left:10px; width:100%; justify-content:center;"
 					styleClass="ui-panelgrid-blank">
@@ -44,16 +46,60 @@
 							<f:selectItem itemLabel="Monthly" itemValue="MONTHLY" />
 							<f:selectItem itemLabel="Yearly" itemValue="YEARLY" />
 							<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
-								update=":expenseChartForm:chartPanel" />
+								update=":expenseChartForm:chartPanel :expenseChartForm:datePickers" />
 						</p:selectOneMenu>
-						<br/>
-						<p:outputLabel id="selectedCategoryLabel" value="#{ManageExpenseChartActionBean.selectedCategory}" ></p:outputLabel> 
+
+						<!-- 						<h:panelGroup id="datePickers">
+							<p:datePicker id="dayPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								rendered="#{ManageExpenseChartActionBean.timeperiod eq 'DAILY'}"
+								view="month" dateFormat="MM/yyyy" showIcon="true"
+								appendTo="@(body)" placeholder="MM/yyyy"
+								style="margin-bottom: 30px;width: 200px;">
+								<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker>
+
+							<p:datePicker id="monthPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								rendered="#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY'}"
+								view="month" dateFormat="MM/yyyy" showIcon="true"
+								placeholder="yyyy" appendTo="@(body)"
+								style="margin-bottom: 60px;width: 200px;">
+								<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker>
+						</h:panelGroup> -->
+						<p:outputPanel id="datePickers">
+							<p:datePicker id="dayPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
+								view="month" dateFormat="MM/yyyy" showIcon="true"
+								appendTo="@(body)">
+								<p:ajax event="dateSelect"
+									listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker>
+							<p:datePicker id="monthPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}"
+								view="month" dateFormat="MM/yyyy" showIcon="true"
+								appendTo="@(body)">
+								<p:ajax event="dateSelect"
+									listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker>
+						</p:outputPanel>
+						<br />
+						<p:outputLabel id="selectedCategoryLabel"
+							style="margin-top: 50px;"
+							value="Category: #{ManageExpenseChartActionBean.selectedCategoryName}"></p:outputLabel>
 						<hr />
 						<!-- Chart -->
 						<p:chart type="bar" id="chartPanel"
 							model="#{ManageExpenseChartActionBean.expenseChart}"
 							widgetVar="expenseChart"
-							style="margin-top:20px; width:80%; height:240px;" />
+							style="margin-top: 20px;width:100%;height: 300px;" />
 					</p:panelGrid>
 				</p:panelGrid>
 			</h:form>
