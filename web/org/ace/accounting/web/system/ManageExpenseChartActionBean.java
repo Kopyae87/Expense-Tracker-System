@@ -1,5 +1,6 @@
 package org.ace.accounting.web.system;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -38,6 +39,8 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		this.expenseChartService = expenseChartService;
 	}
 
+	private Integer selectedYear;
+	private List<Integer> yearsList;
 	private BarChartModel expenseChart;
 	private String selectedCategoryId;
 	private String selectedCategoryName;
@@ -46,7 +49,7 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	private List<Category> categoryList;
 	private String userid;
 	private User currentUser;
-	private LinkedHashMap<Integer, Integer> chosenTimeExpenses;
+//	private LinkedHashMap<Integer, Integer> chosenTimeExpenses;
 
 	@PostConstruct
 	public void init() {
@@ -54,8 +57,18 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		userid = currentUser.getId();
 		loadCategories();
 		createNewExpenseChart();
+		loadYearsList();
+		selectedYear = Calendar.getInstance().get(Calendar.YEAR);
 //		createTestChart();
 //		selectedDate = new Date();
+	}
+	
+	public void loadYearsList() {
+		int currentyear = Calendar.getInstance().get(Calendar.YEAR);
+		yearsList = new ArrayList<>();
+		for(int i = (currentyear - 20);i <= currentyear; i++) {
+			yearsList.add(i);
+		}
 	}
 
 	public void loadCategories() {
@@ -69,18 +82,20 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	public void updateChart() {
 		if (selectedCategoryId == null || timeperiod == null || timeperiod.isEmpty()) {
 			createNewExpenseChart();
-			;
 			return;
 		}
 
-		if (selectedDate == null) {
-			selectedDate = new Date();
+		Calendar calendar = Calendar.getInstance();
+
+		if (selectedDate != null) {
+		    calendar.setTime(selectedDate);
+		} else {
+		    System.out.println("selectedDate is null → using today");
+		    selectedDate = new Date();
 		}
+
 //		Map<Integer, Integer> daysExpenses = new LinkedHashMap<>();
 //		Map<Integer, Integer> monthsExpenses = new LinkedHashMap<>();
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(selectedDate);
 
 		System.out.println("timeperiod is: " + timeperiod);
 
@@ -90,25 +105,27 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		int daysOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int monthsOfYear = 12;
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+		
+		System.out.println("month" + month + "year" + year + "daysofmonth"+ daysOfMonth +"monthsofyear"+ monthsOfYear +"currentyear" + currentYear);
 		BarChartModel model = new BarChartModel();
-
+		
 		if ("All".equals(selectedCategoryId)) {
-			System.out.println("in All categories");
-			chosenTimeExpenses = accordingToPeriod(timeperiod, "All", userid, month, year, daysOfMonth,
-					monthsOfYear, currentYear);
+			for (Category cat : categoryList) {
+				System.out.println("in All categories");
+				LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, cat.getId(), userid, month, year, daysOfMonth, monthsOfYear, currentYear);
+				
+				ChartSeries series = new ChartSeries();
+				series.setLabel(cat.getName());
+				
+				for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
+					series.set(String.valueOf(e.getKey()), e.getValue());
+				}
 
-			ChartSeries series = new ChartSeries();
-			series.setLabel(cat.getName());
-
-			for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
-				series.set(String.valueOf(e.getKey()), e.getValue());
+				model.addSeries(series);
 			}
-
-			model.addSeries(series);
-
 		} else {
-			chosenTimeExpenses = accordingToPeriod(timeperiod, selectedCategoryId, userid, month, year, daysOfMonth,
-					monthsOfYear, currentYear);
+			LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, selectedCategoryId, userid, month,
+					year, daysOfMonth, monthsOfYear, currentYear);
 
 			ChartSeries series = new ChartSeries();
 			series.setLabel(selectedCategoryName + " (" + timeperiod + ")");
@@ -118,13 +135,16 @@ public class ManageExpenseChartActionBean extends BaseBean {
 			}
 
 			model.addSeries(series);
+			
 		}
 		expenseChart = model;
 		expenseChart.setTitle("Expenses");
 		expenseChart.setLegendPosition("ne");
 		expenseChart.setAnimate(true);
 		expenseChart.setShowDatatip(true);
-		expenseChart.setStacked(false);
+		expenseChart.setStacked(true);
+//		expenseChart.setShowPointLabels(true);
+		expenseChart.setBarWidth(15);
 	}
 
 	public LinkedHashMap<Integer, Integer> calculateActualLength(Map<Integer, Integer> map, List<Object[]> result,
@@ -135,8 +155,7 @@ public class ManageExpenseChartActionBean extends BaseBean {
 				map.put(i, 0);
 			}
 		} else if ("YEARLY".equals(period)) {
-			for (int i = (maxTimePeriod - 20); i <= maxTimePeriod; i++) { // for year must be mininum year is last 20
-																			// year up to
+			for (int i = (maxTimePeriod - 20); i <= maxTimePeriod; i++) { // for year must be mininum year is last 20 year up to
 				map.put(i, 0);
 			}
 		}
@@ -152,37 +171,25 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		return new LinkedHashMap<>(map);
 	}
 
-	public LinkedHashMap<Integer, Integer> accordingToPeriod(String period, String selectedCategory, String userid,
-			int month, int year, int daysOfMonth, int monthsOfYear, int currentYear) {
+	public LinkedHashMap<Integer, Integer> accordingToPeriod(String period, String selectedCategory, String userid, int month,
+			int year, int daysOfMonth, int monthsOfYear, int currentYear) {
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		List<Object[]> results = null;
 
 		switch (period) {
 		case "DAILY":
-			if (!selectedCategory.equals("All")) {
-				results = expenseChartService.getDailyExpenses(selectedCategory, userid, month, year);
-				return calculateActualLength(map, results, daysOfMonth, period);
-			} else if (selectedCategory.equals("All")) {
-				results = expenseChartService.getDailyExpensesOfAllCategories(selectedCategory, userid, month, year);
-				return calculateActualLength(map, results, daysOfMonth, period);
-			}
+			results = expenseChartService.getDailyExpenses(selectedCategory, userid, month, year);
+			return calculateActualLength(map, results, daysOfMonth, period);
 
 		case "MONTHLY":
-			if (!selectedCategory.equals("All")) {
-				results = expenseChartService.getMonthlyExpenses(selectedCategory, userid, year);
-				return calculateActualLength(map, results, monthsOfYear, period);
-			} else if (selectedCategory.equals("All")) {
-				results = expenseChartService.getMonthlyExpensesOfAllCategories(selectedCategory, userid, month, year);
-				return calculateActualLength(map, results, daysOfMonth, period);
-			}
+			int yearToUse = (selectedYear != null) ? selectedYear : Calendar.getInstance().get(Calendar.YEAR);
+			results = expenseChartService.getMonthlyExpenses(selectedCategory, userid, yearToUse);
+			return calculateActualLength(map, results, monthsOfYear, period);
+
 		case "YEARLY":
-			if (!selectedCategory.equals("All")) {
-				results = expenseChartService.getYearlyExpenses(selectedCategory, userid);
-				return calculateActualLength(map, results, currentYear, period);
-			} else if (selectedCategory.equals("All")) {
-				results = expenseChartService.getYearlyExpensesOfAllCategories(selectedCategory, userid, month, year);
-				return calculateActualLength(map, results, daysOfMonth, period);
-			}
+			results = expenseChartService.getYearlyExpenses(selectedCategory, userid);
+			return calculateActualLength(map, results, currentYear, period);
+
 		default:
 			return new LinkedHashMap<>();
 		}
@@ -274,4 +281,20 @@ public class ManageExpenseChartActionBean extends BaseBean {
 //    expenseChart.setShowDatatip(true);
 //    expenseChart.setStacked(false);
 //}
+
+	public List<Integer> getYearsList() {
+		return yearsList;
+	}
+
+	public void setYearsList(List<Integer> yearsList) {
+		this.yearsList = yearsList;
+	}
+
+	public int getSelectedYear() {
+		return selectedYear;
+	}
+
+	public void setSelectedYear(int selectedYear) {
+		this.selectedYear = selectedYear;
+	}
 }

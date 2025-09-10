@@ -5,18 +5,38 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
 	<ui:define name="content">
-		<h:form id="addExpenseForm" style="color: black;">
+		<h:form id="addExpenseBudgetForm" style="color: black;">
 			<p:growl escape="false" globalOnly="true" life="5000"
 				showDetail="true" />
-			<p:panel id="addExpenseFormPanel"
+			<p:panel id="addExpenseBudgetFormPanel"
 				style="margin: 0 auto; width: 60%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
-				<h4 style="margin: 0px">Add Expense</h4>
+				<h4 style="margin: 0px">Add Budget</h4>
 				<p:panelGrid columns="4"
 					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,"
 					styleClass="ui-panelgrid-blank"
 					style="width: 100%; text-align:left;">
 
-
+					<p:panelGrid styleClass="ui-panelgrid-blank" id="branchPanelGroup">
+						<div style="margin-top: -5px; margin-left: -5px;"
+							class="ui-g ui-fluid" id="branchPanelGroup">
+							<div class="ui-inputgroup ui-g-12 ui-lg-12 ui-lg-12">
+								<p:commandButton styleClass="green-button" icon="fa fa-search"
+									actionListener="#{ManageUserActionBean.selectBranch()}"
+									id="selectBranchDialogLink" process="@this">
+									<p:ajax event="dialogReturn"
+										listener="#{ManageUserActionBean.returnBranch}"
+										update="branchId" />
+								</p:commandButton>
+								<p:inputText id="branchId"
+									value="#{ManageUserActionBean.user.branch == null ? '' : ManageUserActionBean.user.branch.branchCode}"
+									readonly="true" />
+								<p:commandButton styleClass="red-button" icon="fa fa-times"
+									action="#{ManageUserActionBean.user.setBranch(null)}"
+									process="@this" update="branchId" />
+							</div>
+						</div>
+					</p:panelGrid>
+					
 					<h:outputLabel for="category" value="Category: " />
 					<p:selectOneMenu id="category" style="width:80%;"
 						value="#{ManageExpenseActionBean.selectedCategoryId}"
@@ -71,74 +91,7 @@
 				<!--  -->
 			</p:panel>
 		</h:form>
-		<h:form id="recentExpenseTableForm" style="margin-top: 20px;">
-			<p:panel id="recentExpenseTablePanel">
-				<p:dataTable id="recentExpenseTable"
-					widgetVar="recentExpenseTableWidget" paginator="true"
-					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
-					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
-					paginatorPosition="top"
-					value="#{ManageExpenseActionBean.allExpenses}" var="expense"
-					rowKey="#{expense.id}" border="4" style="width:100%;border: black;">
 
-					<f:facet name="header">
-						<h:panelGroup
-							style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-							<h:outputText value="Recent Expenses"
-								style="font-weight:bold; font-size:14px;" />
-							<p:button value="Go to Enquiry" icon="fa fa-search"
-								outcome="enquiryExpense" styleClass="ui-button-primary" />
-						</h:panelGroup>
-					</f:facet>
-
-					<p:column headerText="Category">
-						<h:outputText
-							value="#{expense.category != null ? expense.category.name : 'N/A'}" />
-					</p:column>
-
-					<p:column headerText="Amount">
-						<h:outputText value="#{expense.amount}" />
-					</p:column>
-
-					<p:column headerText="Description" width="25%">
-						<h:outputText value="#{expense.description}" />
-					</p:column>
-
-					<p:column headerText="Expense date">
-						<h:outputText value="#{expense.expense_date}">
-							<f:convertDateTime pattern="dd-MM-yyyy" />
-						</h:outputText>
-					</p:column>
-
-					<p:column headerText="Payment Type">
-						<h:outputText value="#{expense.paymentType}" />
-					</p:column>
-
-					<p:column headerText="Actions">
-						<p:commandButton value="Edit"
-							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
-							process="@this" update=":addExpenseForm:addExpenseFormPanel"></p:commandButton>
-						<!-- </p:column>
-					<p:column> -->
-						<p:commandButton value="Delete"
-							action="#{ManageExpenseActionBean.deleteExpense(expense)}"
-							update=":recentExpenseTableForm:recentExpenseTablePanel :addExpenseForm:addExpenseFormPanel"
-							oncomplete="PF('recentExpenseTableWidget').clearFilters();"
-							process="@this">
-							<p:confirm header="Confirmation"
-								message="Are you sure want to delete this expense?"
-								icon="fa fa-exclamation-triangle" />
-						</p:commandButton>
-					</p:column>
-				</p:dataTable>
-			</p:panel>
-		</h:form>
-
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-			<p:commandButton value="Yes" type="button"
-				styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
-			<p:commandButton value="No" type="button"
-				styleClass="ui-confirmdialog-no" icon="fa fa-times" />
-		</p:confirmDialog>
 	</ui:define>
+
 </ui:composition>

@@ -178,6 +178,13 @@
 			<to-view-id>/ui/system/ExpenseCharts.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
+		
+		<navigation-case>
+			<from-outcome>expenseBudget</from-outcome>
+			<to-view-id>/ui/system/ExpenseBudget.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		
 		<!-- Transaction Entry -->
 		<navigation-case>
 			<from-outcome>creditVoucher</from-outcome>

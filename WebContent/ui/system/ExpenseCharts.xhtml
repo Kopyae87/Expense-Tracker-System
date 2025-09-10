@@ -16,11 +16,11 @@
 					style="font-weight:bold; margin-bottom:10px; display:block;" />
 				<!-- <h3>Categories</h3> -->
 				<p:commandButton value="All"
-						action="#{ManageExpenseChartActionBean.selectCategory('All','Allcategories')}"
-						process="@this"
-						update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel "
-						style="margin-bottom:8px; width:90%;"
-						styleClass="ui-panelgrid-blank ui-fluid" />
+					action="#{ManageExpenseChartActionBean.selectCategory('All','Allcategories')}"
+					process="@this"
+					update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel "
+					style="margin-bottom:8px; width:90%;"
+					styleClass="ui-panelgrid-blank ui-fluid" />
 				<ui:repeat value="#{ManageExpenseChartActionBean.categoryList}"
 					var="cat">
 					<p:commandButton value="#{cat.name}"
@@ -55,32 +55,11 @@
 								update=":expenseChartForm:chartPanel :expenseChartForm:datePickers" />
 						</p:selectOneMenu>
 
-						<!-- 						<h:panelGroup id="datePickers">
-							<p:datePicker id="dayPicker"
-								value="#{ManageExpenseChartActionBean.selectedDate}"
-								rendered="#{ManageExpenseChartActionBean.timeperiod eq 'DAILY'}"
-								view="month" dateFormat="MM/yyyy" showIcon="true"
-								appendTo="@(body)" placeholder="MM/yyyy"
-								style="margin-bottom: 30px;width: 200px;">
-								<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
-									update=":expenseChartForm:chartPanel" />
-							</p:datePicker>
-
-							<p:datePicker id="monthPicker"
-								value="#{ManageExpenseChartActionBean.selectedDate}"
-								rendered="#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY'}"
-								view="month" dateFormat="MM/yyyy" showIcon="true"
-								placeholder="yyyy" appendTo="@(body)"
-								style="margin-bottom: 60px;width: 200px;">
-								<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
-									update=":expenseChartForm:chartPanel" />
-							</p:datePicker>
-						</h:panelGroup> -->
-						<p:outputPanel id="datePickers">
+						<!-- 						<p:outputPanel id="datePickers">
 							<p:datePicker id="dayPicker"
 								value="#{ManageExpenseChartActionBean.selectedDate}"
 								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
-								view="month" dateFormat="MM/yyyy" showIcon="true"
+								view="month" dateFormat="dd/MM/yyyy" showIcon="true"
 								appendTo="@(body)">
 								<p:ajax event="dateSelect"
 									listener="#{ManageExpenseChartActionBean.updateChart}"
@@ -89,13 +68,42 @@
 							<p:datePicker id="monthPicker"
 								value="#{ManageExpenseChartActionBean.selectedDate}"
 								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}"
-								view="month" dateFormat="MM/yyyy" showIcon="true"
-								appendTo="@(body)">
+								view="year" dateFormat="yyyy" showIcon="true"
+								>
 								<p:ajax event="dateSelect"
 									listener="#{ManageExpenseChartActionBean.updateChart}"
 									update=":expenseChartForm:chartPanel" />
 							</p:datePicker>
+						</p:outputPanel> -->
+						<p:outputPanel id="datePickers">
+
+							<!-- DAILY: pick month + year -->
+							<p:datePicker id="dayPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
+								view="month" showIcon="true"
+								pattern="MM/yyyy">
+								<p:ajax event="dateSelect" listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker>
+
+							<!-- <p:datePicker id="monthPicker"
+								value="#{ManageExpenseChartActionBean.selectedDate}"
+								style="width:200px;display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}"
+								view="month" dateFormat="yyyy"  showIcon="true" pattern="yyyy">
+								<p:ajax 
+									listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:datePicker> -->
+							<p:selectOneMenu id="monthPicker"
+								value="#{ManageExpenseChartActionBean.selectedYear}"
+								style="width:200px;display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}">
+								<f:selectItems value="#{ManageExpenseChartActionBean.yearsList}" />
+								<p:ajax listener="#{ManageExpenseChartActionBean.updateChart}"
+									update=":expenseChartForm:chartPanel" />
+							</p:selectOneMenu>
 						</p:outputPanel>
+
 						<br />
 						<p:outputLabel id="selectedCategoryLabel"
 							style="margin-top: 50px;"
