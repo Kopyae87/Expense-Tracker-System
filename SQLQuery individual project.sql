@@ -1,4 +1,7 @@
 select * from dbo.ACCUSERS
+
+use [fnigp-acc];
+
 create table ExpenseUser(
 	id varchar(50) primary key,
 	user_name VARCHAR(100) NOT NULL,

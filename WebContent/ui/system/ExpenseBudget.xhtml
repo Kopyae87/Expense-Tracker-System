@@ -16,15 +16,15 @@
 					styleClass="ui-panelgrid-blank"
 					style="width: 100%; text-align:left;">
 
-					<p:panelGrid styleClass="ui-panelgrid-blank" id="branchPanelGroup">
+					<!-- <p:panelGrid styleClass="ui-panelgrid-blank" id="branchPanelGroup">
 						<div style="margin-top: -5px; margin-left: -5px;"
 							class="ui-g ui-fluid" id="branchPanelGroup">
 							<div class="ui-inputgroup ui-g-12 ui-lg-12 ui-lg-12">
 								<p:commandButton styleClass="green-button" icon="fa fa-search"
-									actionListener="#{ManageUserActionBean.selectBranch()}"
+									actionListener="#{Manage.selectBranch()}"
 									id="selectBranchDialogLink" process="@this">
 									<p:ajax event="dialogReturn"
-										listener="#{ManageUserActionBean.returnBranch}"
+										listener="#{ManageExpenseBudgetActionBean.returnBranch}"
 										update="branchId" />
 								</p:commandButton>
 								<p:inputText id="branchId"
@@ -35,49 +35,35 @@
 									process="@this" update="branchId" />
 							</div>
 						</div>
-					</p:panelGrid>
-					
-					<h:outputLabel for="category" value="Category: " />
-					<p:selectOneMenu id="category" style="width:80%;"
-						value="#{ManageExpenseActionBean.selectedCategoryId}"
-						required="true">
+					</p:panelGrid> -->
+
+					<h:outputLabel for="categorytype" value="Budget Category Type: " />
+					<p:selectOneMenu id="categorytype" style="width:80%;"
+						value="#{ManageExpenseBudgetActionBean.timevalue}" required="true">
 						<f:selectItem itemLabel="Select Category" itemValue=""
 							noSelectionOption="true" />
-						<f:selectItems value="#{ManageExpenseActionBean.categoryList}"
-							var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+						<f:selectItem itemLabel="Daily" itemValue="daily"
+							 />
+						<f:selectItem itemLabel="Monthly" itemValue="monthly"
+							/>
+						<f:selectItem itemLabel="Yearly" itemValue="yearly"
+							 />
 					</p:selectOneMenu>
 
-					<h:outputLabel for="expensedate" value="Expense Date: " />
+					<!-- <h:outputLabel for="expensedate" value="Expense Date: " />
 					<p:calendar id="expensedate" style="width:80%;"
 						maxdate="#{ManageExpenseActionBean.maxDate}"
 						value="#{ManageExpenseActionBean.currentExpense.expense_date}"
-						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar> -->
 
 					<h:outputLabel for="amount" value="Amount : " />
 					<p:inputText
-						value="#{ManageExpenseActionBean.currentExpense.amount}"
+						value="#{ManageExpenseBudgetActionBean.currentbudget.amountLimit}"
 						style="width:80%;">
 					</p:inputText>
 
-					<h:outputLabel for="paymenttype" value="Description : " />
-					<p:selectOneMenu id="paymenttype" style="width:80%;"
-						value="#{ManageExpenseActionBean.currentExpense.paymentType}"
-						required="true">
-						<f:selectItem itemLabel="Select Payment Method" itemValue=""
-							noSelectionOption="true" />
-						<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
-							var="p" itemLabel="#{p.label}" itemValue="#{p.label}" />
-					</p:selectOneMenu>
-
-					<h:outputLabel for="desc" value="Description : "
-						style="vertical-align: top;" />
-					<p:inputTextarea id="desc" style="width:95%;"
-						value="#{ManageExpenseActionBean.currentExpense.description}"
-						rows="5" cols="40" autoResize="true" maxlength="200" />
-					<!-- <h:outputText id="displayCounter" /> counter="displayCounter" counterTemplate="{0}characters."-->
-
 				</p:panelGrid>
-				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
+<!-- 				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
 					value="Save" process="addExpenseForm:addExpenseFormPanel"
 					update="addExpenseForm:addExpenseFormPanel :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{!ManageExpenseActionBean.iseditMode}"></p:commandButton>
@@ -87,7 +73,7 @@
 					rendered="#{ManageExpenseActionBean.iseditMode}"></p:commandButton>
 				<p:commandButton action="#{ManageExpenseActionBean.cancelExpense}"
 					value="Cancel" process="@form"
-					update="addExpenseForm:addExpenseFormPanel"></p:commandButton>
+					update="addExpenseForm:addExpenseFormPanel"></p:commandButton> -->
 				<!--  -->
 			</p:panel>
 		</h:form>
