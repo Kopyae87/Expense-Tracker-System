@@ -46,7 +46,7 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	private List<Category> categoryList;
 	private String userid;
 	private User currentUser;
-	private List<Object[]> results;
+	private LinkedHashMap<Integer, Integer> chosenTimeExpenses;
 
 	@PostConstruct
 	public void init() {
@@ -68,97 +68,133 @@ public class ManageExpenseChartActionBean extends BaseBean {
 
 	public void updateChart() {
 		if (selectedCategoryId == null || timeperiod == null || timeperiod.isEmpty()) {
-			createNewExpenseChart();;
+			createNewExpenseChart();
+			;
 			return;
 		}
 
 		if (selectedDate == null) {
 			selectedDate = new Date();
 		}
-		Map<Integer, Integer> daysExpenses = new LinkedHashMap<>();
+//		Map<Integer, Integer> daysExpenses = new LinkedHashMap<>();
+//		Map<Integer, Integer> monthsExpenses = new LinkedHashMap<>();
+
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(selectedDate);
+
 		System.out.println("timeperiod is: " + timeperiod);
+
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int year = calendar.get(Calendar.YEAR);
+
 		int daysOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		switch (timeperiod) {
-		case "DAILY":
-			results = expenseChartService.getDailyExpenses(selectedCategoryId, userid, month, year);
-			for(int i = 1; i <= daysOfMonth ; i++) {
-				daysExpenses.put(i, 0);
-			}
-			if (results != null) {
-				System.out.println("in the result loop " + results.size());
-				for (Object[] row : results) {
-					int day = ((Number)row[0]).intValue();
-					int amount = ((Number) row[1]).intValue();
-					daysExpenses.put(day, amount);
-				}
-			}	
-			break;
-		case "MONTHLY":
-			results = expenseChartService.getMonthlyExpenses(selectedCategoryId, userid, year);
-			break;
-		default:
-			results = expenseChartService.getYearlyExpenses(selectedCategoryId, userid);
-			break;
-		}
+		int monthsOfYear = 12;
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 		BarChartModel model = new BarChartModel();
-		ChartSeries series = new ChartSeries();
-		
-		for(Map.Entry<Integer, Integer> e : daysExpenses.entrySet()) {
-			series.set(String.valueOf(e.getKey()), e.getValue());
+
+		if ("All".equals(selectedCategoryId)) {
+			System.out.println("in All categories");
+			chosenTimeExpenses = accordingToPeriod(timeperiod, "All", userid, month, year, daysOfMonth,
+					monthsOfYear, currentYear);
+
+			ChartSeries series = new ChartSeries();
+			series.setLabel(cat.getName());
+
+			for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
+				series.set(String.valueOf(e.getKey()), e.getValue());
+			}
+
+			model.addSeries(series);
+
+		} else {
+			chosenTimeExpenses = accordingToPeriod(timeperiod, selectedCategoryId, userid, month, year, daysOfMonth,
+					monthsOfYear, currentYear);
+
+			ChartSeries series = new ChartSeries();
+			series.setLabel(selectedCategoryName + " (" + timeperiod + ")");
+
+			for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
+				series.set(String.valueOf(e.getKey()), e.getValue());
+			}
+
+			model.addSeries(series);
+		}
+		expenseChart = model;
+		expenseChart.setTitle("Expenses");
+		expenseChart.setLegendPosition("ne");
+		expenseChart.setAnimate(true);
+		expenseChart.setShowDatatip(true);
+		expenseChart.setStacked(false);
+	}
+
+	public LinkedHashMap<Integer, Integer> calculateActualLength(Map<Integer, Integer> map, List<Object[]> result,
+			int maxTimePeriod, String period) {
+
+		if ("DAILY".equals(period) || "MONTHLY".equals(period)) {
+			for (int i = 1; i <= maxTimePeriod; i++) {
+				map.put(i, 0);
+			}
+		} else if ("YEARLY".equals(period)) {
+			for (int i = (maxTimePeriod - 20); i <= maxTimePeriod; i++) { // for year must be mininum year is last 20
+																			// year up to
+				map.put(i, 0);
+			}
+		}
+		if (result != null) {
+			System.out.println("in the result loop " + result.size());
+			for (Object[] row : result) {
+				int currentChosenTime = ((Number) row[0]).intValue();
+				int amount = ((Number) row[1]).intValue();
+				map.put(currentChosenTime, amount);
+			}
 		}
 
-//		if (results != null) {
-//			System.out.println("in the result loop " + results.size());
-//			for (Object[] row : results) {
-//				System.out.println("This is "+ row[0].toString());
-//				series.set(row[0], ((Number) row[1]).intValue());
-//				
-//			}
-//		}
-		series.setLabel(selectedCategoryName + "(" + timeperiod + ")");
-		model.addSeries(series);
-		expenseChart = model;
-	    expenseChart.setTitle("Expenses");
-	    expenseChart.setLegendPosition("ne");
-	    expenseChart.setAnimate(true);
-	    expenseChart.setShowDatatip(true);
-	    expenseChart.setStacked(false);
+		return new LinkedHashMap<>(map);
 	}
-//	public void createTestChart() {
-//	    expenseChart = new BarChartModel();
-//
-//	    ChartSeries series1 = new ChartSeries();
-//	    series1.setLabel("Food");
-//	    series1.set("Jan", 120);
-//	    series1.set("Feb", 100);
-//	    series1.set("Mar", 140);
-//
-//	    ChartSeries series2 = new ChartSeries();
-//	    series2.setLabel("Transport");
-//	    series2.set("Jan", 80);
-//	    series2.set("Feb", 90);
-//	    series2.set("Mar", 70);
-//
-//	    expenseChart.addSeries(series1);
-//	    expenseChart.addSeries(series2);
-//
-//	    expenseChart.setTitle("Test Expenses");
-//	    expenseChart.setLegendPosition("ne");
-//	    expenseChart.setAnimate(true);
-//	    expenseChart.setShowDatatip(true);
-//	    expenseChart.setStacked(false);
-//	}
-	
-	public void selectCategory(String categoryId,String categoryName) {
-	    this.selectedCategoryId = categoryId;
-	    this.selectedCategoryName = categoryName;
-	    updateChart();
+
+	public LinkedHashMap<Integer, Integer> accordingToPeriod(String period, String selectedCategory, String userid,
+			int month, int year, int daysOfMonth, int monthsOfYear, int currentYear) {
+		Map<Integer, Integer> map = new LinkedHashMap<>();
+		List<Object[]> results = null;
+
+		switch (period) {
+		case "DAILY":
+			if (!selectedCategory.equals("All")) {
+				results = expenseChartService.getDailyExpenses(selectedCategory, userid, month, year);
+				return calculateActualLength(map, results, daysOfMonth, period);
+			} else if (selectedCategory.equals("All")) {
+				results = expenseChartService.getDailyExpensesOfAllCategories(selectedCategory, userid, month, year);
+				return calculateActualLength(map, results, daysOfMonth, period);
+			}
+
+		case "MONTHLY":
+			if (!selectedCategory.equals("All")) {
+				results = expenseChartService.getMonthlyExpenses(selectedCategory, userid, year);
+				return calculateActualLength(map, results, monthsOfYear, period);
+			} else if (selectedCategory.equals("All")) {
+				results = expenseChartService.getMonthlyExpensesOfAllCategories(selectedCategory, userid, month, year);
+				return calculateActualLength(map, results, daysOfMonth, period);
+			}
+		case "YEARLY":
+			if (!selectedCategory.equals("All")) {
+				results = expenseChartService.getYearlyExpenses(selectedCategory, userid);
+				return calculateActualLength(map, results, currentYear, period);
+			} else if (selectedCategory.equals("All")) {
+				results = expenseChartService.getYearlyExpensesOfAllCategories(selectedCategory, userid, month, year);
+				return calculateActualLength(map, results, daysOfMonth, period);
+			}
+		default:
+			return new LinkedHashMap<>();
+		}
+
 	}
-	
+
+	public void selectCategory(String categoryId, String categoryName) {
+		this.selectedCategoryId = categoryId;
+		this.selectedCategoryName = categoryName;
+		updateChart();
+	}
+
 	public BarChartModel getExpenseChart() {
 		return expenseChart;
 	}
@@ -214,5 +250,28 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	public void setSelectedCategoryName(String selectedCategoryName) {
 		this.selectedCategoryName = selectedCategoryName;
 	}
-
+//	public void createTestChart() {
+//    expenseChart = new BarChartModel();
+//
+//    ChartSeries series1 = new ChartSeries();
+//    series1.setLabel("Food");
+//    series1.set("Jan", 120);
+//    series1.set("Feb", 100);
+//    series1.set("Mar", 140);
+//
+//    ChartSeries series2 = new ChartSeries();
+//    series2.setLabel("Transport");
+//    series2.set("Jan", 80);
+//    series2.set("Feb", 90);
+//    series2.set("Mar", 70);
+//
+//    expenseChart.addSeries(series1);
+//    expenseChart.addSeries(series2);
+//
+//    expenseChart.setTitle("Test Expenses");
+//    expenseChart.setLegendPosition("ne");
+//    expenseChart.setAnimate(true);
+//    expenseChart.setShowDatatip(true);
+//    expenseChart.setStacked(false);
+//}
 }

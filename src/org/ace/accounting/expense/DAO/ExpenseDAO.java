@@ -22,7 +22,7 @@ public class ExpenseDAO extends BasicDAO implements IExpenseDAO{
 		try {
 			expense = em.merge(expense);
 			em.remove(expense);
-			em.flush();
+//			em.flush();
 			deletesuccess = true;
 		} catch (PersistenceException e) {
 			throw translate("Failed to delete expense", e);

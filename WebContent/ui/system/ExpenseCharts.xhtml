@@ -15,6 +15,12 @@
 				<h:outputText value="Categories"
 					style="font-weight:bold; margin-bottom:10px; display:block;" />
 				<!-- <h3>Categories</h3> -->
+				<p:commandButton value="All"
+						action="#{ManageExpenseChartActionBean.selectCategory('All','Allcategories')}"
+						process="@this"
+						update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel "
+						style="margin-bottom:8px; width:90%;"
+						styleClass="ui-panelgrid-blank ui-fluid" />
 				<ui:repeat value="#{ManageExpenseChartActionBean.categoryList}"
 					var="cat">
 					<p:commandButton value="#{cat.name}"
