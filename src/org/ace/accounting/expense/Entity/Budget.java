@@ -19,44 +19,50 @@ import org.ace.java.component.idgen.service.IDInterceptor;
 
 @Entity
 @Table(name = "Budget")
-@TableGenerator(name = "BUDGET_GEN", table = "ID_GEN" , pkColumnName = "GEN_NAME" , valueColumnName = "GEN_VAL" , pkColumnValue = "BUDGET_GEN" ,allocationSize = 10)
+@TableGenerator(name = "BUDGET_GEN", table = "ID_GEN", pkColumnName = "GEN_NAME", valueColumnName = "GEN_VAL", pkColumnValue = "BUDGET_GEN", allocationSize = 10)
 @EntityListeners(IDInterceptor.class)
 public class Budget {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "BUDGET_GEN")
 	private String id;
-	
-	@Column(name = "yearly", nullable = false)
-	private Integer yearly;
-	
-	@Column(name = "monthly")
-	private Integer monthly;
-	
-	@Column(name = "daily")
-	private Integer daily;
-	
-	@Column(name = "amount_limit", nullable = false)
-	private double amountLimit;
-	
+
+	@Column(name = "year_scope", nullable = false)
+	private Integer yearScope;
+
+	@Column(name = "yearly_limit")
+	private Double yearlyLimit;
+
+	@Column(name = "monthly_limit")
+	private Double monthlyLimit;
+
+//	@Column(name = "dailylimit")
+//	private Double dailyLimit;
+
+//	@Column(name = "amount_limit", nullable = false)
+//	private double amountLimit;
+
 	@ManyToOne
-	@JoinColumn(name = "category_id", nullable = true)
+	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
-	
+
 //	@ManyToOne
 //	@JoinColumn(name = "user_id", nullable = false)
 //	private ExpenseUser user;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
-	
+
+	@Column(name = "description")
+	private String description;
+
 	@Version
 	private int version;
-	
+
 	@Embedded
 	private BasicEntity basicEntity;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -65,28 +71,28 @@ public class Budget {
 		this.id = id;
 	}
 
-	public Integer getYearly() {
-		return yearly;
+	public Integer getYearScope() {
+		return yearScope;
 	}
 
-	public void setYearly(Integer yearly) {
-		this.yearly = yearly;
+	public void setYearScope(Integer yearScope) {
+		this.yearScope = yearScope;
 	}
 
-	public Integer getMonlthy() {
-		return getMonlthy();
+	public Double getYearlyLimit() {
+		return yearlyLimit;
 	}
 
-	public void setMonlthy(Integer monlthy) {
-		this.monthly = monlthy;
+	public void setYearlyLimit(Double yearlyLimit) {
+		this.yearlyLimit = yearlyLimit;
 	}
 
-	public double getAmountLimit() {
-		return amountLimit;
+	public Double getMonthlyLimit() {
+		return monthlyLimit;
 	}
 
-	public void setAmountLimit(double amountLimit) {
-		this.amountLimit = amountLimit;
+	public void setMonthlyLimit(Double monthlyLimit) {
+		this.monthlyLimit = monthlyLimit;
 	}
 
 	public int getVersion() {
@@ -105,22 +111,6 @@ public class Budget {
 		this.basicEntity = basicEntity;
 	}
 
-	public Integer getMonthly() {
-		return monthly;
-	}
-
-	public void setMonthly(Integer monthly) {
-		this.monthly = monthly;
-	}
-
-	public Integer getDaily() {
-		return daily;
-	}
-
-	public void setDaily(Integer daily) {
-		this.daily = daily;
-	}
-
 	public Category getCategory() {
 		return category;
 	}
@@ -137,6 +127,12 @@ public class Budget {
 		this.user = user;
 	}
 
-	
-	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 }

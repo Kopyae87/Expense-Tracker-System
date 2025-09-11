@@ -41,7 +41,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	public void init() {
 		currentUser = (User) getParam(ParamId.LOGIN_USER);
 		currenseUserId = currentUser.getId();
-		loadCategoryNames();
+		loadCategorys();
 		setMaxDate();
 		createNewExpense();
 		createNewExpenseList();
@@ -65,7 +65,7 @@ public class ManageExpenseActionBean extends BaseBean {
 		expenseList = expenseService.findAllExpense(currenseUserId);
 	}
 	
-	private void loadCategoryNames() {
+	private void loadCategorys() {
 		categoryList = expenseService.findAllCategory();
 		System.out.println("in get");
 		if (categoryList == null || categoryList.isEmpty()) {

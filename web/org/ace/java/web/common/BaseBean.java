@@ -17,7 +17,7 @@ import org.ace.java.component.SystemException;
 import org.primefaces.PrimeFaces;
 
 public class BaseBean {
-
+	
     /**
      *********************** Web Utilities *******************
      */
@@ -197,6 +197,11 @@ public class BaseBean {
          * getDialogOptions(800, 500, 100, 100), null);
          */
     }
+    
+    public void selectCategory() {
+    	PrimeFaces.current().dialog().openDynamic("openCategoryDialog", getDialogOptions(), null);
+    }
+    
     // select occupation
     public void selectOccupation() {
     	PrimeFaces.current().dialog().openDynamic(DialogId.OCCUPATION_DIALOG, getDialogOptions(), null);
