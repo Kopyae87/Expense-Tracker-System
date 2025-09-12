@@ -6,10 +6,18 @@ import org.ace.accounting.expense.Entity.Budget;
 
 public interface IExpenseBudgetDAO {
 
-	Budget findCategory(String id, String timevalue, String userid, Integer scope);
-
 	List<Budget> findAllBudgetsByUserId(String userid);
 
-	void saveBudget(Budget currentbudget, String timevalue);
+	void saveBudget(Budget currentbudget);
+
+	/*
+	 * Budget findBudget(String id, String timevalue, String userid, Integer scope);
+	 */
+
+	void updateBuget(Budget currentbudget);
+
+	void deleteBudget(Budget currentbudget);
+
+	Budget findBudget(Budget currentbudget);
 
 }

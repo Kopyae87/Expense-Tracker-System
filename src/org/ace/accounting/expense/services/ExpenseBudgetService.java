@@ -20,41 +20,55 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-	public boolean findCategory(String id, String timevalue, String userid, Integer scope) {
-		boolean exist = false;
-		try {
-			Budget b = expenseBudgetDAO.findCategory(id, timevalue, userid, scope);
-			if(b != null) {
-				exist = true;
-			}
-		} catch (DAOException e) {
-			// TODO: handle exception
-		}
-		return exist;
-	}
-
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public List<Budget> fineAllBudgets(String userid) {
-
 		try {
 			return expenseBudgetDAO.findAllBudgetsByUserId(userid);
 		} catch (DAOException e) {
-			// TODO: handle exception
 		}
 		return null;
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void saveBudget(Budget currentbudget, String timevalue) {
-		// TODO Auto-generated method stub
+	public void saveBudget(Budget currentbudget) {
 		try {
-			expenseBudgetDAO.saveBudget(currentbudget, timevalue);
+			expenseBudgetDAO.saveBudget(currentbudget);
+		} catch (DAOException e) {
+		}
+
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void updateBudget(Budget currentbudget) {
+		try {
+			expenseBudgetDAO.updateBuget(currentbudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
 		}
+		
+	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteBudget(Budget currentbudget) {
+		try {
+			expenseBudgetDAO.deleteBudget(currentbudget);
+		} catch (DAOException e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Budget findIndenticalBudget(Budget currentbudget) {
+		try {
+			return expenseBudgetDAO.findBudget(currentbudget);
+		} catch (DAOException e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

@@ -1,6 +1,8 @@
 package org.ace.accounting.web.system;
 
-import java.sql.Time;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,8 +13,6 @@ import javax.faces.bean.ViewScoped;
 import org.ace.accounting.expense.Entity.Budget;
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
-import org.ace.accounting.expense.Iservices.IExpenseService;
-import org.ace.accounting.system.branch.Branch;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
@@ -41,10 +41,10 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	private Budget currentbudget;
 	private boolean iseditMode;
 	private boolean showOverwriteDialog;
-	private double budgetAmount;
-	private int timescope;
+//	private double budgetAmount;
 	private String currentUserId;
 	private List<Budget> budgetsList;
+	private List<Integer> yearsScopeList;
 	private User user;
 
 	@PostConstruct
@@ -53,6 +53,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		setCurrentUserId(user.getId());
 		createNewBudget();
 		loadBudgets();
+		loadYearsAndMonthsList();
 		showOverwriteDialog = false;
 	}
 
@@ -61,35 +62,70 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	}
 
 	public void saveBudget() {
-		boolean isExist = expenseBudgetService.findCategory(currentbudget.getCategory().getId(), timevalue, currentUserId, timescope);
-		if (isExist) {
+		accordingToTimeValue();
+		currentbudget.setUser(user);
+		Budget existBudget = expenseBudgetService.findIndenticalBudget(currentbudget);
+		if (existBudget != null) {
+			currentbudget.setId(existBudget.getId());
 			PrimeFaces.current().executeScript("PF('overwriteDialog').show()");
 		} else {
 			actualSaveBudget();
 		}
 	}
 
-	public void updateBudget() {
+	public void loadYearsAndMonthsList() {
+		yearsScopeList = new ArrayList<>();
+		int currentyear = Calendar.getInstance().get(Calendar.YEAR);
+		for (int i = (currentyear - 24); i <= currentyear; i++) {
+			yearsScopeList.add(i);
+		}
+		for (int j = (currentyear + 1); j <= (currentyear + 24); j++) {
+			yearsScopeList.add(j);
+		}
+	}
 
+	public void updateBudget() {
+		expenseBudgetService.updateBudget(currentbudget);
+		resetForm();
+		timevalue = "";
+	}
+
+	public void deleteBudget(Budget budget) {
+		expenseBudgetService.deleteBudget(budget);
+
+		if (iseditMode && currentbudget.getId().equals(budget.getId())) {
+			cancelBudget();
+		}
+		loadBudgets();
+		System.out.println("delete succcessfully");
 	}
 
 	public void cancelBudget() {
 		resetForm();
 		iseditMode = false;
 	}
-	
+
 	public void openEditBudget(Budget b) {
 		this.currentbudget = b;
+		if(b.getYearScope() != null && b.getMonthScope() == null) {
+			timevalue = "yearly";
+		}else if(b.getMonthScope() != null && b.getYearScope() == null) {
+			timevalue = "monthly";
+		}else if(b.getMonthScope() != null && b.getYearScope() != null) {
+			timevalue = "both";
+		}
 		iseditMode = true;
 	}
-	
 
 	private void loadBudgets() {
+		budgetsList = new ArrayList<>();
 		budgetsList = expenseBudgetService.fineAllBudgets(currentUserId);
 	}
 
 	public void confirmOverwrite() {
-		actualSaveBudget();
+		expenseBudgetService.updateBudget(currentbudget);
+		loadBudgets();
+		resetForm();
 		showOverwriteDialog = false;
 	}
 
@@ -97,28 +133,26 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		showOverwriteDialog = false;
 	}
 
-	public void actualSaveBudget() {
-		System.out.println("in actual save method");
-		if("monthly".equals(timevalue)) {
-			currentbudget.setMonthlyLimit(budgetAmount);
-		}else if("yearly".equals(timevalue)) {
-			currentbudget.setYearlyLimit(budgetAmount);
-		}
-		currentbudget.setYearScope(timescope);
-		currentbudget.setUser(user);
-		expenseBudgetService.saveBudget(currentbudget, timevalue);
-		loadBudgets();
+	public void accordingToTimeValue() {
+		System.out.println("in actual save method1");
+//		if ("monthly".equals(timevalue)) {
+//			currentbudget.setMonthlyLimit(budgetAmount);
+//		} else if ("yearly".equals(timevalue)) {
+//			currentbudget.setYearlyLimit(budgetAmount);
+//		}
 	}
 
-	public void deleteBudget() {
-		
+	public void actualSaveBudget() {
+		expenseBudgetService.saveBudget(currentbudget);
+		loadBudgets();
+		resetForm();
 	}
-	
+
 	public void resetForm() {
 		createNewBudget();
 		timevalue = "";
 	}
-	
+
 	public void returnCategory(SelectEvent event) {
 		Category cat = (Category) event.getObject();
 		currentbudget.setCategory(cat);
@@ -156,13 +190,13 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		this.showOverwriteDialog = showOverwriteDialog;
 	}
 
-	public double getBudgetAmount() {
-		return budgetAmount;
-	}
-
-	public void setBudgetAmount(double budgetAmount) {
-		this.budgetAmount = budgetAmount;
-	}
+//	public double getBudgetAmount() {
+//		return budgetAmount;
+//	}
+//
+//	public void setBudgetAmount(double budgetAmount) {
+//		this.budgetAmount = budgetAmount;
+//	}
 
 	public String getCurrentUserId() {
 		return currentUserId;
@@ -188,12 +222,17 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		this.showOverwriteDialog = showOverwriteDialog;
 	}
 
-	public int getTimescope() {
-		return timescope;
+	public List<Integer> getYearsScopeList() {
+		return yearsScopeList;
 	}
 
-	public void setTimescope(int timescope) {
-		this.timescope = timescope;
+	public void setYearsScopeList(List<Integer> yearsScopeList) {
+		this.yearsScopeList = yearsScopeList;
+	}
+
+	
+	public Month[] getMonths() {
+		return Month.values();
 	}
 
 }

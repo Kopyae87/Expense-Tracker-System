@@ -6,10 +6,14 @@ import org.ace.accounting.expense.Entity.Budget;
 
 public interface IExpenseBudgetService {
 
-	boolean findCategory(String id, String timevalue, String currentUserId, Integer integer);
-
-	void saveBudget(Budget currentbudget, String timevalue);
-
 	List<Budget> fineAllBudgets(String userid);
+
+	void updateBudget(Budget currentbudget);
+
+	void deleteBudget(Budget currentbudget);
+
+	void saveBudget(Budget currentbudget);
+
+	Budget findIndenticalBudget(Budget currentbudget);
 
 }

@@ -36,11 +36,8 @@ public class Budget {
 	@Column(name = "monthly_limit")
 	private Double monthlyLimit;
 
-//	@Column(name = "dailylimit")
-//	private Double dailyLimit;
-
-//	@Column(name = "amount_limit", nullable = false)
-//	private double amountLimit;
+	@Column(name = "month_scope")
+	private Integer monthScope;
 
 	@ManyToOne
 	@JoinColumn(name = "category_id", nullable = false)
@@ -134,5 +131,15 @@ public class Budget {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public Integer getMonthScope() {
+		return monthScope;
+	}
+
+	public void setMonthScope(Integer monthScope) {
+		this.monthScope = monthScope;
+	}
+	
+	
 
 }
