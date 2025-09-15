@@ -8,45 +8,104 @@
 		<h:form id="enquiryExpenseForm">
 			<p:growl globalOnly="true" escape="false" life="3000"
 				showDetail="true"></p:growl>
-			<p:panel id="enquiryExpenseFormPanel">
+			<p:panel id="enquiryExpenseFormPanel"
+				style="width: 70%;margin: 0 auto;">
 				<p:panelGrid columns="2" columnClasses="ui-grid-col-6,ui-grid-col-6"
 					styleClass="ui-panelgrid-blank"
-					style="width: 100%; text-align:left;">
+					style="width: 100%; text-align:left;margin-bottom: 20px">
 
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="categoryPanelGroup" value="Category: " />
+						<p:panelGrid styleClass="ui-panelgrid-blank"
+							id="categoryPanelGroup">
+							<div style="margin-top: -5px; margin-left: -5px;"
+								id="categoryPanelGroup">
+								<div class="ui-inputgroup ui-g-12 ui-lg-12 ui-lg-12">
+									<p:commandButton styleClass="green-button" icon="fa fa-search"
+										actionListener="#{ManageEnquiryExpenseActionBean.selectCategory()}"
+										id="selectCategoryDialogLink" process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{ManageEnquiryExpenseActionBean.returnCategory}"
+											update="categoryId" />
+									</p:commandButton>
+									<p:inputText id="categoryId"
+										value="#{ManageEnquiryExpenseActionBean.categoryId == null ? '' : ManageEnquiryExpenseActionBean.category.name}"
+										readonly="true" style="width: 40%" />
+									<p:commandButton styleClass="red-button" icon="fa fa-times"
+										action="#{ManageEnquiryExpenseActionBean.setCategoryId(null)}"
+										process="@this" update="categoryId" />
+								</div>
+							</div>
+						</p:panelGrid>
+					</p:panelGrid>
 
-					<h:outputLabel for="category" value="Category: " />
-					<p:selectOneMenu id="category" style="width:80%;"
-						value="#{ManageEnquiryExpenseActionBean.categoryId}">
-						<f:selectItem itemLabel="Select Category" itemValue=""
-							noSelectionOption="true" />
-						<f:selectItems
-							value="#{ManageEnquiryExpenseActionBean.categoryList}" var="cat"
-							itemLabel="#{cat.name}" itemValue="#{cat.id}" />
-					</p:selectOneMenu>
+					<!-- 					<p:panelGrid id="scopePanel" columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank " style="width: 100%;">
+						<h:outputLabel for="scope" value="Time Scope:" />
+						<p:panelGrid columns="2"
+							columnClasses="ui-grid-col-6,ui-grid-col-6" style="width: 100%;">
+							<p:selectOneMenu style="width:50%;"
+								value="#{ManageExpenseBudgetActionBean.currentbudget.yearScope}">
+								<f:selectItem itemLabel="Select Year" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems
+									value="#{ManageExpenseBudgetActionBean.yearsScopeList}"
+									var="scope" itemLabel="#{scope}" itemValue="#{scope}" />
+								<p:ajax update=""></p:ajax>
+							</p:selectOneMenu>
+							<p:outputPanel id="scopeWrapper">
+								<p:outputPanel id="monthPanel" layout="block"
+									rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}">
+									<p:selectOneMenu id="monthSelect"
+										value="#{ManageExpenseBudgetActionBean.currentbudget.monthScope}">
+										<f:selectItem itemLabel="Select Month" itemValue=""
+											noSelectionOption="true" />
+										<f:selectItems value="#{ManageExpenseBudgetActionBean.months}"
+											var="scope" itemLabel="#{scope}" itemValue="#{scope.value}" />
+										<p:ajax update=":addExpenseBudgetForm:budgetAmountWrapper"></p:ajax>
+									</p:selectOneMenu>
+								</p:outputPanel>
+							</p:outputPanel>
+						</p:panelGrid>
+					</p:panelGrid> -->
 
-					<h:outputLabel for="startdate" value="Start Date: " />
-					<p:calendar id="startdate" style="width:80%;"
-						value="#{ManageEnquiryExpenseActionBean.startDate}"
-						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="startdate" value="Start Date: " />
+						<p:datePicker id="startdate" style="width:80%;"
+							value="#{ManageEnquiryExpenseActionBean.startDate}"
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
+					</p:panelGrid>
 
-					<h:outputLabel for="enddate" value="End Date: " />
-					<p:calendar id="enddate" style="width:80%;"
-						value="#{ManageEnquiryExpenseActionBean.endDate}"
-						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="enddate" value="End Date: " />
+						<p:datePicker id="enddate" style="width:80%;" readonlyInput="true" showButtonBar="true"
+							value="#{ManageEnquiryExpenseActionBean.endDate}"
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
+					</p:panelGrid>
 
-					<h:outputLabel for="paymenttype" value="Description : " />
-					<p:selectOneMenu id="paymenttype" style="width:80%;"
-						value="#{ManageEnquiryExpenseActionBean.paymentType}"
-						>
-						<f:selectItem itemLabel="Select Payment Method" itemValue=""
-							noSelectionOption="true" />
-						<f:selectItems
-							value="#{ManageEnquiryExpenseActionBean.paymentTypes}" var="p"
-							itemLabel="#{p.label}" itemValue="#{p.label}" />
-					</p:selectOneMenu>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="paymenttype" value="Payment Type: " />
+						<p:selectOneMenu id="paymenttype" style="width:50%;"
+							value="#{ManageEnquiryExpenseActionBean.paymentType}">
+							<f:selectItem itemLabel="Select Payment Method" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems
+								value="#{ManageEnquiryExpenseActionBean.paymentTypes}" var="p"
+								itemLabel="#{p.label}" itemValue="#{p.label}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
 
 				</p:panelGrid>
-				<p:panelGrid>
+				<p:panelGrid style="">
 					<p:commandButton value="Search"
 						action="#{ManageEnquiryExpenseActionBean.search}" process="@form"
 						update=":allExpenseTableForm:allExpenseTablePanel "></p:commandButton>
@@ -60,7 +119,11 @@
 			<p:panel id="allExpenseTablePanel">
 				<p:dataTable id="allExpenseTable" widgetVar="allExpenseTableWidget"
 					value="#{ManageEnquiryExpenseActionBean.expenseList}" var="expense"
-					rowKey="#{expense.id}" border="4" style="width:100%;border: black;">
+					paginator="true"
+					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
+					paginatorPosition="top" rowKey="#{expense.id}" border="4" rows="10"
+					style="width:100%;border: black;">
 
 					<p:column headerText="Category">
 						<h:outputText
@@ -86,13 +149,10 @@
 					</p:column>
 
 					<p:column headerText="Actions">
-						<p:commandButton value="Edit"
-						
-							process="@this"></p:commandButton>
-						<!-- </p:column>
-					<p:column> -->
+						<p:commandButton value="Edit" process="@this"></p:commandButton>
 						<p:commandButton value="Delete"
-						
+							action="#{ManageEnquiryExpenseActionBean.deleteExpense(expense)}"
+							update=":allExpenseTableForm:allExpenseTablePanel"
 							oncomplete="PF('recentExpenseTableWidget').clearFilters();"
 							process="@this">
 							<p:confirm header="Confirmation"

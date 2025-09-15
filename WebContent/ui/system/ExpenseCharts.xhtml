@@ -9,7 +9,6 @@
 			columnClasses="ui-grid-col-3,ui-grid-col-9"
 			style="width:100%; gap:14px;">
 
-			<!-- Categories Form -->
 			<h:form id="expenseCategoriesForm"
 				style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 340px;">
 				<h:outputText value="Categories"
@@ -39,7 +38,6 @@
 					style="padding-left:10px; width:100%; justify-content:center;"
 					styleClass="ui-panelgrid-blank">
 
-					<!-- Time period dropdown -->
 					<p:panelGrid
 						style="margin-bottom:20px; border:none; background:none;">
 						<h:outputLabel value="View: " style="margin-bottom:5px;" />
@@ -76,8 +74,9 @@
 							</p:datePicker>
 						</p:outputPanel> -->
 						<p:outputPanel id="datePickers">
-
-							<!-- DAILY: pick month + year -->
+							
+							<!-- pick month and year-->
+							<p:outputLabel value="Range: "/>
 							<p:datePicker id="dayPicker"
 								value="#{ManageExpenseChartActionBean.selectedDate}"
 								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
@@ -87,14 +86,7 @@
 									update=":expenseChartForm:chartPanel" />
 							</p:datePicker>
 
-							<!-- <p:datePicker id="monthPicker"
-								value="#{ManageExpenseChartActionBean.selectedDate}"
-								style="width:200px;display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}"
-								view="month" dateFormat="yyyy"  showIcon="true" pattern="yyyy">
-								<p:ajax 
-									listener="#{ManageExpenseChartActionBean.updateChart}"
-									update=":expenseChartForm:chartPanel" />
-							</p:datePicker> -->
+							<!-- pick year -->
 							<p:selectOneMenu id="monthPicker"
 								value="#{ManageExpenseChartActionBean.selectedYear}"
 								style="width:200px;display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}">

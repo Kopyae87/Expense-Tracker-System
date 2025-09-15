@@ -85,7 +85,6 @@ public class ExpenseDAO extends BasicDAO implements IExpenseDAO{
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public Boolean updateExpense(Expense currentExpense) {
-		// TODO Auto-generated method stub
 		try {
 			em.merge(currentExpense);
 		} catch (PersistenceException e) {
@@ -93,6 +92,20 @@ public class ExpenseDAO extends BasicDAO implements IExpenseDAO{
 			throw translate("Failed to update Expense", e);
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Expense> findLatestTenExpenses(String userid) {
+		List<Expense> expenseList = null;
+		try {
+			TypedQuery<Expense> q = em.createQuery("select e from Expense e where e.user.id = :userid order by e.basicEntity.createdDate desc",Expense.class);
+			q.setParameter("userid", userid);
+			expenseList = q.setMaxResults(10).getResultList();
+		} catch (PersistenceException e) {
+			throw translate("Failed to update Expense", e);
+		}
+		return expenseList;
 	}
 
 	

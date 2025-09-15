@@ -18,4 +18,6 @@ public interface IExpenseService {
 	public List<Expense> findAllExpense(String userid);
 
 	public Boolean updateExpense(Expense currentexpense);
+
+	List<Expense> findLatestTenExpenses(String userid);
 }

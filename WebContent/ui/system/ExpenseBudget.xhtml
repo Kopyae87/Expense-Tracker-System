@@ -16,13 +16,13 @@
 					style="width: 100%; text-align:left;">
 
 					<p:panelGrid columns="2"
-						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						columnClasses="ui-grid-col-2,ui-grid-col-10"
 						styleClass="ui-panelgrid-blank"
-						style="width: 100%; text-align:left;">
+						style="width: 100%;">
 						<h:outputLabel for="categoryPanelGroup" value="Category Type: " />
 						<p:panelGrid styleClass="ui-panelgrid-blank"
 							id="categoryPanelGroup">
-							<div style="margin-top: -5px; margin-left: -5px;"
+							<div style="margin-top: -5px;"
 								class="ui-g ui-fluid" id="categoryPanelGroup">
 								<div class="ui-inputgroup ui-g-12 ui-lg-12 ui-lg-12">
 									<p:commandButton styleClass="green-button" icon="fa fa-search"
@@ -44,9 +44,9 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
-						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						columnClasses="ui-grid-col-2,ui-grid-col-10"
 						styleClass="ui-panelgrid-blank"
-						style="width: 100%; text-align:left;">
+						style="width: 100%;">
 						<h:outputLabel for="period" value="Period:" />
 						<p:selectOneMenu id="period" style="width:80%;"
 							value="#{ManageExpenseBudgetActionBean.timevalue}"
@@ -65,7 +65,7 @@
 					<p:panelGrid columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank"
-						style="width: 100%; text-align:left;">
+						style="width: 100%;">
 						<h:outputLabel for="desc" value="Description:" />
 						<p:inputTextarea id="desc" style="width:95%;"
 							value="#{ManageExpenseBudgetActionBean.currentbudget.description}"
@@ -75,7 +75,7 @@
 					<p:panelGrid id="scopePanel" columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank "
-						style="width: 100%; text-align:left;">
+						style="width: 100%;">
 						<h:outputLabel for="scope" value="Time Scope:" />
 						<p:panelGrid columns="2"
 							columnClasses="ui-grid-col-6,ui-grid-col-6" style="width: 100%;">

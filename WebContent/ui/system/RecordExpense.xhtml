@@ -9,15 +9,15 @@
 			<p:growl escape="false" globalOnly="true" life="5000"
 				showDetail="true" />
 			<p:panel id="addExpenseFormPanel"
-				style="margin: 0 auto; width: 60%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
+				style="margin: 0 auto; width: 70%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
 				<h4 style="margin: 0px">Add Expense</h4>
-				<p:panelGrid columns="4"
-					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4,"
+				<p:panelGrid columns="2"
+					columnClasses="ui-grid-col-6,ui-grid-col-6,"
 					styleClass="ui-panelgrid-blank"
 					style="width: 100%; text-align:left;">
 
 
-					<h:outputLabel for="category" value="Category: " />
+					<!-- 		<h:outputLabel for="category" value="Category: " />
 					<p:selectOneMenu id="category" style="width:80%;"
 						value="#{ManageExpenseActionBean.selectedCategoryId}"
 						required="true">
@@ -25,35 +25,78 @@
 							noSelectionOption="true" />
 						<f:selectItems value="#{ManageExpenseActionBean.categoryList}"
 							var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
-					</p:selectOneMenu>
+					</p:selectOneMenu> -->
 
-					<h:outputLabel for="expensedate" value="Expense Date: " />
-					<p:calendar id="expensedate" style="width:80%;"
-						maxdate="#{ManageExpenseActionBean.maxDate}"
-						value="#{ManageExpenseActionBean.currentExpense.expense_date}"
-						pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="categoryPanelGroup" value="Category: " />
+						<p:panelGrid styleClass="ui-panelgrid-blank"
+							id="categoryPanelGroup">
+							<div style="margin-top: -5px; margin-left: -5px;"
+								id="categoryPanelGroup">
+								<div class="ui-inputgroup ui-g-12 ui-lg-12 ui-lg-12">
+									<p:commandButton styleClass="green-button" icon="fa fa-search"
+										actionListener="#{ManageExpenseActionBean.selectCategory()}"
+										id="selectCategoryDialogLink" process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{ManageExpenseActionBean.returnCategory}"
+											update="categoryId" />
+									</p:commandButton>
+									<p:inputText id="categoryId"
+										value="#{ManageExpenseActionBean.selectedCategoryId == null ? '' : ManageExpenseActionBean.category.name}"
+										readonly="true" style="width: 40%" />
+									<p:commandButton styleClass="red-button" icon="fa fa-times"
+										action="#{ManageExpenseActionBean.clearSelectedCategory()}"
+										process="@this" update="categoryId" />
+								</div>
+							</div>
+						</p:panelGrid>
+					</p:panelGrid>
 
-					<h:outputLabel for="amount" value="Amount : " />
-					<p:inputText
-						value="#{ManageExpenseActionBean.currentExpense.amount}"
-						style="width:80%;">
-					</p:inputText>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="expensedate" value="Expense Date: " />
+						<p:datePicker id="expensedate" style="width: 60%"
+							maxdate="#{ManageExpenseActionBean.maxDate}"
+							value="#{ManageExpenseActionBean.currentExpense.expense_date}"
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker> 
+					</p:panelGrid>
 
-					<h:outputLabel for="paymenttype" value="Description : " />
-					<p:selectOneMenu id="paymenttype" style="width:80%;"
-						value="#{ManageExpenseActionBean.currentExpense.paymentType}"
-						required="true">
-						<f:selectItem itemLabel="Select Payment Method" itemValue=""
-							noSelectionOption="true" />
-						<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
-							var="p" itemLabel="#{p.label}" itemValue="#{p.label}" />
-					</p:selectOneMenu>
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="amount" value="Amount : " />
+						<p:inputText
+							value="#{ManageExpenseActionBean.currentExpense.amount}"
+							style="width: 60%">
+						</p:inputText>
+					</p:panelGrid>
 
-					<h:outputLabel for="desc" value="Description : "
-						style="vertical-align: top;" />
-					<p:inputTextarea id="desc" style="width:95%;"
-						value="#{ManageExpenseActionBean.currentExpense.description}"
-						rows="5" cols="40" autoResize="true" maxlength="200" />
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="paymenttype" value="PaymentType: " />
+						<p:selectOneMenu id="paymenttype" style="width: 60%"
+							value="#{ManageExpenseActionBean.currentExpense.paymentType}"
+							required="true">
+							<f:selectItem itemLabel="Select Payment Method" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
+								var="p" itemLabel="#{p.label}" itemValue="#{p.label}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2"
+						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						styleClass="ui-panelgrid-blank" style="width: 100%;">
+						<h:outputLabel for="desc" value="Description : "
+							style="vertical-align: top;" />
+						<p:inputTextarea id="desc" style="width: 60%"
+							value="#{ManageExpenseActionBean.currentExpense.description}"
+							rows="5" cols="40" autoResize="true" maxlength="200" />
+					</p:panelGrid>
 					<!-- <h:outputText id="displayCounter" /> counter="displayCounter" counterTemplate="{0}characters."-->
 
 				</p:panelGrid>

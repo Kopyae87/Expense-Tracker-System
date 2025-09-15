@@ -49,6 +49,7 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	private List<Category> categoryList;
 	private String userid;
 	private User currentUser;
+	private Map<String, String> colorsMap;
 //	private LinkedHashMap<Integer, Integer> chosenTimeExpenses;
 
 	@PostConstruct
@@ -60,13 +61,15 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		loadYearsList();
 		selectedYear = Calendar.getInstance().get(Calendar.YEAR);
 //		createTestChart();
-//		selectedDate = new Date();
+		defaultStartView();
+		setColorsForEachCategory();
+		updateChart();
 	}
-	
+
 	public void loadYearsList() {
 		int currentyear = Calendar.getInstance().get(Calendar.YEAR);
 		yearsList = new ArrayList<>();
-		for(int i = (currentyear - 20);i <= currentyear; i++) {
+		for (int i = (currentyear - 20); i <= currentyear; i++) {
 			yearsList.add(i);
 		}
 	}
@@ -80,18 +83,19 @@ public class ManageExpenseChartActionBean extends BaseBean {
 	}
 
 	public void updateChart() {
-		if (selectedCategoryId == null || timeperiod == null || timeperiod.isEmpty()) {
-			createNewExpenseChart();
-			return;
-		}
-
+		BarChartModel model = new BarChartModel();
 		Calendar calendar = Calendar.getInstance();
+		
+//		if (selectedCategoryId == null || timeperiod == null || timeperiod.isEmpty()) {
+//			createNewExpenseChart();
+//			return;
+//		}
 
 		if (selectedDate != null) {
-		    calendar.setTime(selectedDate);
+			calendar.setTime(selectedDate);
 		} else {
-		    System.out.println("selectedDate is null → using today");
-		    selectedDate = new Date();
+			System.out.println("selectedDate is null → using today");
+			selectedDate = new Date();
 		}
 
 //		Map<Integer, Integer> daysExpenses = new LinkedHashMap<>();
@@ -101,31 +105,42 @@ public class ManageExpenseChartActionBean extends BaseBean {
 
 		int month = calendar.get(Calendar.MONTH) + 1;
 		int year = calendar.get(Calendar.YEAR);
-
 		int daysOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int monthsOfYear = 12;
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+		System.out.println("month" + month + "year" + year + "daysofmonth" + daysOfMonth + "monthsofyear" + monthsOfYear
+				+ "currentyear" + currentYear);
 		
-		System.out.println("month" + month + "year" + year + "daysofmonth"+ daysOfMonth +"monthsofyear"+ monthsOfYear +"currentyear" + currentYear);
-		BarChartModel model = new BarChartModel();
-		
+
 		if ("All".equals(selectedCategoryId)) {
+			
+
 			for (Category cat : categoryList) {
 				System.out.println("in All categories");
-				LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, cat.getId(), userid, month, year, daysOfMonth, monthsOfYear, currentYear);
-				
+				LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, cat.getId(), userid,
+						month, year, daysOfMonth, monthsOfYear, currentYear);
+
 				ChartSeries series = new ChartSeries();
 				series.setLabel(cat.getName());
-				
+
 				for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
 					series.set(String.valueOf(e.getKey()), e.getValue());
 				}
-
 				model.addSeries(series);
+				
 			}
+			
+			model.setStacked(true);
+			/* setting color for each categories */
+			List<String> colors = new ArrayList<>();
+			for(Category c:categoryList) {
+				colors.add(colorsMap.get(c.getId()));
+			}
+			model.setSeriesColors(String.join(",", colors));
 		} else {
-			LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, selectedCategoryId, userid, month,
-					year, daysOfMonth, monthsOfYear, currentYear);
+			LinkedHashMap<Integer, Integer> chosenTimeExpenses = accordingToPeriod(timeperiod, selectedCategoryId,
+					userid, month, year, daysOfMonth, monthsOfYear, currentYear);
 
 			ChartSeries series = new ChartSeries();
 			series.setLabel(selectedCategoryName + " (" + timeperiod + ")");
@@ -133,18 +148,22 @@ public class ManageExpenseChartActionBean extends BaseBean {
 			for (Map.Entry<Integer, Integer> e : chosenTimeExpenses.entrySet()) {
 				series.set(String.valueOf(e.getKey()), e.getValue());
 			}
-
-			model.addSeries(series);
 			
+			model.addSeries(series);
+			String color = "0000FF"; // fallback
+			if (colorsMap != null && colorsMap.containsKey(selectedCategoryId)) {
+				color = colorsMap.get(selectedCategoryId);
+			}
+			model.setSeriesColors(color);
 		}
 		expenseChart = model;
 		expenseChart.setTitle("Expenses");
 		expenseChart.setLegendPosition("ne");
 		expenseChart.setAnimate(true);
 		expenseChart.setShowDatatip(true);
-		expenseChart.setStacked(true);
 //		expenseChart.setShowPointLabels(true);
 		expenseChart.setBarWidth(15);
+
 	}
 
 	public LinkedHashMap<Integer, Integer> calculateActualLength(Map<Integer, Integer> map, List<Object[]> result,
@@ -155,7 +174,8 @@ public class ManageExpenseChartActionBean extends BaseBean {
 				map.put(i, 0);
 			}
 		} else if ("YEARLY".equals(period)) {
-			for (int i = (maxTimePeriod - 20); i <= maxTimePeriod; i++) { // for year must be mininum year is last 20 year up to
+			for (int i = (maxTimePeriod - 20); i <= maxTimePeriod; i++) { // for year must be mininum year is last 20
+																			// year up to
 				map.put(i, 0);
 			}
 		}
@@ -171,8 +191,8 @@ public class ManageExpenseChartActionBean extends BaseBean {
 		return new LinkedHashMap<>(map);
 	}
 
-	public LinkedHashMap<Integer, Integer> accordingToPeriod(String period, String selectedCategory, String userid, int month,
-			int year, int daysOfMonth, int monthsOfYear, int currentYear) {
+	public LinkedHashMap<Integer, Integer> accordingToPeriod(String period, String selectedCategory, String userid,
+			int month, int year, int daysOfMonth, int monthsOfYear, int currentYear) {
 		Map<Integer, Integer> map = new LinkedHashMap<>();
 		List<Object[]> results = null;
 
@@ -196,10 +216,39 @@ public class ManageExpenseChartActionBean extends BaseBean {
 
 	}
 
+	public void defaultStartView() {
+	    selectedCategoryId = "All";
+	    selectedCategoryName = "All Categories";
+	    timeperiod = "DAILY";
+	    selectedDate = new Date();
+	}
+	
 	public void selectCategory(String categoryId, String categoryName) {
 		this.selectedCategoryId = categoryId;
 		this.selectedCategoryName = categoryName;
 		updateChart();
+	}
+
+	public void setColorsForEachCategory() {
+		colorsMap = new LinkedHashMap<>();
+		int i = 0;
+		/*
+		 * no need to set '#' in front of color code, BarchartModel dont recognize when
+		 * start with '#'
+		 */
+		String[] palette = { "FF6384", // pink/red
+				"36A2EB", // blue
+				"9966FF", // purple
+				"FFCE56", // yellow
+				"FF9F40", // orange
+				"2ecc71", // green
+				"e74c3c" // dark red
+		};
+		for (Category c : categoryList) {
+			String color = palette[i % palette.length];
+			colorsMap.put(c.getId(), color);
+			i++;
+		}
 	}
 
 	public BarChartModel getExpenseChart() {

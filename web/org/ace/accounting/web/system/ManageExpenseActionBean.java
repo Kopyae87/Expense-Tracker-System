@@ -14,6 +14,7 @@ import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "ManageExpenseActionBean")
 @ViewScoped
@@ -36,6 +37,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	private User currentUser;
 	private Category cat;
 	private Boolean iseditMode;
+	private Category category;
 
 	@PostConstruct
 	public void init() {
@@ -62,7 +64,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 	
 	public void loadExpenses() {
-		expenseList = expenseService.findAllExpense(currenseUserId);
+		expenseList = expenseService.findLatestTenExpenses(currenseUserId);
 	}
 	
 	private void loadCategorys() {
@@ -83,6 +85,11 @@ public class ManageExpenseActionBean extends BaseBean {
 		}
 		categoryList = expenseService.findAllCategory();
 	}
+	
+	public void returnCategory(SelectEvent event) {
+		category = (Category) event.getObject();
+		selectedCategoryId = category.getId();
+	}
 
 	public void saveExpense() {
 		System.out.println("in the save Expense");
@@ -95,9 +102,7 @@ public class ManageExpenseActionBean extends BaseBean {
 		currentexpense.setUser(currentUser);
 		currentexpense.setCategory(cat);
 		expenseService.saveExpense(currentexpense);
-		createNewExpense();
-		loadExpenses();
-		selectedCategoryId = "";
+		resetForm();
 	}
 
 	public void updateExpense() {
@@ -109,6 +114,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	    }
 		currentexpense.setCategory(cat);
 		expenseService.updateExpense(currentexpense);
+		loadExpenses();
 		cancelExpense();
 	}
 
@@ -123,7 +129,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 
 	public void cancelExpense() {
-		selectedCategoryId = "";
+		selectedCategoryId = null;
 		createNewExpense();
 		iseditMode = false;
 	}
@@ -139,7 +145,8 @@ public class ManageExpenseActionBean extends BaseBean {
 			if(iseditMode && currentexpense.getId().equals(expense.getId())) {
 				cancelExpense();
 			}
-			expenseList = expenseService.findAllExpense(currenseUserId);
+			//expenseList = expenseService.findAllExpense(currenseUserId);
+			loadExpenses();
 			System.out.println("delete succcessfully");
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -156,12 +163,23 @@ public class ManageExpenseActionBean extends BaseBean {
 	    if (expense.getCategory() != null && expense.getCategory().getId() != null) {
 	        selectedCategoryId = expense.getCategory().getId();
 	    } else {
-	        selectedCategoryId = ""; // no category selected
+	        selectedCategoryId = null; // no category selected
 	        addErrorMessage("This expense has no category. Please select one.");
 	    }
 	    iseditMode = true;
 	}
 
+	public void resetForm() {
+		createNewExpense();
+		loadExpenses();
+		selectedCategoryId = null;
+	}
+	
+	public void clearSelectedCategory() {
+		selectedCategoryId = null;
+		category = null;
+	}
+	
 	public List<Expense> getAllExpenses() {
 		return expenseList;
 	}
@@ -260,6 +278,22 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
+	}
+
+	public static String getCurrenseUserId() {
+		return currenseUserId;
+	}
+
+	public static void setCurrenseUserId(String currenseUserId) {
+		ManageExpenseActionBean.currenseUserId = currenseUserId;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	
 	

@@ -22,31 +22,31 @@ public class EnquiryExpenseDAO extends BasicDAO implements IEnquiryExpenseDAO{
 		List<Expense> list = null;
 		try {
 			
-			Map<String, Object> paramMap = new HashMap<>();
+			Map<String, Object> params = new HashMap<>();
 			StringBuffer str = new StringBuffer();
 			str.append("select e from Expense e where e.user.id = :userid");
-			paramMap.put("userid", userid);
+			params.put("userid", userid);
 			
 			if(startDate != null) {
 				System.out.println("in 1");
 				str.append(" and e.expenseDate >= :startDate");
-				paramMap.put("startDate", startDate);
+				params.put("startDate", startDate);
 			}
 			if(endDate != null) {
 				System.out.println("in 2");
 				str.append(" and e.expenseDate <= :endDate");
-				paramMap.put("endDate", endDate);
+				params.put("endDate", endDate);
 			}
 			if(categoryId != null && !categoryId.isEmpty()) {
 				System.out.println("in 3");
 				str.append(" and e.category.id = :categoryId");
-				paramMap.put("categoryId", categoryId);
+				params.put("categoryId", categoryId);
 			}
 			if(paymentType != null && !paymentType.isEmpty()) {
 				System.out.println("searching with paymenttype " + paymentType);
 				paymentType = paymentType.trim();
 				str.append(" and e.paymentType = :paymentType");
-				paramMap.put("paymentType", paymentType);
+				params.put("paymentType", paymentType);
 			}
 			System.out.println("Searching Expenses:");
 			System.out.println("CategoryId: " + categoryId);
@@ -55,7 +55,7 @@ public class EnquiryExpenseDAO extends BasicDAO implements IEnquiryExpenseDAO{
 			System.out.println("EndDate: " + endDate);
 			
 			TypedQuery<Expense> q = em.createQuery(str.toString(), Expense.class);			
-			for(Map.Entry<String, Object> m : paramMap.entrySet()) {
+			for(Map.Entry<String, Object> m : params.entrySet()) {
 				q.setParameter(m.getKey(), m.getValue());
 			}
 			list = q.getResultList();

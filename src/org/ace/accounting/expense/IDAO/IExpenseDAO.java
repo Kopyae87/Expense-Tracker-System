@@ -18,4 +18,6 @@ public interface IExpenseDAO {
 	public List<Expense> findAllExpense(String userid);
 
 	public Boolean updateExpense(Expense currentExpense);
+
+	public List<Expense> findLatestTenExpenses(String userid);
 }

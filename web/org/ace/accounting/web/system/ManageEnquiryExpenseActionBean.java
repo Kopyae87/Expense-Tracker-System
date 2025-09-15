@@ -15,6 +15,7 @@ import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean(name = "ManageEnquiryExpenseActionBean")
 @ViewScoped
@@ -40,6 +41,7 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 	private Date endDate;
 	private List<Category> categoryList;
 	private List<Expense> expenseList;
+	private Category category;
 	private String userid;
 	private User currentUser;
 
@@ -50,6 +52,7 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 		createNewCategoriesList();
 		loadCategories();
 		createNewExpenseList();
+		loadExpenses();
 	}
 	
 	public void createNewCategoriesList() {
@@ -75,12 +78,36 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 	}
 
 	public void cancel() {
-		categoryId = "";
+		categoryId = null;
 		startDate = null;
 		endDate = null;
 		paymentType = "";
 	}
 	
+	public void returnCategory(SelectEvent event) {
+		category = (Category) event.getObject();
+		categoryId = category.getId();
+	}
+	
+	public void deleteExpense(Expense expense) {
+		try {
+			if(expense == null) {
+				System.out.println("expense is null");
+				return;
+			}
+			expenseService.deleteExpense(expense);
+			
+			expenseList = expenseService.findAllExpense(userid);
+			System.out.println("delete succcessfully");
+		} catch (Exception e) {
+			// TODO: handle exception
+			addErrorMessage("delete failed");
+		}
+	}
+	
+	public void loadExpenses() {
+		expenseList = expenseService.findAllExpense(userid);
+	}
 	
 	public String getCategoryId() {
 		return categoryId;
@@ -88,6 +115,7 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 
 	public void setCategoryId(String categoryName) {
 		this.categoryId = categoryName;
+		category = null;
 	}
 
 	public String getPaymentType() {
@@ -140,6 +168,30 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 	
 	public PaymentType[] getPaymentTypes() {
 		return PaymentType.values();
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public User getCurrentUser() {
+		return currentUser;
+	}
+
+	public void setCurrentUser(User currentUser) {
+		this.currentUser = currentUser;
 	}
 	
 	

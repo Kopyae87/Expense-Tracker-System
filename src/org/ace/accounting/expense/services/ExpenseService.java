@@ -84,6 +84,15 @@ public class ExpenseService implements IExpenseService{
 		}
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<Expense> findLatestTenExpenses(String userid) {
+		try {
+			return expenseDAO.findLatestTenExpenses(userid);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
