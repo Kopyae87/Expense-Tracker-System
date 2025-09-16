@@ -1,6 +1,8 @@
 package org.ace.accounting.expense.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.persistence.PersistenceException;
@@ -10,6 +12,7 @@ import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.ExpenseUser;
 import org.ace.accounting.expense.IDAO.IExpenseDAO;
+import org.ace.accounting.expense.IDAO.IExpenseDashBoardDAO;
 import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.system.branch.Branch;
 import org.ace.accounting.user.User;
@@ -19,12 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service(value = "ExpenseService")
-public class ExpenseService implements IExpenseService{
+public class ExpenseService implements IExpenseService {
 
 	@Resource(name = "ExpenseDAO")
 	private IExpenseDAO expenseDAO;
+
+	@Resource(name = "ExpenseDashBoardDAO")
+	private IExpenseDashBoardDAO dashBoardDAO;
 	
 	@Override
 	public Boolean deleteExpense(Expense expense) {
@@ -38,16 +43,15 @@ public class ExpenseService implements IExpenseService{
 		return success;
 	}
 
-
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public List<Category> findAllCategory() throws SystemException {
-		List<Category>result = null;
+		List<Category> result = null;
 		try {
 			result = expenseDAO.findCategoryList();
 		} catch (DAOException e) {
 			throw new SystemException(e.getErrorCode(), "Cant find Category Names", e);
-		}	
+		}
 		return result;
 	}
 
@@ -58,7 +62,7 @@ public class ExpenseService implements IExpenseService{
 			expenseDAO.saveCategory(c);
 		} catch (DAOException e) {
 			throw new SystemException(e.getErrorCode(), "Cant find Category Names", e);
-		}	
+		}
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class ExpenseService implements IExpenseService{
 			// TODO: handle exception
 			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't save Expense", e);
 		}
-		
+
 	}
 
 	@Override
@@ -103,7 +107,64 @@ public class ExpenseService implements IExpenseService{
 		} catch (DAOException e) {
 			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
 		}
-		
+
+	}
+
+	/* 
+	 * 
+	 * this is for home dashboard 
+	 * 
+	 * */
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalExpenseForMonth(String userId, int currentmonth) {
+		// TODO Auto-generated method stub
+		try {
+			return dashBoardDAO.findTotalExpenseForMonth(userId , currentmonth);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalExpenseForYear(String userId, int currentYear) {
+		try {
+			return dashBoardDAO.findTotalExpenseForYear(userId);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public long countExpenses(String userId) {
+		try {
+			return dashBoardDAO.countExpenses(userId);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalExpenseByCategoryForMonth(String userId, String id, int month) {
+		try {
+			return dashBoardDAO.findTotalExpenseByCategoryForMonth(userId);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public Map<Integer, Double> findMonthlyTrend(String userId, int currentYear) {
+		try {
+			return dashBoardDAO.findMonthlyTrend(userId);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find expense", e);
+		}
 	}
 
 }

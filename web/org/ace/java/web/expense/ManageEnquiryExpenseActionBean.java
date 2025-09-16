@@ -1,4 +1,4 @@
-package org.ace.accounting.web.system;
+package org.ace.java.web.expense;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,6 +102,14 @@ public class ManageEnquiryExpenseActionBean extends BaseBean{
 		} catch (Exception e) {
 			// TODO: handle exception
 			addErrorMessage("delete failed");
+		}
+	}
+	
+	public void exportToExcel() {
+		try {
+			ExcelExport.exportExpensesToExcel(expenseList, "expenses.xlsx");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

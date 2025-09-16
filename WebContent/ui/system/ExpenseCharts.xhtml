@@ -53,26 +53,6 @@
 								update=":expenseChartForm:chartPanel :expenseChartForm:datePickers" />
 						</p:selectOneMenu>
 
-						<!-- 						<p:outputPanel id="datePickers">
-							<p:datePicker id="dayPicker"
-								value="#{ManageExpenseChartActionBean.selectedDate}"
-								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
-								view="month" dateFormat="dd/MM/yyyy" showIcon="true"
-								appendTo="@(body)">
-								<p:ajax event="dateSelect"
-									listener="#{ManageExpenseChartActionBean.updateChart}"
-									update=":expenseChartForm:chartPanel" />
-							</p:datePicker>
-							<p:datePicker id="monthPicker"
-								value="#{ManageExpenseChartActionBean.selectedDate}"
-								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'MONTHLY' ? 'block':'none'}"
-								view="year" dateFormat="yyyy" showIcon="true"
-								>
-								<p:ajax event="dateSelect"
-									listener="#{ManageExpenseChartActionBean.updateChart}"
-									update=":expenseChartForm:chartPanel" />
-							</p:datePicker>
-						</p:outputPanel> -->
 						<p:outputPanel id="datePickers">
 							
 							<!-- pick month and year-->

@@ -85,7 +85,8 @@
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
 						<h:outputLabel for="enddate" value="End Date: " />
-						<p:datePicker id="enddate" style="width:80%;" readonlyInput="true" showButtonBar="true"
+						<p:datePicker id="enddate" style="width:80%;" readonlyInput="true"
+							showButtonBar="true"
 							value="#{ManageEnquiryExpenseActionBean.endDate}"
 							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
 					</p:panelGrid>
@@ -124,6 +125,22 @@
 					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
 					paginatorPosition="top" rowKey="#{expense.id}" border="4" rows="10"
 					style="width:100%;border: black;">
+
+					<f:facet name="header">
+						<h:panelGroup
+							style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+							<h:outputText value="Expenses"
+								style="font-weight:bold; font-size:14px;" />
+							<p:commandButton value="Export all to excel"
+								styleClass="ui-button-primary"
+								action="#{ManageEnquiryExpenseActionBean.exportToExcel}" ajax="false"/>
+							<!-- <p:commandButton value="Export to Excel"
+								styleClass="ui-button-primary" ajax="false">
+								<p:dataExporter type="xlsx" target="allExpenseTable"
+									fileName="expenses" />
+							</p:commandButton> -->
+						</h:panelGroup>
+					</f:facet>
 
 					<p:column headerText="Category">
 						<h:outputText

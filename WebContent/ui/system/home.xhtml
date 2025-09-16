@@ -1,12 +1,131 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                template="/common/commonLayout.xhtml">
-                
-   <ui:define name="content">
-   		
-   </ui:define>             
-           
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/common/commonLayout.xhtml">
+
+	<ui:define name="content">
+		<h:form id="dashboardForm">
+			<!-- Top: quick actions + alerts -->
+			<p:panelGrid columns="2" columnClasses="ui-grid-col-9,ui-grid-col-3"
+				styleClass="ui-panelgrid-blank"
+				style="width:100%; gap:12px; margin-bottom:14px;">
+				<p:commandButton value="Add Expense" icon="pi pi-plus"
+					styleClass="ui-button-success" action="expense" ajax="false"
+					style="margin-right:8px;" />
+				<p:commandButton value="Set Budget" icon="pi pi-cog"
+					styleClass="ui-button-primary" action="expenseBudget" ajax="false" />
+
+				<div style="text-align: right;">
+					<p:messages id="msgs" autoUpdate="true" showDetail="true" />
+				</div>
+			</p:panelGrid>
+
+			<!-- Summary cards -->
+			<p:panelGrid columns="3" styleClass="ui-panelgrid-blank ui-fluid"
+				columnClasses="ui-grid-col-4,ui-grid-col-4,ui-grid-col-4"
+				style="width:100%; text-align:center; margin-bottom:20px;">
+				<!-- This Month -->
+				<p:panel styleClass="card-dashboard">
+					<h:outputText value="This Month"
+						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
+					<h:outputText
+						value="#{ManageExpenseDashBoardActionBean.monthlyExpense} MMK "
+						style="font-size:20px; color:#e74c3c; font-weight:bold;" />
+					<h:outputText
+						value="Budget: #{ManageExpenseDashBoardActionBean.monthlyBudget} MMK"
+						style="font-size:12px; color:#666; margin-bottom:8px;" />
+					<p:progressBar
+						value="#{ManageExpenseDashBoardActionBean.monthlyPercent}"
+						labelTemplate="{value}%" style="height:18px;" />
+				</p:panel>
+
+				<!-- This Year -->
+				<p:panel styleClass="card-dashboard">
+					<h:outputText value="This Year"
+						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
+					<h:outputText
+						value="#{ManageExpenseDashBoardActionBean.yearlyExpense} MMK "
+						style="font-size:20px; color:#2980b9; font-weight:bold;" />
+					<h:outputText
+						value="Budget: #{ManageExpenseDashBoardActionBean.yearlyBudget} MMK"
+						style="font-size:12px; color:#666; margin-bottom:8px;" />
+					<p:progressBar
+						value="#{ManageExpenseDashBoardActionBean.yearlyPercent}"
+						labelTemplate="{value}%" style="height:18px;" />
+				</p:panel>
+
+				<!-- Top category -->
+				<p:panel styleClass="card-dashboard">
+					<h:outputText value="Top Category"
+						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
+					<h:outputText
+						value="#{ManageExpenseDashBoardActionBean.topCategoryName} "
+						style="font-size:18px; color:#8e44ad; font-weight:bold;" />
+					<h:outputText
+						value=" Spent: #{ManageExpenseDashBoardActionBean.topCategoryExpense} MMK"
+						style="font-size:12px; color:#666;" />
+				</p:panel>
+			</p:panelGrid>
+
+			<!-- Charts row + right side recent expenses -->
+			<p:panelGrid columns="2" columnClasses="ui-grid-col-6,ui-grid-col-6"
+				styleClass="ui-panelgrid-blank ui-fluid" style="width:100%; gap:12px;">
+					<p:panel style="height:100%;">
+						<p:chart type="line" id="monthlyTrendChart"
+							model="#{ManageExpenseDashBoardActionBean.monthlyTrendChart}"
+							style="height: 40%; width:100%;" />
+					</p:panel>
+					<!-- <ui:include src="expenseCharts.xhtml" /> -->
+
+				<!-- Recent transactions -->
+					<p:panel header="Recent Expenses" styleClass="panel-dashboard"
+						style="height:100%;">
+						<p:dataTable
+							value="#{ManageExpenseDashBoardActionBean.recentExpenses}"
+							var="exp" rows="6" paginator="true" style="width:100%;height: 100%;"
+							emptyMessage="No recent expenses">
+							<p:column headerText="Date" style="width:100px;">
+								<h:outputText value="#{exp.expense_date}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Category">
+								<h:outputText value="#{exp.category.name}" />
+							</p:column>
+							<p:column headerText="Amount">
+								<h:outputText value="#{exp.amount}" />
+							</p:column>
+							<p:column headerText="Payment">
+								<h:outputText value="#{exp.paymentType}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+			</p:panelGrid>
+
+			<!-- Bottom: category budget utilization list -->
+			<p:panel header="Category Budget Utilization"
+				styleClass="panel-dashboard" style="margin-top:16px;">
+				<ui:repeat
+					value="#{ManageExpenseDashBoardActionBean.categoryBudgets}"
+					var="cb">
+					<div
+						style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+						<div style="flex: 1;">
+							<strong>#{cb.categoryName}</strong>
+							<div style="font-size: 12px; color: #666;">#{cb.spent} /
+								#{cb.limit} MMK</div>
+						</div>
+						<div style="flex: 1; margin-left: 12px;">
+							<p:progressBar value="#{cb.percentSpent}"
+								labelTemplate="{value}%" style="height:12px;" />
+						</div>
+					</div>
+				</ui:repeat>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+
 </ui:composition>

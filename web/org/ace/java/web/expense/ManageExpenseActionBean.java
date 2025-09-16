@@ -1,4 +1,4 @@
-package org.ace.accounting.web.system;
+package org.ace.java.web.expense;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,14 +30,12 @@ public class ManageExpenseActionBean extends BaseBean {
 	private List<Category> categoryList;
 	private Date currentDate;
 	private Date maxDate;
-	private String selectedCategoryId;
 	private Expense currentexpense;
 	private List<Expense> expenseList;
 	public static String currenseUserId;
 	private User currentUser;
 	private Category cat;
 	private Boolean iseditMode;
-	private Category category;
 
 	@PostConstruct
 	public void init() {
@@ -64,7 +62,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 	
 	public void loadExpenses() {
-		expenseList = expenseService.findLatestTenExpenses(currenseUserId);
+		expenseList = expenseService.findAllExpense(currenseUserId);
 	}
 	
 	private void loadCategorys() {
@@ -87,14 +85,12 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 	
 	public void returnCategory(SelectEvent event) {
-		category = (Category) event.getObject();
-		selectedCategoryId = category.getId();
+		cat = (Category) event.getObject();
+		
 	}
 
 	public void saveExpense() {
 		System.out.println("in the save Expense");
-		
-		changeCategoryIdToObject();
 	    if (cat == null) {
 	        addErrorMessage("Please select a category before saving.");
 	        return;
@@ -106,8 +102,6 @@ public class ManageExpenseActionBean extends BaseBean {
 	}
 
 	public void updateExpense() {
-		changeCategoryIdToObject();
-//		currentexpense.setUser(currentUser);
 	    if (cat == null) {
 	        addErrorMessage("Please select a category before updating.");
 	        return;
@@ -118,19 +112,19 @@ public class ManageExpenseActionBean extends BaseBean {
 		cancelExpense();
 	}
 
-	public void changeCategoryIdToObject() {
-		cat = null;
-		for (Category c : categoryList) {
-			if (c.getId().equals(selectedCategoryId)) {
-				cat = c;
-				break;
-			}
-		}
-	}
+//	public void changeCategoryIdToObject() {
+//		cat = null;
+//		for (Category c : categoryList) {
+//			if (c.getId().equals(selectedCategoryId)) {
+//				cat = c;
+//				break;
+//			}
+//		}
+//	}
 
 	public void cancelExpense() {
-		selectedCategoryId = null;
 		createNewExpense();
+		cat = null;
 		iseditMode = false;
 	}
 
@@ -145,7 +139,6 @@ public class ManageExpenseActionBean extends BaseBean {
 			if(iseditMode && currentexpense.getId().equals(expense.getId())) {
 				cancelExpense();
 			}
-			//expenseList = expenseService.findAllExpense(currenseUserId);
 			loadExpenses();
 			System.out.println("delete succcessfully");
 		} catch (Exception e) {
@@ -160,10 +153,8 @@ public class ManageExpenseActionBean extends BaseBean {
 	        return;
 	    }
 	    currentexpense = expense;
-	    if (expense.getCategory() != null && expense.getCategory().getId() != null) {
-	        selectedCategoryId = expense.getCategory().getId();
-	    } else {
-	        selectedCategoryId = null; // no category selected
+	    cat = expense.getCategory();
+	    if (cat == null) {
 	        addErrorMessage("This expense has no category. Please select one.");
 	    }
 	    iseditMode = true;
@@ -171,13 +162,12 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void resetForm() {
 		createNewExpense();
+		clearSelectedCategory();
 		loadExpenses();
-		selectedCategoryId = null;
 	}
 	
 	public void clearSelectedCategory() {
-		selectedCategoryId = null;
-		category = null;
+	    cat = null;
 	}
 	
 	public List<Expense> getAllExpenses() {
@@ -202,14 +192,6 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void setCurrentDate(Date currentDate) {
 		this.currentDate = currentDate;
-	}
-
-	public String getSelectedCategoryId() {
-		return selectedCategoryId;
-	}
-
-	public void setSelectedCategoryId(String selectedCategory) {
-		this.selectedCategoryId = selectedCategory;
 	}
 
 	public PaymentType[] getPaymenttypes() {
@@ -288,13 +270,5 @@ public class ManageExpenseActionBean extends BaseBean {
 		ManageExpenseActionBean.currenseUserId = currenseUserId;
 	}
 
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-	
 	
 }

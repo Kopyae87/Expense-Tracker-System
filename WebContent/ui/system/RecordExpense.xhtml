@@ -44,7 +44,7 @@
 											update="categoryId" />
 									</p:commandButton>
 									<p:inputText id="categoryId"
-										value="#{ManageExpenseActionBean.selectedCategoryId == null ? '' : ManageExpenseActionBean.category.name}"
+										value="#{ManageExpenseActionBean.cat.id == null ? '' : ManageExpenseActionBean.cat.name}"
 										readonly="true" style="width: 40%" />
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageExpenseActionBean.clearSelectedCategory()}"
@@ -119,6 +119,7 @@
 				<p:dataTable id="recentExpenseTable"
 					widgetVar="recentExpenseTableWidget" paginator="true"
 					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
+					rows="5"
 					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
 					paginatorPosition="top"
 					value="#{ManageExpenseActionBean.allExpenses}" var="expense"

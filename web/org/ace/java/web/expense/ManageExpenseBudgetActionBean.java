@@ -1,4 +1,4 @@
-package org.ace.accounting.web.system;
+package org.ace.java.web.expense;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -22,13 +22,6 @@ import org.primefaces.event.SelectEvent;
 @ManagedBean(name = "ManageExpenseBudgetActionBean")
 @ViewScoped
 public class ManageExpenseBudgetActionBean extends BaseBean {
-
-//	@ManagedProperty(value = "#{ExpenseService}")
-//	private IExpenseService expenseService;
-
-//	public void setExpenseService(IExpenseService expenseService) {
-//		this.expenseService = expenseService;
-//	}
 
 	@ManagedProperty(value = "#{ExpenseBudgetService}")
 	private IExpenseBudgetService expenseBudgetService;

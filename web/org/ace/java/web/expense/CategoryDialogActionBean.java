@@ -1,4 +1,4 @@
-package org.ace.accounting.web.dialog;
+package org.ace.java.web.expense;
 
 import java.util.List;
 
