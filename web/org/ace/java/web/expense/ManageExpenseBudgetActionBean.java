@@ -12,6 +12,7 @@ import javax.faces.bean.ViewScoped;
 
 import org.ace.accounting.expense.Entity.Budget;
 import org.ace.accounting.expense.Entity.Category;
+import org.ace.accounting.expense.Entity.GlobalBudget;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
@@ -40,6 +41,10 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	private List<Integer> yearsScopeList;
 	private User user;
 
+	/* global budget */
+	private GlobalBudget globalBudget;
+	private String globalTimeValue;
+	
 	@PostConstruct
 	public void init() {
 		user = (User) getParam(ParamId.LOGIN_USER);
@@ -48,6 +53,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		loadBudgets();
 		loadYearsAndMonthsList();
 		showOverwriteDialog = false;
+		globalBudget = new GlobalBudget();
 	}
 
 	private void createNewBudget() {
@@ -226,6 +232,22 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	
 	public Month[] getMonths() {
 		return Month.values();
+	}
+
+	public GlobalBudget getGlobalBudget() {
+		return globalBudget;
+	}
+
+	public void setGlobalBudget(GlobalBudget globalBudget) {
+		this.globalBudget = globalBudget;
+	}
+
+	public String getGlobalTimeValue() {
+		return globalTimeValue;
+	}
+
+	public void setGlobalTimeValue(String globalTimeValue) {
+		this.globalTimeValue = globalTimeValue;
 	}
 
 }

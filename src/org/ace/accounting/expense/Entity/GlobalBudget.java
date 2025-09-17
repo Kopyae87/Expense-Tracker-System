@@ -1,0 +1,116 @@
+package org.ace.accounting.expense.Entity;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+
+import org.ace.accounting.common.BasicEntity;
+import org.ace.accounting.user.User;
+import org.ace.java.component.idgen.service.IDInterceptor;
+
+@Entity
+@Table(name = "GlobalBudget")
+@TableGenerator(name = "GLOBALBUDGET_GEN", table = "ID_GEN", pkColumnName = "GEN_NAME", valueColumnName = "GEN_VAL", pkColumnValue = "GLOBALBUDGET_GEN", allocationSize = 10)
+@EntityListeners(IDInterceptor.class)
+public class GlobalBudget {
+	@Id
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "GLOBALBUDGET_GEN")
+	private String id;
+	
+	@ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "year_scope", nullable = false)
+    private Integer yearScope;
+
+    @Column(name = "month_scope")
+    private Integer monthScope;
+    
+    @Column(name = "monthly_limit")
+    private Double monthlyLimit;
+
+    @Column(name = "yearly_limit")
+    private Double yearlyLimit;
+    
+    @Version
+	private int version;
+
+	@Embedded
+	private BasicEntity basicEntity;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Integer getYearScope() {
+		return yearScope;
+	}
+
+	public void setYearScope(Integer yearScope) {
+		this.yearScope = yearScope;
+	}
+
+	public Double getMonthlyLimit() {
+		return monthlyLimit;
+	}
+
+	public void setMonthlyLimit(Double monthlyLimit) {
+		this.monthlyLimit = monthlyLimit;
+	}
+
+	public Double getYearlyLimit() {
+		return yearlyLimit;
+	}
+
+	public void setYearlyLimit(Double yearlyLimit) {
+		this.yearlyLimit = yearlyLimit;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public BasicEntity getBasicEntity() {
+		return basicEntity;
+	}
+
+	public void setBasicEntity(BasicEntity basicEntity) {
+		this.basicEntity = basicEntity;
+	}
+
+	public Integer getMonthScope() {
+		return monthScope;
+	}
+
+	public void setMonthScope(Integer monthScope) {
+		this.monthScope = monthScope;
+	}
+
+}
+

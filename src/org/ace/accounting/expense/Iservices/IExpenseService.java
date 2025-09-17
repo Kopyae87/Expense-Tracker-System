@@ -23,19 +23,7 @@ public interface IExpenseService {
 
 	List<Expense> findLatestTenExpenses(String userid);
 
-	/*	
-	 * below are for home dashboard.xhtml
-	 * 
-	*/	
-	public double findTotalExpenseForMonth(String userId, int currentmonth);
-
-	public double findTotalExpenseForYear(String userId, int currentYear);
-
-	public long countExpenses(String userId);
-
-	double findTotalExpenseByCategoryForMonth(String userId, String id, int month);
-
-	public Map<Integer, Double> findMonthlyTrend(String userId, int currentYear);
+	
 
 
 }

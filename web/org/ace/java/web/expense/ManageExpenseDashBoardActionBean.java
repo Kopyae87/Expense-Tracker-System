@@ -16,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.CategoryBudget;
 import org.ace.accounting.expense.Entity.Expense;
+import org.ace.accounting.expense.Iservices.IExpenseDashBoardService;
 import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
@@ -38,12 +39,20 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		this.expenseService = expenseService;
 	}
 
+	@ManagedProperty(value = "#{ExpenseDashBoardService}")
+	private IExpenseDashBoardService dashBoardService;
+	
+	public void setDashBoardService(IExpenseDashBoardService dashBoardService) {
+		this.dashBoardService = dashBoardService;
+	}
+
 	private double monthlyExpense;
 	private double yearlyExpense;
 	private double remainingBudget;
 	private long totalTransactions;
 	private List<Expense> recentExpenses;
-	private List<CategoryBudget> categoryBudgets;
+	private List<CategoryBudget> categoryBudgetsMonthly;
+	private List<CategoryBudget> categoryBudgetsYearly;
 	private BarChartModel categoryChart;
 	private LineChartModel monthlyTrendChart;
 	private Calendar cal;
@@ -56,27 +65,31 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 	private int yearlyPercent;
 	private String topCategoryName;
 	private double topCategoryExpense;
+	private int currentmonth;
+	private int currentyear;
 
 	@PostConstruct
 	public void init() {
 		currentUser = (User) getParam(ParamId.LOGIN_USER);
 		setUserId(currentUser.getId());
-		setCurrentDate();
+		getCurrentDate();
         loadDashboardData();
         createCategoryChart();
         createMonthlyTrendChart();
 	}
 
-	public void setCurrentDate() {
+	public void getCurrentDate() {
 		 cal = Calendar.getInstance();
+		 currentmonth = cal.get(Calendar.MONTH) + 1;
+		 currentyear = cal.get(Calendar.YEAR);
 	}
 	
 	// === Load Dashboard Data ===
 	private void loadDashboardData() {
 		// Replace with real service methods
-        monthlyExpense = expenseService.findTotalExpenseForMonth(userId, cal.get(Calendar.MONTH) + 1);
-        yearlyExpense = expenseService.findTotalExpenseForYear(userId, getCurrentYear());
-        totalTransactions = expenseService.countExpenses(userId);
+        monthlyExpense = dashBoardService.findTotalExpenseForMonth(userId, currentmonth , currentyear);
+        yearlyExpense = dashBoardService.findTotalExpenseForYear(userId, currentyear);
+        totalTransactions = dashBoardService.countExpenses(userId);
 
 		// Example: fixed budget 500000 MMK
 		monthlyBudget = 500000;
@@ -90,16 +103,25 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
         recentExpenses = expenseService.findLatestTenExpenses(userId);
 
         // Load category budgets (example: per-category utilization)
-        categoryBudgets = new ArrayList<>();
+        categoryBudgetsMonthly = new ArrayList<>();
         List<Category> categories = expenseService.findAllCategory();
         for (Category c : categories) {
-            double spent = expenseService.findTotalExpenseByCategoryForMonth(userId, c.getId(), cal.get(Calendar.MONTH)+1);
-            double limit = 100000; // Example fixed per-category limit
+            double spent = dashBoardService.findTotalExpenseByCategoryForMonth(userId, c.getId(), currentmonth);
+            double limit = dashBoardService.findBudgetByCategoryForMonth(userId, c.getId(), currentmonth, currentyear); // Example fixed per-category limit
             int percentSpent = limit == 0 ? 0 : (int) ((spent / limit) * 100);
-            categoryBudgets.add(new CategoryBudget(c.getName(), spent, limit, percentSpent));
+            categoryBudgetsMonthly.add(new CategoryBudget(c.getName(), spent, limit, percentSpent));
         }
         
-        Optional<CategoryBudget> top = categoryBudgets.stream()
+        // Load category budgets - Yearly
+        categoryBudgetsYearly = new ArrayList<>();
+        for (Category c : categories) {
+            double spent = dashBoardService.findTotalExpenseByCategoryForYear(userId, c.getId(), currentyear);
+            double limit = dashBoardService.findBudgetByCategoryForYear(userId, c.getId(), currentyear);
+            int percentSpent = limit == 0 ? 0 : (int) ((spent / limit) * 100);
+            categoryBudgetsYearly.add(new CategoryBudget(c.getName(), spent, limit, percentSpent));
+        }
+        
+        Optional<CategoryBudget> top = categoryBudgetsMonthly.stream()
                 .max(Comparator.comparingDouble(CategoryBudget::getSpent));
         if (top.isPresent()) {
             topCategoryName = top.get().getCategoryName();
@@ -116,7 +138,7 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		ChartSeries series = new ChartSeries();
 		series.setLabel("Expenses");
 
-		for (CategoryBudget cb : categoryBudgets) {
+		for (CategoryBudget cb : categoryBudgetsMonthly) {
 			series.set(cb.getCategoryName(), cb.getSpent());
 		}
 
@@ -133,7 +155,7 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		series.setLabel("Monthly Expenses");
 	
 
-		Map<Integer, Double> monthData = expenseService.findMonthlyTrend(userId, getCurrentYear());
+		Map<Integer, Double> monthData = dashBoardService.findMonthlyTrend(userId, currentyear);
 		
 		for (int i = 1; i <= 12; i++) {
 		    series.set(i, monthData.getOrDefault(i, 0.0));
@@ -155,10 +177,6 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 	    Axis yAxis = monthlyTrendChart.getAxis(AxisType.Y);
 	    yAxis.setLabel("Amount (MMK)");
 	    yAxis.setMin(0); // start from zero
-	}
-
-	private int getCurrentYear() {
-		return cal.get(Calendar.YEAR);
 	}
 
 	public double getMonthlyExpense() {
@@ -201,12 +219,12 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		this.recentExpenses = recentExpenses;
 	}
 
-	public List<CategoryBudget> getCategoryBudgets() {
-		return categoryBudgets;
+	public List<CategoryBudget> getCategoryBudgetsMonthly() {
+		return categoryBudgetsMonthly;
 	}
 
-	public void setCategoryBudgets(List<CategoryBudget> categoryBudgets) {
-		this.categoryBudgets = categoryBudgets;
+	public void setCategoryBudgetsMonthly(List<CategoryBudget> categoryBudgetsMonthly) {
+		this.categoryBudgetsMonthly = categoryBudgetsMonthly;
 	}
 
 	public BarChartModel getCategoryChart() {
@@ -297,4 +315,13 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		this.topCategoryExpense = topCategoryExpense;
 	}
 
+	public List<CategoryBudget> getCategoryBudgetsYearly() {
+		return categoryBudgetsYearly;
+	}
+
+	public void setCategoryBudgetsYearly(List<CategoryBudget> categoryBudgetsYearly) {
+		this.categoryBudgetsYearly = categoryBudgetsYearly;
+	}
+	
+	
 }

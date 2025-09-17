@@ -20,6 +20,7 @@
     <class prefix="ETSC002" name="org.ace.accounting.expense.Entity.Category" />
     <class prefix="ETSU003" name="org.ace.accounting.expense.Entity.ExpenseUser" />
     <class prefix="ETSB004" name="org.ace.accounting.expense.Entity.Budget" />
+    <class prefix="ETSB004" name="org.ace.accounting.expense.Entity.GlobalBudget" />
     
     <!-- Chart Of Account -->
     <class prefix="ISCOA001" name="org.ace.accounting.system.chartaccount.ChartOfAccount" />

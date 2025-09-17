@@ -47,7 +47,7 @@ public class Expense {
 	@Column(name = "expense_amount", nullable = false)
 	private double amount;
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "expense_date")
 	private Date expenseDate;
 	
