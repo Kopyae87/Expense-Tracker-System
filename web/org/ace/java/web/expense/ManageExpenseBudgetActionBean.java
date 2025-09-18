@@ -37,13 +37,17 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	private boolean showOverwriteDialog;
 //	private double budgetAmount;
 	private String currentUserId;
-	private List<Budget> budgetsList;
+	private List<Budget> categoryBudgetsList;
 	private List<Integer> yearsScopeList;
+	private Budget existBudgetForOverwrite;
 	private User user;
 
 	/* global budget */
 	private GlobalBudget globalBudget;
 	private String globalTimeValue;
+	private List<GlobalBudget> globalBudgetsList;
+	private boolean isGlobalEditMode;
+	private GlobalBudget existGlobalBudgetForOverwrite;
 	
 	@PostConstruct
 	public void init() {
@@ -51,13 +55,18 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		setCurrentUserId(user.getId());
 		createNewBudget();
 		loadBudgets();
+		loadGlobalBudgets();
 		loadYearsAndMonthsList();
 		showOverwriteDialog = false;
-		globalBudget = new GlobalBudget();
+		createNewGlobalBudget();
 	}
 
 	private void createNewBudget() {
 		currentbudget = new Budget();
+	}
+	
+	private void createNewGlobalBudget() {
+		globalBudget = new GlobalBudget();
 	}
 
 	public void saveBudget() {
@@ -65,7 +74,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		currentbudget.setUser(user);
 		Budget existBudget = expenseBudgetService.findIndenticalBudget(currentbudget);
 		if (existBudget != null) {
-			currentbudget.setId(existBudget.getId());
+			existBudgetForOverwrite = existBudget; 
 			PrimeFaces.current().executeScript("PF('overwriteDialog').show()");
 		} else {
 			actualSaveBudget();
@@ -117,18 +126,29 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	}
 
 	private void loadBudgets() {
-		budgetsList = new ArrayList<>();
-		budgetsList = expenseBudgetService.fineAllBudgets(currentUserId);
+		categoryBudgetsList = new ArrayList<>();
+		categoryBudgetsList = expenseBudgetService.fineAllBudgets(currentUserId);
 	}
 
+	private void loadGlobalBudgets() {
+		globalBudgetsList = new ArrayList<>();
+		globalBudgetsList = expenseBudgetService.fineAllGlobalBudgets(currentUserId);
+	}
+	
 	public void confirmOverwrite() {
-		expenseBudgetService.updateBudget(currentbudget);
+	    if (existBudgetForOverwrite != null) {
+	        currentbudget.setId(existBudgetForOverwrite.getId());
+	        expenseBudgetService.updateBudget(currentbudget);
+	        existBudgetForOverwrite = null;
+	    }
 		loadBudgets();
 		resetForm();
 		showOverwriteDialog = false;
 	}
 
 	public void cancelOverwrite() {
+		currentbudget.setId(null);
+	    existBudgetForOverwrite = null;
 		showOverwriteDialog = false;
 	}
 
@@ -150,8 +170,82 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void resetForm() {
 		createNewBudget();
 		timevalue = "";
+		existBudgetForOverwrite = null;
+	}
+	
+	/* global budget */
+	public void saveGlobalBudget() {
+		accordingToTimeValue();
+		globalBudget.setUser(user);
+		GlobalBudget existBudget = expenseBudgetService.findIndenticalGlobalBudget(globalBudget);
+		if (existBudget != null) {
+			 existGlobalBudgetForOverwrite = existBudget;
+			PrimeFaces.current().executeScript("PF('globaloverwriteDialog').show()");
+		} else {
+			actualSaveGlobalBudget();
+		}
 	}
 
+	public void updateGlobalBudget() {
+		expenseBudgetService.updateGlobalBudget(globalBudget);
+		resetGlobalForm();;
+	}
+	
+	public void cancelGlobalBudget() {
+		resetGlobalForm();
+		isGlobalEditMode = false;
+	}
+	
+	public void resetGlobalForm() {
+		createNewGlobalBudget();
+		globalTimeValue = "";
+		isGlobalEditMode = false;
+	}
+	
+	public void openEditGlobalBudget(GlobalBudget globalBudget) {
+		this.globalBudget = globalBudget;
+		if(globalBudget.getYearScope() != null && globalBudget.getMonthScope() == null) {
+			globalTimeValue = "yearly";
+		}else if(globalBudget.getMonthScope() != null && globalBudget.getYearScope() == null) {
+			globalTimeValue = "monthly";
+		}else if(globalBudget.getMonthScope() != null && globalBudget.getYearScope() != null) {
+			globalTimeValue = "both";
+		}
+		isGlobalEditMode = true;
+	}
+	
+	public void deleteGlobalBudget(GlobalBudget globalBudget) {
+		expenseBudgetService.deleteGlobalBudget(globalBudget);
+ 
+		if (iseditMode && currentbudget.getId().equals(globalBudget.getId())) {
+			cancelGlobalBudget();
+		}
+		loadGlobalBudgets();
+		System.out.println("global budget delete succcessfully");
+	}
+	
+	public void actualSaveGlobalBudget() {
+		expenseBudgetService.saveGlobalBudget(globalBudget);
+		loadBudgets();
+		resetForm();
+	}
+	
+	public void confirmOverwriteGlobalBudget() {
+	    if (existGlobalBudgetForOverwrite != null) {
+	        globalBudget.setId(existGlobalBudgetForOverwrite.getId());
+	        expenseBudgetService.updateGlobalBudget(globalBudget);
+	        existGlobalBudgetForOverwrite = null; 
+	    }
+	    loadGlobalBudgets();
+	    resetGlobalForm();
+	}
+	
+	public void cancelOverwriteGlobalBudget() {
+	    globalBudget.setId(null);
+	    existGlobalBudgetForOverwrite = null;
+	    showOverwriteDialog = false;
+	}
+	
 	public void returnCategory(SelectEvent event) {
 		Category cat = (Category) event.getObject();
 		currentbudget.setCategory(cat);
@@ -205,12 +299,12 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		this.currentUserId = currentUserId;
 	}
 
-	public List<Budget> getBudgetsList() {
-		return budgetsList;
+	public List<Budget> getCategoryBudgetsList() {
+		return categoryBudgetsList;
 	}
 
-	public void setBudgetsList(List<Budget> budgetsList) {
-		this.budgetsList = budgetsList;
+	public void setCategoryBudgetsList(List<Budget> categorybudgetsList) {
+		this.categoryBudgetsList = categorybudgetsList;
 	}
 
 	public void setIseditMode(boolean iseditMode) {
@@ -248,6 +342,22 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 
 	public void setGlobalTimeValue(String globalTimeValue) {
 		this.globalTimeValue = globalTimeValue;
+	}
+
+	public List<GlobalBudget> getGlobalBudgetsList() {
+		return globalBudgetsList;
+	}
+
+	public void setGlobalBudgetsList(List<GlobalBudget> globalBudgetsList) {
+		this.globalBudgetsList = globalBudgetsList;
+	}
+
+	public boolean isGlobalEditMode() {
+		return isGlobalEditMode;
+	}
+
+	public void setGlobalEditMode(boolean isGlobalEditMode) {
+		this.isGlobalEditMode = isGlobalEditMode;
 	}
 
 }

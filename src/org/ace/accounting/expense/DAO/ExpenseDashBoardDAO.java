@@ -135,4 +135,82 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 		}
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findMonthlyBudget(String userId, int month, int year) {
+		try {
+			String str = "select b.monthlyLimit from GlobalBudget b where b.user.id = :userId "
+					+ "and b.monthScope = :month "
+					+ "and b.yearScope = :year ";
+					
+			Query q = em.createQuery(str);
+			q.setParameter("userId", userId);
+			q.setParameter("month", month);
+			q.setParameter("year", year);
+			List<Number> results = q.getResultList();
+	        if (results.isEmpty()) {
+	            return 0.0;
+	        }
+	        return results.get(0).doubleValue();
+		} catch (PersistenceException e) {
+			throw translate("Failed to find global budget for month", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findYearlyBudget(String userId, int year) {
+		try {
+			String str = "select b.yearlyLimit from GlobalBudget b where b.user.id = :userId "
+					+ "and b.yearScope = :year ";
+			Query q = em.createQuery(str);
+			q.setParameter("userId", userId);
+			q.setParameter("year", year);
+			List<Number> results = q.getResultList();
+	        if (results.isEmpty()) {
+	            return 0.0;
+	        }
+	        return results.get(0).doubleValue();
+		} catch (PersistenceException e) {
+			throw translate("Failed to find global budget for year", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findTotalExpenseByCategoryForYear(String userId, String categoryid, int currentyear) {
+		double result = 0.00;
+		try {
+			String str = "select coalesce(sum(e.amount), 0) from Expense e where e.user.id = :userId "
+					+ "and e.category.id = :categoryid and function('YEAR', e.expenseDate) = :year";
+			Query q = em.createQuery(str);
+			q.setParameter("userId", userId);
+			q.setParameter("categoryid", categoryid);
+			q.setParameter("year", currentyear);
+			result = ((Number) q.getSingleResult()).doubleValue();
+		} catch (PersistenceException e) {
+			throw translate("Failed to find total expense by category for month", e);
+		}
+		return result;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findBudgetByCategoryForYear(String userId, String categoryid, int currentyear) {
+		try {
+			String str = "select sum(b.monthlyLimit) from Budget b where b.user.id = :userId "
+					+ "and b.category.id = :categoryid "
+					+ "and b.yearScope = :year ";
+					
+			Query q = em.createQuery(str);
+			q.setParameter("userId", userId);
+			q.setParameter("categoryid", categoryid);
+			q.setParameter("year", currentyear);
+			Number result = ((Number) q.getSingleResult());
+			return result != null ? result.doubleValue() : 0.0;
+		} catch (PersistenceException e) {
+			throw translate("Failed to find budget by category for month", e);
+		}
+	}
+
 }

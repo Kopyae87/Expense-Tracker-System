@@ -6,6 +6,15 @@
 	template="/common/commonLayout.xhtml">
 
 	<ui:define name="content">
+		<style>
+.progress-green .ui-progressbar-value {
+	background-color: #2ecc71 !important; /* green */
+}
+
+.progress-red .ui-progressbar-value {
+	background-color: #e67e22 !important; /* red */
+}
+</style>
 		<h:form id="dashboardForm">
 			<!-- top is for quick actions + alerts -->
 			<p:panelGrid columns="2" columnClasses="ui-grid-col-9,ui-grid-col-3"
@@ -32,28 +41,43 @@
 						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
 					<h:outputText
 						value="#{ManageExpenseDashBoardActionBean.monthlyExpense} MMK "
-						style="font-size:18px; color:#e74c3c; font-weight:bold;" />
+						style="font-size:18px; color:#e74c3c; font-weight:bold;">
+						<f:convertNumber type="number" groupingUsed="true"
+							minFractionDigits="1" />
+					</h:outputText>
 					<h:outputText
 						value="Budget: #{ManageExpenseDashBoardActionBean.monthlyBudget} MMK"
-						style="font-size:12px; color:#666; margin-bottom:8px;" />
+						style="font-size:12px; color:#666; margin-bottom:8px;">
+						<f:convertNumber type="number" groupingUsed="true"
+							minFractionDigits="1" />
+					</h:outputText>
 					<p:progressBar
-						value="#{ManageExpenseDashBoardActionBean.monthlyPercent}"
-						labelTemplate="{value}%" style="height:18px;" />
+						value="#{ManageExpenseDashBoardActionBean.monthlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.monthlyPercent}"
+						labelTemplate="#{ManageExpenseDashBoardActionBean.monthlyPercent}%"
+						style="height:18px;"
+						styleClass="#{ManageExpenseDashBoardActionBean.monthlyPercent gt 100 ? 'progress-red' : 'progress-green'}" />
 				</p:panel>
-
 				<!-- year -->
 				<p:panel styleClass="card-dashboard">
 					<h:outputText value="This Year"
 						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
 					<h:outputText
 						value="#{ManageExpenseDashBoardActionBean.yearlyExpense} MMK "
-						style="font-size:18px; color:#2980b9; font-weight:bold;" />
+						style="font-size:18px; color:#2980b9; font-weight:bold;">
+						<f:convertNumber type="number" groupingUsed="true"
+							minFractionDigits="1" />
+					</h:outputText>
 					<h:outputText
 						value="Budget: #{ManageExpenseDashBoardActionBean.yearlyBudget} MMK"
-						style="font-size:12px; color:#666; margin-bottom:8px;" />
+						style="font-size:12px; color:#666; margin-bottom:8px;">
+						<f:convertNumber type="number" groupingUsed="true"
+							minFractionDigits="1" />
+					</h:outputText>
 					<p:progressBar
-						value="#{ManageExpenseDashBoardActionBean.yearlyPercent}"
-						labelTemplate="{value}%" style="height:18px;" />
+						value="#{ManageExpenseDashBoardActionBean.yearlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.yearlyPercent}"
+						labelTemplate="#{ManageExpenseDashBoardActionBean.yearlyPercent}%"
+						style="height:18px;"
+						styleClass="#{ManageExpenseDashBoardActionBean.monthlyPercent gt 100 ? 'progress-red' : 'progress-green'}" />
 				</p:panel>
 
 				<!-- Top category -->
@@ -89,7 +113,7 @@
 						style="width:100%;height: 100%;" emptyMessage="No recent expenses">
 						<p:column headerText="Date" style="width:100px;">
 							<h:outputText value="#{exp.expense_date}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
+								<f:convertDateTime pattern="dd-MM-yyyy" />
 							</h:outputText>
 						</p:column>
 						<p:column headerText="Category">
@@ -132,8 +156,10 @@
 									</div>
 								</div>
 								<div style="flex: 1; margin-left: 12px;">
-									<p:progressBar value="#{cb.percentSpent}"
-										labelTemplate="{value}%" style="height:12px;" />
+									<p:progressBar
+										value="#{(cb.percentSpent > 100) ? 100 : cb.percentSpent}"
+										labelTemplate="#{cb.percentSpent}%" style="height:12px;"
+										styleClass="#{cb.percentSpent gt 100 ? 'progress-red' : 'progress-green'}" />
 								</div>
 							</div>
 						</ui:repeat>
@@ -161,8 +187,10 @@
 									</div>
 								</div>
 								<div style="flex: 1; margin-left: 12px;">
-									<p:progressBar value="#{cb.percentSpent}"
-										labelTemplate="{value}%" style="height:12px;" />
+									<p:progressBar
+										value="#{(cb.percentSpent > 100) ? 100 : cb.percentSpent}"
+										labelTemplate="#{cb.percentSpent}%" style="height:12px;"
+										styleClass="#{cb.percentSpent gt 100 ? 'progress-red' : 'progress-green'}" />
 								</div>
 							</div>
 						</ui:repeat>

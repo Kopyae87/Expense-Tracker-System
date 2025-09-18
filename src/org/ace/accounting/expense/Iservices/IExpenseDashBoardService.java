@@ -22,4 +22,8 @@ public interface IExpenseDashBoardService {
 	public double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear);
 
 	public double findBudgetByCategoryForYear(String userId, String id, int currentyear);
+
+	public double findMonthlyBudget(String userId, int month, int year);
+
+	public double findYearlyBudget(String userId, int year);
 }

@@ -15,5 +15,13 @@ public interface IExpenseDashBoardDAO {
 	Map<Integer, Double> findMonthlyTrend(String userId);
 
 	double findBudgetByCategoryForMonth(String userId, String categoryid, int currentmonth, int currentyear);
+
+	double findMonthlyBudget(String userId, int month, int year);
+
+	double findYearlyBudget(String userId, int year);
+
+	double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear);
+
+	double findBudgetByCategoryForYear(String userId, String id, int currentyear);
 	
 }

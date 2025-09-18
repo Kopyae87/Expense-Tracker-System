@@ -92,8 +92,8 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
         totalTransactions = dashBoardService.countExpenses(userId);
 
 		// Example: fixed budget 500000 MMK
-		monthlyBudget = 500000;
-		yearlyBudget = 6000000;
+		monthlyBudget = dashBoardService.findMonthlyBudget(userId, currentmonth, currentyear);
+		yearlyBudget = dashBoardService.findYearlyBudget(userId, currentyear);
 		remainingBudget = monthlyBudget - monthlyExpense;
 
 	    monthlyPercent = monthlyBudget == 0 ? 0 : (int) ((monthlyExpense / monthlyBudget) * 100);

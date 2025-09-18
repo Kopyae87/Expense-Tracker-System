@@ -77,6 +77,7 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public double findBudgetByCategoryForMonth(String userId, String categoryid, int currentmonth, int currentyear) {
 		try {
 			return dashBoardDAO.findBudgetByCategoryForMonth(userId, categoryid, currentmonth, currentyear);
@@ -86,14 +87,40 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return dashBoardDAO.findTotalExpenseByCategoryForYear(userId, id, currentyear);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public double findBudgetByCategoryForYear(String userId, String id, int currentyear) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return dashBoardDAO.findBudgetByCategoryForYear(userId, id, currentyear);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
+	}
+
+	@Override
+	public double findMonthlyBudget(String userId, int month, int year) {
+		try {
+			return dashBoardDAO.findMonthlyBudget(userId,month,year);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
+	}
+
+	@Override
+	public double findYearlyBudget(String userId, int year) {
+		try {
+			return dashBoardDAO.findYearlyBudget(userId,year);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.ace.accounting.expense.Entity.Budget;
+import org.ace.accounting.expense.Entity.GlobalBudget;
 import org.ace.accounting.expense.IDAO.IExpenseBudgetDAO;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
 import org.ace.java.component.persistence.exception.DAOException;
@@ -35,7 +36,6 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			expenseBudgetDAO.saveBudget(currentbudget);
 		} catch (DAOException e) {
 		}
-
 	}
 
 	@Override
@@ -69,6 +69,57 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			// TODO: handle exception
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public List<GlobalBudget> fineAllGlobalBudgets(String currentUserId) {
+		try {
+			return expenseBudgetDAO.findAllGlobalBudgetsByUserId(currentUserId);
+		} catch (DAOException e) {
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public GlobalBudget findIndenticalGlobalBudget(GlobalBudget globalBudget) {
+		try {
+			return expenseBudgetDAO.findGlobalBudget(globalBudget);
+		} catch (DAOException e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void deleteGlobalBudget(GlobalBudget globalBudget) {
+		try {
+			expenseBudgetDAO.deleteGlobalBudget(globalBudget);
+		} catch (DAOException e) {
+			// TODO: handle exception
+		}
+		
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void updateGlobalBudget(GlobalBudget globalBudget) {
+		try {
+			expenseBudgetDAO.updateGlobalBuget(globalBudget);
+		} catch (DAOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void saveGlobalBudget(GlobalBudget globalBudget) {
+		try {
+			expenseBudgetDAO.saveGlobalBudget(globalBudget);
+		} catch (DAOException e) {
+		}
 	}
 
 }
