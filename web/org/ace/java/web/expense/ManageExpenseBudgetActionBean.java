@@ -175,8 +175,9 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	
 	/* global budget */
 	public void saveGlobalBudget() {
-		accordingToTimeValue();
+		accordingToGlobalTimeValue();
 		globalBudget.setUser(user);
+		System.out.println("globalbudget: " + globalBudget.getMonthScope() + globalBudget.getYearScope());
 		GlobalBudget existBudget = expenseBudgetService.findIndenticalGlobalBudget(globalBudget);
 		if (existBudget != null) {
 			 existGlobalBudgetForOverwrite = existBudget;
@@ -226,8 +227,8 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	
 	public void actualSaveGlobalBudget() {
 		expenseBudgetService.saveGlobalBudget(globalBudget);
-		loadBudgets();
-		resetForm();
+		loadGlobalBudgets();
+		resetGlobalForm();
 	}
 	
 	public void confirmOverwriteGlobalBudget() {
@@ -244,6 +245,30 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	    globalBudget.setId(null);
 	    existGlobalBudgetForOverwrite = null;
 	    showOverwriteDialog = false;
+	}
+	
+	public void accordingToGlobalTimeValue() {
+	    if ("yearly".equals(globalTimeValue)) {
+	        if (globalBudget.getYearScope() == null) {
+	            addErrorMessage(null, "Year is required for yearly budget");
+	            return;
+	        }
+	        globalBudget.setMonthScope(null); // clear month
+	    } else if ("monthly".equals(globalTimeValue)) {
+	        if (globalBudget.getYearScope() == null) {
+	            addErrorMessage(null, "Year is required for monthly budget");
+	            return;
+	        }
+	        if (globalBudget.getMonthScope() == null) {
+	            addErrorMessage(null, "Month is required for monthly budget");
+	            return;
+	        }
+	    } else if ("both".equals(globalTimeValue)) {
+	        if (globalBudget.getYearScope() == null || globalBudget.getMonthScope() == null) {
+	            addErrorMessage(null, "Year and Month are required for both");
+	            return;
+	        }
+	    }
 	}
 	
 	public void returnCategory(SelectEvent event) {

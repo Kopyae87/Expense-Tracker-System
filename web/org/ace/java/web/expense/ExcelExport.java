@@ -42,7 +42,7 @@ public class ExcelExport {
 	            int rowNum = 1;
 	            for (Expense expense : expenses) {
 	                Row row = sheet.createRow(rowNum++);
-	                row.createCell(0).setCellValue(expense.getExpense_date().toString());
+	                row.createCell(0).setCellValue(expense.getExpenseDate().toString());
 	                row.createCell(1).setCellValue(expense.getCategory().getName());
 	                row.createCell(2).setCellValue(expense.getAmount());
 	                row.createCell(3).setCellValue(expense.getPaymentType());

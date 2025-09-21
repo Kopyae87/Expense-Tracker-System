@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ExpenseTracker" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="48a7fffb-fa4e-417c-b216-20583c2d61d7">
+	<field name="expenseDate" class="java.util.Date"/>
+	<field name="userName" class="java.lang.String"/>
+	<field name="amount" class="java.lang.Double"/>
+	<field name="categoryName" class="java.lang.String"/>
+	<field name="paymentType" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<title>
+		<band height="50">
+			<staticText>
+				<reportElement x="100" y="10" width="400" height="40" uuid="1b32fa9a-4065-4023-bd0c-e975ef438cbf"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Expense Tracker Report (Monthly)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30">
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="30" uuid="a367e3ea-7a0f-4f26-8227-457e54becb35"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="100" height="30" uuid="3107d962-bcf4-4513-9a9e-10b2e4f4d5f9"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[User]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="80" height="30" uuid="2177c06c-2ce7-4d4b-b153-33f62e3aa226"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="0" width="100" height="30" uuid="c7918665-7909-4c19-b5bb-987765740f9c"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Category]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="80" height="30" uuid="2f839358-186d-4233-bc53-228538140182"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="0" width="100" height="30" uuid="9816bcea-d855-4a94-9ebd-497d26e11bef"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<textField>
+				<reportElement x="0" y="0" width="80" height="25" uuid="e437324d-800d-4678-8a68-24bd71976581"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{expenseDate})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="0" width="100" height="25" uuid="610463f2-0e4c-4cca-a8e6-e25861f3d512"/>
+				<textFieldExpression><![CDATA[$F{userName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="80" height="25" uuid="7427f7f0-3ec9-488c-ab36-4c517ab7c707"/>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="290" y="0" width="100" height="25" uuid="68e0efd9-9dc3-4625-a6a7-cd2d250f6eff"/>
+				<textFieldExpression><![CDATA[$F{categoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="0" width="80" height="25" uuid="f7aad3e4-ab23-45f5-93b9-453738b6e8e9"/>
+				<textFieldExpression><![CDATA[$F{paymentType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="0" width="100" height="25" uuid="1f637291-377f-452e-a242-0e12febdde28"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

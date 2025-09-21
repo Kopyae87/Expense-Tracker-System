@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ExpenseTracker" pageWidth="650" pageHeight="842" columnWidth="610" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="48a7fffb-fa4e-417c-b216-20583c2d61d7">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<field name="expenseDate" class="java.util.Date"/>
+	<field name="userName" class="java.lang.String"/>
+	<field name="amount" class="java.lang.Double"/>
+	<field name="categoryName" class="java.lang.String"/>
+	<field name="paymentType" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<title>
+		<band height="50">
+			<staticText>
+				<reportElement x="100" y="10" width="400" height="40" uuid="1b32fa9a-4065-4023-bd0c-e975ef438cbf"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Expense Tracker Report (Monthly)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="30">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="80" height="30" backcolor="#DDDDDD" uuid="c9bff5c4-3931-4529-b4e7-c714a6d30895"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[     Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="80" y="0" width="110" height="30" backcolor="#DDDDDD" uuid="b8f9fabb-e5f4-42e8-8144-fe8f574491c7"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[      User]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="190" y="0" width="90" height="30" backcolor="#DDDDDD" uuid="da79da69-44de-45e4-9fda-8e1f79dec303"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[     Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="280" y="0" width="110" height="30" backcolor="#DDDDDD" uuid="e85fcc42-cb59-4dbc-a3f8-a36c9484b4cc"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[     Category]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="390" y="0" width="90" height="30" backcolor="#DDDDDD" uuid="484be241-e098-4d1b-a418-d63569b6f847"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[     Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="480" y="0" width="130" height="30" backcolor="#DDDDDD" uuid="92429adb-840b-4d6c-bf2f-190e2b0a8b89"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[     Description]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.spreadsheet.SpreadsheetLayout"/>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="0" width="80" height="25" backcolor="#FFFFFF" uuid="18d86ebe-2735-4493-9018-70c0961a2787"/>
+				<box topPadding="5" leftPadding="15">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($F{expenseDate})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="80" y="0" width="110" height="25" backcolor="#FFFFFF" uuid="c0a99e3f-262b-443d-b4c5-c5c30898bba1"/>
+				<box topPadding="5" leftPadding="15">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{userName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="190" y="0" width="90" height="25" backcolor="#FFFFFF" uuid="104143db-9df6-49bf-901e-654cf44676f6"/>
+				<box topPadding="5" leftPadding="15">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="280" y="0" width="110" height="25" backcolor="#FFFFFF" uuid="2afaff6e-9b2f-4d6f-b3ce-b4fd52fc439a"/>
+				<box topPadding="5" leftPadding="15">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{categoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="390" y="0" width="90" height="25" backcolor="#FFFFFF" uuid="c348d100-8e61-4943-90bc-16b2b8ea00d4"/>
+				<box topPadding="5" leftPadding="13">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{paymentType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="480" y="0" width="130" height="25" backcolor="#FFFFFF" uuid="9b5cb8d4-762e-4ddc-abac-e8e3f057808e"/>
+				<box topPadding="5" leftPadding="15">
+					<pen lineWidth="1.0" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

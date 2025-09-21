@@ -217,11 +217,12 @@
 											required="true">
 											<f:selectItem itemLabel="Select Period" itemValue=""
 												noSelectionOption="true" />
-											<f:selectItem itemLabel="Daily" itemValue="daily" />
+											<!-- <f:selectItem itemLabel="Daily" itemValue="daily" /> -->
 											<f:selectItem itemLabel="Monthly" itemValue="monthly" />
 											<f:selectItem itemLabel="Yearly" itemValue="yearly" />
 											<f:selectItem itemLabel="Both" itemValue="both" />
-											<p:ajax update="categoryFormWrapper"></p:ajax>
+											<p:ajax process="@this" update="scopePanel amountsPanel"></p:ajax>
+											<!-- <p:ajax update="categoryFormWrapper"></p:ajax> -->
 										</p:selectOneMenu>
 									</p:panelGrid>
 
@@ -250,7 +251,7 @@
 												<f:selectItems
 													value="#{ManageExpenseBudgetActionBean.yearsScopeList}"
 													var="scope" itemLabel="#{scope}" itemValue="#{scope}" />
-												<p:ajax update="categoryFormWrapper"></p:ajax>
+												<p:ajax process="@this" update="amountsPanel"></p:ajax>
 											</p:selectOneMenu>
 											<p:outputPanel id="scopeWrapper">
 												<p:outputPanel id="monthPanel" layout="block"
@@ -263,27 +264,32 @@
 															value="#{ManageExpenseBudgetActionBean.months}"
 															var="scope" itemLabel="#{scope}"
 															itemValue="#{scope.value}" />
-														<p:ajax update="categoryFormWrapper"></p:ajax>
+														<p:ajax process="@this" update="amountsPanel"></p:ajax>
 													</p:selectOneMenu>
 												</p:outputPanel>
 											</p:outputPanel>
 										</p:panelGrid>
 									</p:panelGrid>
 									<!-- Amounts -->
-									<p:panelGrid columns="2" style="width:30%;"
+									<p:panelGrid id="amountsPanel" columns="2" style="width:30%;"
 										columnClasses="ui-panelgrid-col-4,ui-panelgrid-8"
 										styleClass="ui-panelgrid-blank">
 										<p:outputLabel value="Yearly Budget:"
 											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" />
+										<!-- <p:inputText
+											value="#{ManageExpenseBudgetActionBean.currentbudget.yearlyLimit}"
+											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" /> -->
 										<p:inputText
 											value="#{ManageExpenseBudgetActionBean.currentbudget.yearlyLimit}"
-											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" />
-
+											style="display: #{ManageExpenseBudgetActionBean.timevalue == 'yearly' or ManageExpenseBudgetActionBean.timevalue == 'both' ? 'block' : 'none'};" />
 										<p:outputLabel value="Monthly Budget:"
 											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" />
 										<p:inputText
 											value="#{ManageExpenseBudgetActionBean.currentbudget.monthlyLimit}"
-											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" />
+											style="display: #{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both' ? 'block' : 'none'};" />
+										<!-- <p:inputText
+											value="#{ManageExpenseBudgetActionBean.currentbudget.monthlyLimit}"
+											rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}" /> -->
 									</p:panelGrid>
 
 									<!-- Buttons -->
@@ -445,26 +451,64 @@
 										columnClasses="ui-panelgrid-col-4,ui-panelgrid-8">
 
 										<!-- Save -->
-										<p:commandButton
+										<!-- <p:commandButton
 											action="#{ManageExpenseBudgetActionBean.saveGlobalBudget}"
 											value="Save" process="globalFormWrapper"
 											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper :budgetAddForm:budgetTabView:globalTableWrapper"
 											rendered="#{!ManageExpenseBudgetActionBean.globalEditMode}"
 											oncomplete="PF('globalBudgetWidget').clearFilters();" />
 
-										<!-- Update -->
+										Update
 										<p:commandButton
 											action="#{ManageExpenseBudgetActionBean.updateGlobalBudget}"
 											value="Update" process="globalFormWrapper"
 											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper :budgetAddForm:budgetTabView:globalTableWrapper"
 											rendered="#{ManageExpenseBudgetActionBean.globalEditMode}" />
 
-										<!-- Cancel -->
+										Cancel
 										<p:commandButton
 											action="#{ManageExpenseBudgetActionBean.cancelGlobalBudget}"
 											value="Cancel" process="globalFormWrapper"
 											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper" />
+									</h:panelGrid> -->
+										<!-- <p:commandButton
+											action="#{ManageExpenseBudgetActionBean.saveGlobalBudget}"
+											value="Save" process="@form"
+											update="globalFormPanelWrapper globalTableWrapper"
+											rendered="#{!ManageExpenseBudgetActionBean.globalEditMode}" />
+
+										Update
+										<p:commandButton
+											action="#{ManageExpenseBudgetActionBean.updateGlobalBudget}"
+											value="Update" process="@form"
+											update="globalFormPanelWrapper globalTablePanel"
+											rendered="#{ManageExpenseBudgetActionBean.globalEditMode}" />
+
+										Cancel
+										<p:commandButton
+											action="#{ManageExpenseBudgetActionBean.cancelGlobalBudget}"
+											value="Cancel" process="@form"
+											update="globalFormPanelWrapper" /> -->
+										<p:commandButton
+											action="#{ManageExpenseBudgetActionBean.saveGlobalBudget}"
+											value="Save" process="globalFormPanel"
+											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper :budgetAddForm:budgetTabView:globalTableWrapper"
+											rendered="#{!ManageExpenseBudgetActionBean.globalEditMode}"
+											oncomplete="PF('globalBudgetWidget').clearFilters();" />
+
+										<p:commandButton
+											action="#{ManageExpenseBudgetActionBean.updateGlobalBudget}"
+											value="Update" process="globalFormPanel"
+											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper :budgetAddForm:budgetTabView:globalTableWrapper"
+											rendered="#{ManageExpenseBudgetActionBean.globalEditMode}"
+											oncomplete="PF('globalBudgetWidget').clearFilters();" />
+
+										<p:commandButton
+											action="#{ManageExpenseBudgetActionBean.cancelGlobalBudget}"
+											value="Cancel" process="globalFormPanel"
+											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper" />
 									</h:panelGrid>
+
 								</p:panelGrid>
 							</p:outputPanel>
 						</p:panel>
@@ -475,7 +519,7 @@
 							<p:dataTable
 								value="#{ManageExpenseBudgetActionBean.globalBudgetsList}"
 								var="g" paginator="true" rows="5" widgetVar="globalBudgetWidget"
-								style="width:100%;border: black;" border="1" rowKey="index">
+								style="width:100%;border: black;" border="1" rowIndexVar="index">
 
 								<p:column headerText="No">
 									<h:outputText value="#{index + 1}" />
@@ -501,9 +545,14 @@
 										action="#{ManageExpenseBudgetActionBean.openEditGlobalBudget(g)}"
 										update=":budgetAddForm:budgetTabView:globalFormPanelWrapper"
 										process=":budgetAddForm:budgetTabView:globalTableWrapper" />
-									<p:commandButton value="Delete"
+									<!-- <p:commandButton value="Delete"
 										action="#{ManageExpenseBudgetActionBean.deleteGlobalBudget(g)}"
 										update=":budgetAddForm:budgetTabView:globalTablePanel :budgetAddForm:budgetTabView:globalFormPanelWrapper"
+										process="@this"
+										oncomplete="PF('globalBudgetWidget').clearFilters();" /> -->
+									<p:commandButton value="Delete"
+										action="#{ManageExpenseBudgetActionBean.deleteGlobalBudget(g)}"
+										update=":budgetAddForm:budgetTabView:globalTableWrapper :budgetAddForm:budgetTabView:globalFormPanelWrapper"
 										process="@this"
 										oncomplete="PF('globalBudgetWidget').clearFilters();" />
 								</p:column>

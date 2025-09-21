@@ -97,12 +97,12 @@ public class Expense {
 		this.amount = amount;
 	}
 
-	public Date getExpense_date() {
-		return expenseDate;
+	public Date getExpenseDate() {
+	    return expenseDate;
 	}
 
-	public void setExpense_date(Date expense_date) {
-		this.expenseDate = expense_date;
+	public void setExpenseDate(Date expenseDate) {
+	    this.expenseDate = expenseDate;
 	}
 
 	public String getDescription() {
@@ -144,6 +144,12 @@ public class Expense {
 //	public void setPaymenttype(PaymentType paymenttype) {
 //		this.paymenttype = paymenttype;
 //	}
+	public String getUserName() {
+		return user != null ? user.getName() : "";
+	}
 	
+	public String getCategoryName() {
+		return category != null ? category.getName() : "";
+	}
 	
 }

@@ -60,7 +60,7 @@
 						<h:outputLabel for="expensedate" value="Expense Date: " />
 						<p:datePicker id="expensedate" style="width: 60%"
 							maxdate="#{ManageExpenseActionBean.maxDate}"
-							value="#{ManageExpenseActionBean.currentExpense.expense_date}"
+							value="#{ManageExpenseActionBean.currentExpense.expenseDate}"
 							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker> 
 					</p:panelGrid>
 
@@ -149,7 +149,7 @@
 					</p:column>
 
 					<p:column headerText="Expense date">
-						<h:outputText value="#{expense.expense_date}">
+						<h:outputText value="#{expense.expenseDate}">
 							<f:convertDateTime pattern="dd-MM-yyyy" />
 						</h:outputText>
 					</p:column>

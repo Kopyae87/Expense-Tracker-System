@@ -8,6 +8,7 @@ import org.ace.accounting.expense.Entity.Budget;
 import org.ace.accounting.expense.Entity.GlobalBudget;
 import org.ace.accounting.expense.IDAO.IExpenseBudgetDAO;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
+import org.ace.java.component.SystemException;
 import org.ace.java.component.persistence.exception.DAOException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,8 +26,8 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 		try {
 			return expenseBudgetDAO.findAllBudgetsByUserId(userid);
 		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find budgets", e);
 		}
-		return null;
 	}
 
 	@Override
@@ -35,6 +36,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 		try {
 			expenseBudgetDAO.saveBudget(currentbudget);
 		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save Budget", e);
 		}
 	}
 
@@ -45,6 +47,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			expenseBudgetDAO.updateBuget(currentbudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Cant update Budget", e);
 		}
 		
 	}
@@ -56,6 +59,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			expenseBudgetDAO.deleteBudget(currentbudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Cant delete Budget", e);
 		}
 		
 	}
@@ -67,8 +71,8 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			return expenseBudgetDAO.findBudget(currentbudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "something with finding indentical budget", e);
 		}
-		return null;
 	}
 
 	@Override
@@ -77,8 +81,8 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 		try {
 			return expenseBudgetDAO.findAllGlobalBudgetsByUserId(currentUserId);
 		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find Global budgets", e);
 		}
-		return null;
 	}
 
 	@Override
@@ -88,8 +92,8 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			return expenseBudgetDAO.findGlobalBudget(globalBudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "something wrong with find indentical global budget", e);
 		}
-		return null;
 	}
 
 	@Override
@@ -99,6 +103,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			expenseBudgetDAO.deleteGlobalBudget(globalBudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Cant delete global budget", e);
 		}
 		
 	}
@@ -110,6 +115,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 			expenseBudgetDAO.updateGlobalBuget(globalBudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
+			throw new SystemException(e.getErrorCode(), "Cant update global budget", e);
 		}
 	}
 
@@ -119,6 +125,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 		try {
 			expenseBudgetDAO.saveGlobalBudget(globalBudget);
 		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
 		}
 	}
 
