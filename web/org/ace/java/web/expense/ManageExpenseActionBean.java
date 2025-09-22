@@ -1,14 +1,14 @@
 package org.ace.java.web.expense;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
 import org.ace.accounting.common.validation.ErrorMessage;
 import org.ace.accounting.common.validation.IDataValidator;
@@ -16,8 +16,8 @@ import org.ace.accounting.common.validation.ValidationResult;
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.PaymentType;
+import org.ace.accounting.expense.Iservices.IExpenseDashBoardService;
 import org.ace.accounting.expense.Iservices.IExpenseService;
-import org.ace.accounting.system.branch.Branch;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
@@ -33,6 +33,13 @@ public class ManageExpenseActionBean extends BaseBean {
 	public void setExpenseService(IExpenseService expenseService) {
 		this.expenseService = expenseService;
 	}
+	
+	@ManagedProperty(value = "#{ExpenseDashBoardService}")
+	private IExpenseDashBoardService dashBoardService;
+	
+	public void setDashBoardService(IExpenseDashBoardService dashBoardService) {
+		this.dashBoardService = dashBoardService;
+	}
 
 	@ManagedProperty(value = "#{ExpenseValidator}")
 	private IDataValidator<Expense> expenseValidator;
@@ -40,6 +47,7 @@ public class ManageExpenseActionBean extends BaseBean {
 	public void setExpenseValidator(IDataValidator<Expense> expenseValidator) {
 		this.expenseValidator = expenseValidator;
 	}
+	
 
 	private List<Category> categoryList;
 	private Date currentDate;
@@ -111,6 +119,7 @@ public class ManageExpenseActionBean extends BaseBean {
 			ValidationResult result = expenseValidator.validate(currentexpense, true);
 			if (result.isVerified()) {
 				System.out.println("in save");
+				getMonthlyPercentAndYearlyPercent();
 				expenseService.saveExpense(currentexpense);
 				addInfoMessage("Expense Added Successfully");
 				resetForm();
@@ -133,6 +142,7 @@ public class ManageExpenseActionBean extends BaseBean {
 			ValidationResult result = expenseValidator.validate(currentexpense, true);
 
 			if (result.isVerified()) {
+				getMonthlyPercentAndYearlyPercent();
 				currentexpense.setCategory(cat);
 				expenseService.updateExpense(currentexpense);
 				addInfoMessage("Expense Added Successfully");
@@ -202,6 +212,35 @@ public class ManageExpenseActionBean extends BaseBean {
 		createNewExpense();
 		clearSelectedCategory();
 		loadExpenses();
+	}
+	
+	
+	public void getMonthlyPercentAndYearlyPercent() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(currentexpense.getExpenseDate());
+		int currentmonth = cal.get(Calendar.MONTH) + 1;
+		int currentyear = cal.get(Calendar.YEAR);
+		
+		double monthlyExpense = dashBoardService.findTotalExpenseForMonth(currenseUserId, currentmonth , currentyear);
+        double yearlyExpense = dashBoardService.findTotalExpenseForYear(currenseUserId, currentyear);
+		
+		double monthlyBudget = dashBoardService.findMonthlyBudget(currenseUserId, currentmonth, currentyear);
+		double yearlyBudget = dashBoardService.findYearlyBudget(currenseUserId, currentyear);
+
+	    double monthlyPercent = monthlyBudget == 0 ? 0 : (int) ((monthlyExpense / monthlyBudget) * 100);
+	    double yearlyPercent = yearlyBudget == 0 ? 0 : (int) ((yearlyExpense / yearlyBudget) * 100);
+	    
+	    if(monthlyPercent >= 95.0) {
+	    	addWranningMessage("Monthly Budget is almost at budget limit");
+	    }else if(monthlyPercent > 100.0){
+	    	addWranningMessage("Monthly expense is already exceed monthly budget");
+	    }
+		
+	    if(yearlyPercent >= 95.0) {
+	    	addWranningMessage("Yearly Budget is almost at budget limit");
+	    }else if(yearlyPercent > 100.0){
+	    	addWranningMessage("Expense is alredy excced Yearly budget");
+	    }
 	}
 
 	public void clearSelectedCategory() {

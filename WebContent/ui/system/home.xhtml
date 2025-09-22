@@ -17,6 +17,8 @@
 </style>
 		<h:form id="dashboardForm">
 			<!-- top is for quick actions + alerts -->
+			<p:growl id="growl" globalOnly="true" escape="false" life="22000"
+				showDetail="true"></p:growl>
 			<p:panelGrid columns="2" columnClasses="ui-grid-col-9,ui-grid-col-3"
 				styleClass="ui-panelgrid-blank"
 				style="width:100%; gap:12px; margin-bottom:14px;">
@@ -26,9 +28,9 @@
 				<p:commandButton value="Set Budget" icon="pi pi-cog"
 					styleClass="ui-button-primary" action="expenseBudget" ajax="false" />
 
-				<div style="text-align: right;">
+				<!-- <div style="text-align: right;">
 					<p:messages id="msgs" autoUpdate="true" showDetail="true" />
-				</div>
+				</div> -->
 			</p:panelGrid>
 
 			<!-- summary cards of expense -->
@@ -43,13 +45,13 @@
 						value="#{ManageExpenseDashBoardActionBean.monthlyExpense} MMK "
 						style="font-size:18px; color:#e74c3c; font-weight:bold;">
 						<f:convertNumber type="number" groupingUsed="true"
-							minFractionDigits="1" />
+							maxFractionDigits="1" />
 					</h:outputText>
 					<h:outputText
 						value="Budget: #{ManageExpenseDashBoardActionBean.monthlyBudget} MMK"
 						style="font-size:12px; color:#666; margin-bottom:8px;">
 						<f:convertNumber type="number" groupingUsed="true"
-							minFractionDigits="1" />
+							maxFractionDigits="1" />
 					</h:outputText>
 					<p:progressBar
 						value="#{ManageExpenseDashBoardActionBean.monthlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.monthlyPercent}"

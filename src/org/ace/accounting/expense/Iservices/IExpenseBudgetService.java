@@ -1,8 +1,10 @@
 package org.ace.accounting.expense.Iservices;
 
+import java.util.Date;
 import java.util.List;
 
 import org.ace.accounting.expense.Entity.Budget;
+import org.ace.accounting.expense.Entity.BudgetDTO;
 import org.ace.accounting.expense.Entity.GlobalBudget;
 
 public interface IExpenseBudgetService {
@@ -27,5 +29,11 @@ public interface IExpenseBudgetService {
 	void updateGlobalBudget(GlobalBudget globalBudget);
 
 	void saveGlobalBudget(GlobalBudget globalBudget);
+
+	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate);
+
+	double findTotalCategoryBudgetForMonth(String userid, String id, Integer monthScope, Integer yearScope);
+
+	double findTotalCategoryBudgetForYear(String userid, String id, Integer yearScope);
 
 }

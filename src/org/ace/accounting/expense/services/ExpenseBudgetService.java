@@ -1,10 +1,12 @@
 package org.ace.accounting.expense.services;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.ace.accounting.expense.Entity.Budget;
+import org.ace.accounting.expense.Entity.BudgetDTO;
 import org.ace.accounting.expense.Entity.GlobalBudget;
 import org.ace.accounting.expense.IDAO.IExpenseBudgetDAO;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
@@ -124,6 +126,37 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 	public void saveGlobalBudget(GlobalBudget globalBudget) {
 		try {
 			expenseBudgetDAO.saveGlobalBudget(globalBudget);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate) {
+		try {
+			return expenseBudgetDAO.findBudgetByCategoryAndDate(id, expenseDate);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+		}
+		
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalCategoryBudgetForMonth(String userid, String categoryid, Integer monthScope, Integer yearScope) {
+		try {
+			return expenseBudgetDAO.findTotalCategoryBudgetForMonth(userid, categoryid, monthScope, yearScope);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalCategoryBudgetForYear(String userid, String categoryid, Integer yearScope) {
+		try {
+			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, categoryid, yearScope);
 		} catch (DAOException e) {
 			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
 		}

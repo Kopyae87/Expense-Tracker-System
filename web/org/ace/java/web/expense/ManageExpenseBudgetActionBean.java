@@ -19,6 +19,7 @@ import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.GlobalBudget;
 import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
 import org.ace.accounting.expense.validator.IBudgetValidator;
+import org.ace.accounting.expense.validator.IGlobalBudgetValidator;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
@@ -37,9 +38,9 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	}
 
 	@ManagedProperty(value = "#{GlobalBudgetValidator}")
-	private IBudgetValidator<GlobalBudget> globalBudgetValidator;
+	private IGlobalBudgetValidator<GlobalBudget> globalBudgetValidator;
 
-	public void setGlobalBudgetValidator(IBudgetValidator<GlobalBudget> globalBudgetValidator) {
+	public void setGlobalBudgetValidator(IGlobalBudgetValidator<GlobalBudget> globalBudgetValidator) {
 		this.globalBudgetValidator = globalBudgetValidator;
 	}
 
@@ -90,8 +91,8 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 
 	public void saveBudget() {
 		try {
-			System.out.println("in the update budget");
-			ValidationResult result = budgetValidator.validate(currentbudget, timevalue);
+			System.out.println("in the save budget");
+			ValidationResult result = budgetValidator.validate(currentbudget, timevalue, currentUserId);
 			if (result.isVerified()) {
 				accordingToTimeValue();
 				currentbudget.setUser(user);
@@ -127,7 +128,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void updateBudget() {
 		try {
 			System.out.println("in the update budget");
-			ValidationResult result = budgetValidator.validate(currentbudget, timevalue);
+			ValidationResult result = budgetValidator.validate1(currentbudget, timevalue, currentUserId);
 			if (result.isVerified()) {
 				expenseBudgetService.updateBudget(currentbudget);
 				resetForm();
@@ -239,7 +240,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void saveGlobalBudget() {
 		try {
 			System.out.println("in the update budget");
-			ValidationResult result = globalBudgetValidator.validate(globalBudget, globalTimeValue);
+			ValidationResult result = globalBudgetValidator.validate(globalBudget, globalTimeValue, currentUserId);
 			if (result.isVerified()) {
 				accordingToGlobalTimeValue();
 				globalBudget.setUser(user);

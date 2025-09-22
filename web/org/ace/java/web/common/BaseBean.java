@@ -124,7 +124,7 @@ public class BaseBean {
 	 */
 
     protected void addWranningMessage(String message) {
-        getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, message, message));
+        getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, message, ""));
     }
 
     protected void handleSysException(SystemException systemException) {

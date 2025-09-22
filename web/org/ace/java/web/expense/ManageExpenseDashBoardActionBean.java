@@ -61,8 +61,8 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 	
 	private double monthlyBudget; // Example fixed monthly budget
 	private double yearlyBudget; // Example fixed yearly budget
-	private int monthlyPercent;
-	private int yearlyPercent;
+	private double monthlyPercent;
+	private double yearlyPercent;
 	private String topCategoryName;
 	private double topCategoryExpense;
 	private int currentmonth;
@@ -91,18 +91,20 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
         yearlyExpense = dashBoardService.findTotalExpenseForYear(userId, currentyear);
         totalTransactions = dashBoardService.countExpenses(userId);
 
-		// Example: fixed budget 500000 MMK
 		monthlyBudget = dashBoardService.findMonthlyBudget(userId, currentmonth, currentyear);
 		yearlyBudget = dashBoardService.findYearlyBudget(userId, currentyear);
 		remainingBudget = monthlyBudget - monthlyExpense;
 
-	    monthlyPercent = monthlyBudget == 0 ? 0 : (int) ((monthlyExpense / monthlyBudget) * 100);
-	    yearlyPercent = yearlyBudget == 0 ? 0 : (int) ((yearlyExpense / yearlyBudget) * 100);
-		
-        // Load recent 10 expenses
+	    monthlyPercent = monthlyBudget == 0 ? 0 : (double) ((monthlyExpense / monthlyBudget) * 100);
+	    yearlyPercent = yearlyBudget == 0 ? 0 : (double) ((yearlyExpense / yearlyBudget) * 100);
+	    
+	    monthlyPercent = Math.round(monthlyPercent * 10.0) / 10.0;
+	    yearlyPercent = Math.round(yearlyPercent * 10.0) / 10.0;
+	    
+        // load recent 10 expenses
         recentExpenses = expenseService.findLatestTenExpenses(userId);
 
-        // Load category budgets (example: per-category utilization)
+        // load category budgets per-category utilization)
         categoryBudgetsMonthly = new ArrayList<>();
         List<Category> categories = expenseService.findAllCategory();
         for (Category c : categories) {
@@ -112,7 +114,7 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
             categoryBudgetsMonthly.add(new CategoryBudget(c.getName(), spent, limit, percentSpent));
         }
         
-        // Load category budgets - Yearly
+        // load category budgets by Yearly
         categoryBudgetsYearly = new ArrayList<>();
         for (Category c : categories) {
             double spent = dashBoardService.findTotalExpenseByCategoryForYear(userId, c.getId(), currentyear);
@@ -283,19 +285,19 @@ public class ManageExpenseDashBoardActionBean extends BaseBean {
 		this.yearlyBudget = yearlyBudget;
 	}
 
-	public int getMonthlyPercent() {
+	public double getMonthlyPercent() {
 		return monthlyPercent;
 	}
 
-	public void setMonthlyPercent(int monthlyPercent) {
+	public void setMonthlyPercent(double monthlyPercent) {
 		this.monthlyPercent = monthlyPercent;
 	}
 
-	public int getYearlyPercent() {
+	public double getYearlyPercent() {
 		return yearlyPercent;
 	}
 
-	public void setYearlyPercent(int yearlyPercent) {
+	public void setYearlyPercent(double yearlyPercent) {
 		this.yearlyPercent = yearlyPercent;
 	}
 

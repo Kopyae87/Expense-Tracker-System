@@ -1,8 +1,10 @@
 package org.ace.accounting.expense.IDAO;
 
+import java.util.Date;
 import java.util.List;
 
 import org.ace.accounting.expense.Entity.Budget;
+import org.ace.accounting.expense.Entity.BudgetDTO;
 import org.ace.accounting.expense.Entity.GlobalBudget;
 
 public interface IExpenseBudgetDAO {
@@ -36,5 +38,12 @@ public interface IExpenseBudgetDAO {
 	void updateGlobalBuget(GlobalBudget globalBudget);
 
 	void saveGlobalBudget(GlobalBudget globalBudget);
+	
+
+	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate);
+
+	double findTotalCategoryBudgetForMonth(String userid, String id, Integer monthScope, Integer yearScope);
+
+	double findTotalCategoryBudgetForYear(String userid, String id, Integer yearScope);
 
 }

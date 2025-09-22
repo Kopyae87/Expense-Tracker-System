@@ -41,37 +41,6 @@
 						</p:panelGrid>
 					</p:panelGrid>
 
-					<!-- 					<p:panelGrid id="scopePanel" columns="2"
-						columnClasses="ui-grid-col-3,ui-grid-col-9"
-						styleClass="ui-panelgrid-blank " style="width: 100%;">
-						<h:outputLabel for="scope" value="Time Scope:" />
-						<p:panelGrid columns="2"
-							columnClasses="ui-grid-col-6,ui-grid-col-6" style="width: 100%;">
-							<p:selectOneMenu style="width:50%;"
-								value="#{ManageExpenseBudgetActionBean.currentbudget.yearScope}">
-								<f:selectItem itemLabel="Select Year" itemValue=""
-									noSelectionOption="true" />
-								<f:selectItems
-									value="#{ManageExpenseBudgetActionBean.yearsScopeList}"
-									var="scope" itemLabel="#{scope}" itemValue="#{scope}" />
-								<p:ajax update=""></p:ajax>
-							</p:selectOneMenu>
-							<p:outputPanel id="scopeWrapper">
-								<p:outputPanel id="monthPanel" layout="block"
-									rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}">
-									<p:selectOneMenu id="monthSelect"
-										value="#{ManageExpenseBudgetActionBean.currentbudget.monthScope}">
-										<f:selectItem itemLabel="Select Month" itemValue=""
-											noSelectionOption="true" />
-										<f:selectItems value="#{ManageExpenseBudgetActionBean.months}"
-											var="scope" itemLabel="#{scope}" itemValue="#{scope.value}" />
-										<p:ajax update=":addExpenseBudgetForm:budgetAmountWrapper"></p:ajax>
-									</p:selectOneMenu>
-								</p:outputPanel>
-							</p:outputPanel>
-						</p:panelGrid>
-					</p:panelGrid> -->
-
 					<p:panelGrid columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
@@ -133,10 +102,12 @@
 								style="font-weight:bold; font-size:14px;" />
 							<p:commandButton value="Export all to excel"
 								styleClass="ui-button-primary"
-								action="#{ManageEnquiryExpenseActionBean.exportToExcel}" ajax="false"/>
+								action="#{ManageEnquiryExpenseActionBean.exportToExcel}"
+								ajax="false" />
 							<p:commandButton value="Generate as report"
 								styleClass="ui-button-primary"
-								action="#{ManageEnquiryExpenseActionBean.generateExpenseReport}" ajax="false"/>
+								action="#{ManageEnquiryExpenseActionBean.generateExpenseReport}"
+								ajax="false" />
 							<!-- <p:commandButton value="Export to Excel"
 								styleClass="ui-button-primary" ajax="false">
 								<p:dataExporter type="xlsx" target="allExpenseTable"
@@ -168,6 +139,12 @@
 						<h:outputText value="#{expense.paymentType}" />
 					</p:column>
 
+					<p:column headerText="Actions">
+						<p:commandButton value="Details"
+							action="#{ManageEnquiryExpenseActionBean.viewExpenseDetails(expense)}"
+							update="allExpenseTableForm:enquiryDetailDialogPanel"
+							oncomplete="PF('enquiryDetailDialog').show()" process="@this" />
+					</p:column>
 					<!-- <p:column headerText="Actions">
 						<p:commandButton value="Edit" process="@this"></p:commandButton>
 						<p:commandButton value="Delete"
@@ -182,6 +159,99 @@
 					</p:column> -->
 				</p:dataTable>
 			</p:panel>
+
+			<p:dialog id="enquiryDetailDialogPanel" header="Enquiry Details"
+				widgetVar="enquiryDetailDialog" modal="true" resizable="false"
+				width="600" appendTo="@(body)">
+
+				<p:panel id="detilspanel" style="height: 400px;">
+					<p:tabView>
+						<p:tab title="Policy Info">
+							<h:panelGrid columns="2" cellpadding="5">
+
+								<h:outputText value="Category:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.category.name}" />
+
+								<h:outputText value="Amount:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.amount}" />
+
+								<h:outputText value="Expense Date:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.expenseDate}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+
+								<h:outputText value="Payment Type:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.paymentType}" />
+
+								<h:outputText value="Description:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.description}" />
+							</h:panelGrid>
+						</p:tab>
+
+						<p:tab title="Category Info">
+							<h:panelGrid columns="2" cellpadding="5">
+								<h:outputText value="Category Name:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedCategory.name}" />
+
+								<h:outputText value="Description:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.selectedCategory.description}" />
+
+								<!--<h:outputText value="Created Date:" />
+							 <h:outputText
+								value="#{ManageEnquiryExpenseActionBean.selectedCategory.createdDate}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText> -->
+							</h:panelGrid>
+						</p:tab>
+
+						<p:tab title="Budget Info">
+							<h:panelGrid columns="2" cellpadding="5"
+								rendered="#{not empty ManageEnquiryExpenseActionBean.correspondingBudgets}">
+
+								<h:outputText value="Category:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryName}" />
+
+								<h:outputText value="Budget Year:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.yearScope}" />
+
+								<h:outputText value="Budget Month:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.monthScope}" />
+
+								<h:outputText value="Category Monthly Limit:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryMonthlyLimit}" />
+
+								<h:outputText value="Category Yearly Limit:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryYearlyLimit}" />
+
+								<h:outputText value="Global Monthly Limit:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalMonthlyLimit}" />
+
+								<h:outputText value="Global Yearly Limit:" />
+								<h:outputText
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalYearlyLimit}" />
+							</h:panelGrid>
+
+							<h:outputText value="No budget set for this period."
+								rendered="#{empty ManageEnquiryExpenseActionBean.correspondingBudgets}"
+								style="color:red;" />
+						</p:tab>
+					</p:tabView>
+				</p:panel>
+
+			</p:dialog>
 		</h:form>
 
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

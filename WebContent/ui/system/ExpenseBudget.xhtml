@@ -315,15 +315,17 @@
 										<p:outputLabel value="Yearly Budget:"
 											styleClass="input-label mandatory"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'yearly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
-										<p:inputText
-											value="#{ManageExpenseBudgetActionBean.globalBudget.yearlyLimit}"
+										<p:inputNumber
+											value="#{ManageExpenseBudgetActionBean.globalBudget.yearlyLimit}" maxValue="1000000000" required="true" mode="decimal"
+											decimalPlaces="0"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'yearly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
 
 										<p:outputLabel value="Monthly Budget:"
 											styleClass="input-label mandatory"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'monthly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
-										<p:inputText
-											value="#{ManageExpenseBudgetActionBean.globalBudget.monthlyLimit}"
+										<p:inputNumber 
+											value="#{ManageExpenseBudgetActionBean.globalBudget.monthlyLimit}" maxValue="1000000000" required="true" mode="decimal"
+											decimalPlaces="0"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'monthly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
 									</p:panelGrid>
 

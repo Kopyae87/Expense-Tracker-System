@@ -1,12 +1,9 @@
 package org.ace.accounting.expense.Iservices;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
-import org.ace.accounting.expense.Entity.ExpenseUser;
 
 public interface IExpenseService {
 	public Boolean deleteExpense(Expense e);
@@ -22,6 +19,7 @@ public interface IExpenseService {
 	public Boolean updateExpense(Expense currentexpense);
 
 	List<Expense> findLatestTenExpenses(String userid);
+
 
 	
 

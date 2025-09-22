@@ -16,10 +16,12 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ace.accounting.expense.Entity.BudgetDTO;
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.PaymentType;
 import org.ace.accounting.expense.Iservices.IEnquiryExpenseService;
+import org.ace.accounting.expense.Iservices.IExpenseBudgetService;
 import org.ace.accounting.expense.Iservices.IExpenseService;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
@@ -54,6 +56,13 @@ public class ManageEnquiryExpenseActionBean extends BaseBean {
 		this.enquiryExpenseService = enquiryExpenseService;
 	}
 
+	@ManagedProperty(value = "#{ExpenseBudgetService}")
+	private IExpenseBudgetService expenseBudgetService;
+
+	public void setExpenseBudgetService(IExpenseBudgetService expenseBudgetService) {
+		this.expenseBudgetService = expenseBudgetService;
+	}
+
 	private String categoryId;
 	private String paymentType;
 	private Date startDate;
@@ -63,6 +72,11 @@ public class ManageEnquiryExpenseActionBean extends BaseBean {
 	private Category category;
 	private String userid;
 	private User currentUser;
+
+	/* details */
+	private Expense selectedExpense;
+	private Category selectedCategory;
+	private BudgetDTO correspondingBudgets;
 
 	@PostConstruct
 	public void init() {
@@ -132,107 +146,81 @@ public class ManageEnquiryExpenseActionBean extends BaseBean {
 		}
 	}
 
-//	public void generateReport() {
-//		if (expenseList == null || expenseList.isEmpty()) {
-//			System.out.println("No expenses to generate report");
-//			return;
-//		}
-//
-//		try {
-//			// Path to the compiled .jasper file
-////			String jasperPath = "/accounting/report-template/ExpenseReport.jasper\""; // adjust path if needed
-////			InputStream jasperStream = getClass().getResourceAsStream("/accounting/report-template/ExpenseReport.jasper");
-////			if (jasperStream == null) {
-////			    System.err.println("Jasper file not found in classpath!");
-////			    return;
-////			}
-//			
-//			InputStream jrxmlStream = getClass().getResourceAsStream("/accounting/report-template/ExpenseReport.jrxml");
-//			if (jrxmlStream == null) {
-//			    System.err.println("JRXML file not found!");
-//			    return;
-//			}
-//
-//			// Compile
-//			JasperReport jasperReport = JasperCompileManager.compileReport(jrxmlStream);
-//			//Parameters map (must match parameters defined in your .jrxml/.jasper)
-//			Map<String, Object> parameters = new HashMap<>();
-////			parameters.put("Date", "September 2025"); // example, can be dynamic
-//
-//			// Wrap your list in JRBeanCollectionDataSource
-//			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(expenseList);
-//
-//			// Fill the report using precompiled jasper
-//			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport , parameters, dataSource);
-//
-//			// Export to PDF
-//			String outputPdf = "ExpenseReport.pdf";
-//			JasperExportManager.exportReportToPdfFile(jasperPrint, outputPdf);
-//
-//			System.out.println("Report generated successfully: " + outputPdf);
-//
-//		} catch (JRException e) {
-//			e.printStackTrace();
-//			System.err.println("Failed to generate report: " + e.getMessage());
-//		}
-//	}
+	public void viewExpenseDetails(Expense expense) {
+		if (expense != null && expense.getId() != null) {
+			try {
+				this.selectedExpense = expense;
+
+				// fetch category details
+				this.selectedCategory = expense.getCategory();
+
+				// fetch budget for this category & date
+				correspondingBudgets = expenseBudgetService.findBudgetByCategoryAndDate(expense.getCategory().getId(),
+						expense.getExpenseDate());
+				/* this.selectedExpense = expenseService.findByExpenseId(expense.getId()); */
+				System.out.println("Expense loaded: " + selectedExpense.getDescription());
+			} catch (Exception e) {
+				e.printStackTrace();
+				addErrorMessage(null, "Failed to load expense details");
+			}
+		}
+	}
 
 	public void generateExpenseReport() {
 
-	    if (expenseList == null || expenseList.isEmpty()) {
-	        addErrorMessage(null, "No expenses to generate report");
-	        return;
-	    }
+		if (expenseList == null || expenseList.isEmpty()) {
+			addErrorMessage(null, "No expenses to generate report");
+			return;
+		}
 
-	    FacesContext facesContext = FacesContext.getCurrentInstance();
-        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
 //	    String dirPath = System.getProperty("user.home") + "/ExpenseReports/";
-	    String dirPath = "D:/reports/"; 
-	    String fileName = "ExpenseReport_" + new SimpleDateFormat("MMdd_HHmm").format(new Date());
-	    String pdfFilePath = dirPath + fileName + ".pdf";
-	    System.out.println("generateExpenseReport: Writing PDF to " + pdfFilePath);
+		String dirPath = "D:/reports/";
+		String fileName = "ExpenseReport_" + new SimpleDateFormat("MMdd_HHmm").format(new Date());
+		String pdfFilePath = dirPath + fileName + ".pdf";
+		System.out.println("generateExpenseReport: Writing PDF to " + pdfFilePath);
 
-	    try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
-	            .getResourceAsStream("Expense-Tracker.jrxml")) {
+		try (InputStream inputStream = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream("Expense-Tracker.jrxml")) {
 
-	        if (inputStream == null) {
-	            addErrorMessage(null, "Report design file not found");
-	            return;
-	        }
-	        Map<String, Object> parameters = new HashMap<>();
-	        parameters.put("ReportTitle", "Monthly Expense Report"); // optional
-	        parameters.put("GeneratedDate", new Date());            // optional
+			if (inputStream == null) {
+				addErrorMessage(null, "Report design file not found");
+				return;
+			}
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("ReportTitle", "Monthly Expense Report"); // optional
+			parameters.put("GeneratedDate", new Date()); // optional
 
-	        // Use your expenseList as data source
-	        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(this.expenseList);
+			// Use your expenseList as data source
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(this.expenseList);
 
-	        JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
-	        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+			JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
+			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 
-	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
 			/*
 			 * File pdfFile = new File(pdfFilePath);
 			 * FileUtils.forceMkdir(pdfFile.getParentFile());
 			 */
 
-	       // JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFilePath);
+			// JasperExportManager.exportReportToPdfFile(jasperPrint, pdfFilePath);
 
-	        response.reset();
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + ".pdf\"");
+			response.reset();
+			response.setContentType("application/pdf");
+			response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + ".pdf\"");
 
-            JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
-            facesContext.responseComplete();
-	        addInfoMessage(null, "Expense Report generated successfully!");
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        addErrorMessage(null, "Expense Report Generation Failed: " + e.getMessage());
-	    }
+			JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
+			facesContext.responseComplete();
+			addInfoMessage(null, "Expense Report generated successfully!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			addErrorMessage(null, "Expense Report Generation Failed: " + e.getMessage());
+		}
 	}
 
-	
 	public void loadExpenses() {
 		expenseList = expenseService.findAllExpense(userid);
 	}
@@ -322,4 +310,29 @@ public class ManageEnquiryExpenseActionBean extends BaseBean {
 		this.currentUser = currentUser;
 	}
 
+	public Expense getSelectedExpense() {
+		return selectedExpense;
+	}
+
+	public void setSelectedExpense(Expense selectedExpense) {
+		this.selectedExpense = selectedExpense;
+	}
+
+	public Category getSelectedCategory() {
+		return selectedCategory;
+	}
+
+	public void setSelectedCategory(Category selectedCategory) {
+		this.selectedCategory = selectedCategory;
+	}
+
+	public BudgetDTO getCorrespondingBudgets() {
+		return correspondingBudgets;
+	}
+
+	public void setCorrespondingBudgets(BudgetDTO correspondingBudgets) {
+		this.correspondingBudgets = correspondingBudgets;
+	}
+
+	
 }

@@ -68,6 +68,16 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear) {
+		try {
+			return dashBoardDAO.findTotalExpenseByCategoryForYear(userId, id, currentyear);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
+	}
+	
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Map<Integer, Double> findMonthlyTrend(String userId, int currentYear) {
 		try {
 			return dashBoardDAO.findMonthlyTrend(userId);
@@ -86,15 +96,7 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 		}
 	}
 
-	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear) {
-		try {
-			return dashBoardDAO.findTotalExpenseByCategoryForYear(userId, id, currentyear);
-		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
-		}
-	}
+
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)

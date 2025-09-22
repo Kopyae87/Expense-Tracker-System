@@ -148,7 +148,7 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 			q.setParameter("month", month);
 			q.setParameter("year", year);
 			List<Number> results = q.getResultList();
-	        if (results.isEmpty()) {
+	        if (results.isEmpty() || results.get(0) == null) {
 	            return 0.0;
 	        }
 	        return results.get(0).doubleValue();
@@ -167,7 +167,7 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 			q.setParameter("userId", userId);
 			q.setParameter("year", year);
 			List<Number> results = q.getResultList();
-	        if (results.isEmpty()) {
+	        if (results.isEmpty() || results.get(0) == null) {
 	            return 0.0;
 	        }
 	        return results.get(0).doubleValue();
