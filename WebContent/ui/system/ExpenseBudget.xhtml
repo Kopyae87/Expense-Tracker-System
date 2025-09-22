@@ -67,7 +67,7 @@
 												noSelectionOption="true" />
 											<f:selectItem itemLabel="Monthly" itemValue="monthly" />
 											<f:selectItem itemLabel="Yearly" itemValue="yearly" />
-											<f:selectItem itemLabel="Both" itemValue="both" />
+											<!-- <f:selectItem itemLabel="Both" itemValue="both" /> -->
 											<p:ajax process="@this" update="scopePanel amountsPanel"></p:ajax>
 										</p:selectOneMenu>
 									</p:panelGrid>
@@ -122,21 +122,19 @@
 									style="width:50%; margin-top:10px;"
 									styleClass="ui-panelgrid-blank">
 									<p:panelGrid columns="2" style="width:100%;"
-										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly' or ManageExpenseBudgetActionBean.timevalue == 'both'}">
+										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly'}">
 										<p:outputLabel value="Yearly Budget:" styleClass="input-label mandatory"/>
-										<p:inputNumber 
+										<p:inputText 
 											value="#{ManageExpenseBudgetActionBean.currentbudget.yearlyLimit}"
-											maxValue="1000000000" required="true" mode="decimal"
-											decimalPlaces="0" />
+											 />
 									</p:panelGrid>
 
 									<p:panelGrid columns="2" style="width:100%;"
-										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' or ManageExpenseBudgetActionBean.timevalue == 'both'}">
+										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' }">
 										<p:outputLabel value="Monthly Budget: "  styleClass="input-label mandatory"/>
-										<p:inputNumber
+										<p:inputText
 											value="#{ManageExpenseBudgetActionBean.currentbudget.monthlyLimit}"
-											maxValue="1000000000" required="true" mode="decimal"
-											decimalPlaces="0" />
+											/>
 
 									</p:panelGrid>
 
@@ -183,11 +181,11 @@
 									<h:outputText
 										value="#{b.monthScope != null ? b.monthScope : '-'}" />
 								</p:column>
-								<p:column headerText="Yearly">
-									<h:outputText value="#{b.yearlyLimit}" />
+								<p:column headerText="Yearly Budget (MMK)">
+									<h:outputText value="#{b.yearlyLimit != null ? b.yearlyLimit : '-'}" />
 								</p:column>
-								<p:column headerText="Monthly">
-									<h:outputText value="#{b.monthlyLimit}" />
+								<p:column headerText="Monthly Budget (MMK)">
+									<h:outputText value="#{b.monthlyLimit != null ? b.monthlyLimit : '-'}" />
 								</p:column>
 								<p:column headerText="Desc">
 									<h:outputText value="#{b.description}" />
@@ -272,7 +270,7 @@
 												noSelectionOption="true" />
 											<f:selectItem itemLabel="Monthly" itemValue="monthly" />
 											<f:selectItem itemLabel="Yearly" itemValue="yearly" />
-											<f:selectItem itemLabel="Both" itemValue="both" />
+											<!-- <f:selectItem itemLabel="Both" itemValue="both" /> -->
 											<p:ajax update="globalFormWrapper" />
 										</p:selectOneMenu>
 									</p:panelGrid>

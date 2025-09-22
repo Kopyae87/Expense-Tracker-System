@@ -1,7 +1,5 @@
 package org.ace.accounting.expense.validator;
 
-import java.util.Calendar;
-
 import javax.annotation.Resource;
 
 import org.ace.accounting.common.validation.ValidationResult;
@@ -42,42 +40,36 @@ public class CategoryBudgetValidator implements IBudgetValidator<Budget> {
 			result.addErrorMessage(formId + ":scopePanel", "Year is required.");
 		}
 
-		if ("monthly".equals(timevalue) || "both".equals(timevalue)) {
-			if (budget.getMonthScope() == null) {
-				result.addErrorMessage(formId + ":monthSelect", "Month scope is required.");
-			}
-			if (budget.getMonthlyLimit() == null) {
-				result.addErrorMessage(formId + ":amountsPanel", "Monthly Budget is required.");
-			} else if (budget.getMonthlyLimit() <= 0) {
-				result.addErrorMessage(formId + ":amountsPanel", "Monthly Budget must be greater than 0.");
-			}
+		if ("monthly".equals(timevalue)) {
+		    if (budget.getMonthScope() == null) {
+		        result.addErrorMessage(formId + ":monthSelect", "Month scope is required.");
+		    }
+		    if (budget.getMonthlyLimit() == null) {
+		        result.addErrorMessage(formId + ":amountsPanel", "Monthly Budget is required.");
+		    } else if (budget.getMonthlyLimit() <= 0) {
+		        result.addErrorMessage(formId + ":amountsPanel", "Monthly Budget must be greater than 0.");
+		    }
 		}
 
-		if ("yearly".equals(timevalue) || "both".equals(timevalue)) {
-			if (budget.getYearlyLimit() == null) {
-				result.addErrorMessage(formId + ":amountsPanel", "Yearly Budget is required.");
-			} else if (budget.getYearlyLimit() <= 0) {
-				result.addErrorMessage(formId + ":amountsPanel", "Yearly Budget must be greater than 0.");
-			}
+		if ("yearly".equals(timevalue)) {
+		    if (budget.getYearlyLimit() == null) {
+		        result.addErrorMessage(formId + ":amountsPanel", "Yearly Budget is required.");
+		    } else if (budget.getYearlyLimit() <= 0) {
+		        result.addErrorMessage(formId + ":amountsPanel", "Yearly Budget must be greater than 0.");
+		    }
 		}
-
-		if ("both".equals(timevalue)) {
-			if (budget.getMonthlyLimit() > budget.getYearlyLimit()) {
-				result.addErrorMessage(formId, "Monthly Budget can't larger than Yearly Budget");
-			}
-
-		}
+		
 
 		double globalMonthlyLimit = 0;
 		double globalYearlyLimit = 0;
 		double totalCategoryMonthly = 0;
 		double totalCategoryYearly = 0;
-		if ("monthly".equals(timevalue) || "both".equals(timevalue) && budget.getMonthScope() != null) {
+		if ("monthly".equals(timevalue) || budget.getMonthScope() != null) {
 			globalMonthlyLimit = categoryBudgetService.findMonthlyBudget(userid, budget.getMonthScope(),
 					budget.getYearScope());
 		}
 
-		if ("yearly".equals(timevalue) || "both".equals(timevalue)) {
+		if ("yearly".equals(timevalue)) {
 			globalYearlyLimit = categoryBudgetService.findYearlyBudget(userid, budget.getYearScope());
 		}
 
@@ -107,15 +99,19 @@ public class CategoryBudgetValidator implements IBudgetValidator<Budget> {
 		if (globalMonthlyLimit > 0 && budget.getMonthlyLimit() != null
 				&& (totalCategoryMonthly + budget.getMonthlyLimit() > globalMonthlyLimit)) {
 			result.addErrorMessage(formId + ":amountsPanel",
-					"Monthly budget exceeds global limit (" + globalMonthlyLimit + ")");
+					"Monthly budget exceeds global budget limit (" + globalMonthlyLimit + "MMK )");
 		}
 
 		if (globalYearlyLimit > 0 && budget.getYearlyLimit() != null
 				&& (totalCategoryYearly + budget.getYearlyLimit() > globalYearlyLimit)) {
 			result.addErrorMessage(formId + ":amountsPanel",
-					"Yearly budget exceeds global limit (" + globalYearlyLimit + ")");
+					"Yearly budget exceeds global budget limit (" + globalYearlyLimit + "MMK )");
 		}
 
+//		Budget existBudget = expenseBudgetService.findIndenticalBudget(budget);
+//		if (existBudget != null) {
+//			result.addErrorMessage(formId, "The budget is already exist.");
+//		}
 		return result;
 	}
 		
@@ -181,16 +177,6 @@ public class CategoryBudgetValidator implements IBudgetValidator<Budget> {
 			globalYearlyLimit = categoryBudgetService.findYearlyBudget(userid, budget.getYearScope());
 		}
 
-		// --- Total existing category budget for this period ---
-		
-//		  totalCategoryMonthly =
-//		  expenseBudgetService.findTotalCategoryBudgetForMonth(userid,
-//		  budget.getCategory().getId(), budget.getMonthScope(), budget.getYearScope());
-//		  totalCategoryYearly =
-//		  expenseBudgetService.findTotalCategoryBudgetForYear(userid,
-//		  budget.getCategory().getId(), budget.getYearScope());
-		 
-
 		if ("monthly".equals(timevalue) || "both".equals(timevalue)) {
 			if (budget.getMonthScope() != null) {
 				totalCategoryMonthly = budget.getMonthlyLimit();
@@ -205,15 +191,19 @@ public class CategoryBudgetValidator implements IBudgetValidator<Budget> {
 		if (globalMonthlyLimit > 0 && budget.getMonthlyLimit() != null
 				&& (totalCategoryMonthly + budget.getMonthlyLimit() > globalMonthlyLimit)) {
 			result.addErrorMessage(formId + ":amountsPanel",
-					"Monthly budget exceeds global limit (" + globalMonthlyLimit + ")");
+					"Monthly budget exceeds global budget limit (" + globalMonthlyLimit + "MMK)");
 		}
 
 		if (globalYearlyLimit > 0 && budget.getYearlyLimit() != null
 				&& (totalCategoryYearly + budget.getYearlyLimit() > globalYearlyLimit)) {
 			result.addErrorMessage(formId + ":amountsPanel",
-					"Yearly budget exceeds global limit (" + globalYearlyLimit + ")");
+					"Yearly budget exceeds global budget limit (" + globalYearlyLimit + "MMK)");
 		}
 
+//		Budget existBudget = expenseBudgetService.findIndenticalBudget(budget);
+//		if (existBudget != null) {
+//			result.addErrorMessage(formId, "The budget is already exist.");
+//		}
 		return result;
 	}
 

@@ -41,9 +41,19 @@ public interface IExpenseBudgetDAO {
 	
 
 	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate);
+	
+	/*
+	 * 
+	 *  validator 
+	 *  
+	 *  */
 
 	double findTotalCategoryBudgetForMonth(String userid, String id, Integer monthScope, Integer yearScope);
 
 	double findTotalCategoryBudgetForYear(String userid, String id, Integer yearScope);
+
+	double findTotalCategoryBudgetForYear(String userid, Integer monthScope, Integer yearScope);
+
+	double findTotalCategoryBudgetForYear(String userid, Integer yearScope);
 
 }

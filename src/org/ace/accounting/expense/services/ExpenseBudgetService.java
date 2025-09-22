@@ -162,4 +162,24 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 		}
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalAllCategoryBudgetForMonth(String userid, Integer monthScope, Integer yearScope) {
+		try {
+			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, monthScope, yearScope);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findTotalAllCategoryBudgetForYear(String userid, Integer yearScope) {
+		try {
+			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, yearScope);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+		}
+	}
+
 }

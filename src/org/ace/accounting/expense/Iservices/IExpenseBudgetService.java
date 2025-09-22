@@ -31,9 +31,17 @@ public interface IExpenseBudgetService {
 	void saveGlobalBudget(GlobalBudget globalBudget);
 
 	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate);
-
+	
+	/*
+	 * validator
+	 * 
+	 */
 	double findTotalCategoryBudgetForMonth(String userid, String id, Integer monthScope, Integer yearScope);
 
 	double findTotalCategoryBudgetForYear(String userid, String id, Integer yearScope);
+
+	double findTotalAllCategoryBudgetForMonth(String userid, Integer monthScope, Integer yearScope);
+
+	double findTotalAllCategoryBudgetForYear(String userid, Integer yearScope);
 
 }
