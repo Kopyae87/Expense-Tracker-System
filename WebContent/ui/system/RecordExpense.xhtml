@@ -6,7 +6,7 @@
 	template="/common/commonLayout.xhtml">
 	<ui:define name="content">
 		<h:form id="addExpenseForm" style="color: black;">
-			<p:growl escape="false" globalOnly="true" life="5000"
+			<p:growl escape="false" globalOnly="true" life="10000"
 				showDetail="true" />
 			<p:panel id="addExpenseFormPanel"
 				style="margin: 0 auto; width: 70%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
@@ -15,22 +15,11 @@
 					columnClasses="ui-grid-col-6,ui-grid-col-6,"
 					styleClass="ui-panelgrid-blank"
 					style="width: 100%; text-align:left;">
-
-
-					<!-- 		<h:outputLabel for="category" value="Category: " />
-					<p:selectOneMenu id="category" style="width:80%;"
-						value="#{ManageExpenseActionBean.selectedCategoryId}"
-						required="true">
-						<f:selectItem itemLabel="Select Category" itemValue=""
-							noSelectionOption="true" />
-						<f:selectItems value="#{ManageExpenseActionBean.categoryList}"
-							var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
-					</p:selectOneMenu> -->
-
 					<p:panelGrid columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
-						<h:outputLabel for="categoryPanelGroup" value="Category: " />
+						<h:outputLabel for="categoryPanelGroup" value="Category: "
+							styleClass="input-label mandatory" />
 						<p:panelGrid styleClass="ui-panelgrid-blank"
 							id="categoryPanelGroup">
 							<div style="margin-top: -5px; margin-left: -5px;"
@@ -45,7 +34,7 @@
 									</p:commandButton>
 									<p:inputText id="categoryId"
 										value="#{ManageExpenseActionBean.cat.id == null ? '' : ManageExpenseActionBean.cat.name}"
-										readonly="true" style="width: 40%" />
+										readonly="true" style="width: 40%"/>
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageExpenseActionBean.clearSelectedCategory()}"
 										process="@this" update="categoryId" />
@@ -55,19 +44,22 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
-						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						columnClasses="ui-grid-col-4,ui-grid-col-8"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
-						<h:outputLabel for="expensedate" value="Expense Date: " />
+						<h:outputLabel for="expensedate" value="Expense Date: "
+							styleClass="input-label mandatory" />
 						<p:datePicker id="expensedate" style="width: 60%"
 							maxdate="#{ManageExpenseActionBean.maxDate}"
 							value="#{ManageExpenseActionBean.currentExpense.expenseDate}"
-							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker> 
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"
+							></p:datePicker>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
-						<h:outputLabel for="amount" value="Amount : " />
+						<h:outputLabel for="amount" value="Amount : "
+							styleClass="input-label mandatory" />
 						<p:inputText
 							value="#{ManageExpenseActionBean.currentExpense.amount}"
 							style="width: 60%">
@@ -75,12 +67,12 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
-						columnClasses="ui-grid-col-3,ui-grid-col-9"
+						columnClasses="ui-grid-col-4,ui-grid-col-8"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
-						<h:outputLabel for="paymenttype" value="PaymentType: " />
+						<h:outputLabel for="paymenttype" value="PaymentType: "
+							styleClass="input-label mandatory" />
 						<p:selectOneMenu id="paymenttype" style="width: 60%"
-							value="#{ManageExpenseActionBean.currentExpense.paymentType}"
-							required="true">
+							value="#{ManageExpenseActionBean.currentExpense.paymentType}">
 							<f:selectItem itemLabel="Select Payment Method" itemValue=""
 								noSelectionOption="true" />
 							<f:selectItems value="#{ManageExpenseActionBean.paymenttypes}"
@@ -97,19 +89,19 @@
 							value="#{ManageExpenseActionBean.currentExpense.description}"
 							rows="5" cols="40" autoResize="true" maxlength="200" />
 					</p:panelGrid>
-					<!-- <h:outputText id="displayCounter" /> counter="displayCounter" counterTemplate="{0}characters."-->
-
 				</p:panelGrid>
+				
 				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
 					value="Save" process="addExpenseForm:addExpenseFormPanel"
-					update="addExpenseForm:addExpenseFormPanel :recentExpenseTableForm:recentExpenseTablePanel"
+					update="@form :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{!ManageExpenseActionBean.iseditMode}"></p:commandButton>
+			
 				<p:commandButton action="#{ManageExpenseActionBean.updateExpense}"
 					value="update" process="addExpenseForm:addExpenseFormPanel"
-					update="addExpenseForm:addExpenseFormPanel :recentExpenseTableForm:recentExpenseTablePanel"
+					update="@form :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{ManageExpenseActionBean.iseditMode}"></p:commandButton>
 				<p:commandButton action="#{ManageExpenseActionBean.cancelExpense}"
-					value="Cancel" process="@form"
+					value="Cancel" process="@this" immediate="true"
 					update="addExpenseForm:addExpenseFormPanel"></p:commandButton>
 				<!--  -->
 			</p:panel>
@@ -119,9 +111,8 @@
 				<p:dataTable id="recentExpenseTable"
 					widgetVar="recentExpenseTableWidget" paginator="true"
 					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
-					rows="5"
-					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
-					paginatorPosition="top"
+					rows="5" rowsPerPageTemplate="5,10,15" reflow="true"
+					rowIndexVar="var" paginatorPosition="bottom"
 					value="#{ManageExpenseActionBean.allExpenses}" var="expense"
 					rowKey="#{expense.id}" border="4" style="width:100%;border: black;">
 
@@ -135,7 +126,8 @@
 						</h:panelGroup>
 					</f:facet>
 
-					<p:column headerText="Category">
+					<p:column headerText="Category" filterBy="#{expense.category}"
+						filterMatchMode="contains">
 						<h:outputText
 							value="#{expense.category != null ? expense.category.name : 'N/A'}" />
 					</p:column>
@@ -148,7 +140,8 @@
 						<h:outputText value="#{expense.description}" />
 					</p:column>
 
-					<p:column headerText="Expense date">
+					<p:column headerText="Expense date" sortBy="#{expense.expenseDate}"
+						sortable="true">
 						<h:outputText value="#{expense.expenseDate}">
 							<f:convertDateTime pattern="dd-MM-yyyy" />
 						</h:outputText>
@@ -162,8 +155,7 @@
 						<p:commandButton value="Edit"
 							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
 							process="@this" update=":addExpenseForm:addExpenseFormPanel"></p:commandButton>
-						<!-- </p:column>
-					<p:column> -->
+						
 						<p:commandButton value="Delete"
 							action="#{ManageExpenseActionBean.deleteExpense(expense)}"
 							update=":recentExpenseTableForm:recentExpenseTablePanel :addExpenseForm:addExpenseFormPanel"

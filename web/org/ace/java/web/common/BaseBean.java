@@ -80,7 +80,7 @@ public class BaseBean {
         try {
             text = getBundle().getString(id);
         } catch (MissingResourceException e) {
-            text = "!! key " + id + " not found !!";
+            text = "" + id + "";
         }
         if (params != null) {
             MessageFormat mf = new MessageFormat(text);
@@ -114,8 +114,14 @@ public class BaseBean {
     }
 
     protected void addInfoMessage(String message) {
-        getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, message, message));
+        getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, message, ""));
     }
+    
+	/*
+	 * protected void addInfoMessage(String message) {
+	 * getFacesContext().addMessage(null, new
+	 * FacesMessage(FacesMessage.SEVERITY_INFO, message, message)); }
+	 */
 
     protected void addWranningMessage(String message) {
         getFacesContext().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, message, message));

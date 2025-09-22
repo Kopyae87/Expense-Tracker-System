@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.ace.accounting.common.validation.ErrorMessage;
+import org.ace.accounting.common.validation.IDataValidator;
+import org.ace.accounting.common.validation.ValidationResult;
 import org.ace.accounting.expense.Entity.Category;
 import org.ace.accounting.expense.Entity.Expense;
 import org.ace.accounting.expense.Entity.PaymentType;
 import org.ace.accounting.expense.Iservices.IExpenseService;
+import org.ace.accounting.system.branch.Branch;
 import org.ace.accounting.user.User;
 import org.ace.java.web.common.BaseBean;
 import org.ace.java.web.common.ParamId;
@@ -25,6 +32,13 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void setExpenseService(IExpenseService expenseService) {
 		this.expenseService = expenseService;
+	}
+
+	@ManagedProperty(value = "#{ExpenseValidator}")
+	private IDataValidator<Expense> expenseValidator;
+
+	public void setExpenseValidator(IDataValidator<Expense> expenseValidator) {
+		this.expenseValidator = expenseValidator;
 	}
 
 	private List<Category> categoryList;
@@ -60,11 +74,11 @@ public class ManageExpenseActionBean extends BaseBean {
 	public void setMaxDate() {
 		maxDate = new Date();
 	}
-	
+
 	public void loadExpenses() {
 		expenseList = expenseService.findAllExpense(currenseUserId);
 	}
-	
+
 	private void loadCategorys() {
 		categoryList = expenseService.findAllCategory();
 		System.out.println("in get");
@@ -83,33 +97,57 @@ public class ManageExpenseActionBean extends BaseBean {
 		}
 		categoryList = expenseService.findAllCategory();
 	}
-	
+
 	public void returnCategory(SelectEvent event) {
 		cat = (Category) event.getObject();
-		
+
 	}
 
 	public void saveExpense() {
-		System.out.println("in the save Expense");
-	    if (cat == null) {
-	        addErrorMessage("Please select a category before saving.");
-	        return;
-	    }
-		currentexpense.setUser(currentUser);
-		currentexpense.setCategory(cat);
-		expenseService.saveExpense(currentexpense);
-		resetForm();
+		try {
+			System.out.println("in the save Expense");
+			currentexpense.setUser(currentUser);
+			currentexpense.setCategory(cat);
+			ValidationResult result = expenseValidator.validate(currentexpense, true);
+			if (result.isVerified()) {
+				System.out.println("in save");
+				expenseService.saveExpense(currentexpense);
+				addInfoMessage("Expense Added Successfully");
+				resetForm();
+			} else {
+				System.out.println("in error ");
+				for (ErrorMessage e : result.getErrorMeesages()) {
+					addErrorMessage(null, e.getErrorcode(), e.getParams());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
 	}
 
 	public void updateExpense() {
-	    if (cat == null) {
-	        addErrorMessage("Please select a category before updating.");
-	        return;
-	    }
-		currentexpense.setCategory(cat);
-		expenseService.updateExpense(currentexpense);
-		loadExpenses();
-		cancelExpense();
+
+		try {
+			ValidationResult result = expenseValidator.validate(currentexpense, true);
+
+			if (result.isVerified()) {
+				currentexpense.setCategory(cat);
+				expenseService.updateExpense(currentexpense);
+				addInfoMessage("Expense Added Successfully");
+				loadExpenses();
+				cancelExpense();
+			} else {
+				for (ErrorMessage message : result.getErrorMeesages()) {
+					addErrorMessage(null, message.getErrorcode(), message.getParams());
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+
 	}
 
 //	public void changeCategoryIdToObject() {
@@ -130,13 +168,13 @@ public class ManageExpenseActionBean extends BaseBean {
 
 	public void deleteExpense(Expense expense) {
 		try {
-			if(expense == null) {
+			if (expense == null) {
 				System.out.println("expense is null");
 				return;
 			}
 			expenseService.deleteExpense(expense);
-			
-			if(iseditMode && currentexpense.getId().equals(expense.getId())) {
+			addInfoMessage("Expense Added Successfully");
+			if (iseditMode && currentexpense.getId().equals(expense.getId())) {
 				cancelExpense();
 			}
 			loadExpenses();
@@ -146,18 +184,18 @@ public class ManageExpenseActionBean extends BaseBean {
 			addErrorMessage("delete failed");
 		}
 	}
-	
+
 	public void openeditExpense(Expense expense) {
-	    if (expense == null) {
-	        addErrorMessage("Cannot edit: expense is null");
-	        return;
-	    }
-	    currentexpense = expense;
-	    cat = expense.getCategory();
-	    if (cat == null) {
-	        addErrorMessage("This expense has no category. Please select one.");
-	    }
-	    iseditMode = true;
+		if (expense == null) {
+			addErrorMessage("Cannot edit: expense is null");
+			return;
+		}
+		currentexpense = expense;
+		cat = expense.getCategory();
+		if (cat == null) {
+			addErrorMessage("This expense has no category. Please select one.");
+		}
+		iseditMode = true;
 	}
 
 	public void resetForm() {
@@ -165,11 +203,11 @@ public class ManageExpenseActionBean extends BaseBean {
 		clearSelectedCategory();
 		loadExpenses();
 	}
-	
+
 	public void clearSelectedCategory() {
-	    cat = null;
+		cat = null;
 	}
-	
+
 	public List<Expense> getAllExpenses() {
 		return expenseList;
 	}
@@ -270,5 +308,4 @@ public class ManageExpenseActionBean extends BaseBean {
 		ManageExpenseActionBean.currenseUserId = currenseUserId;
 	}
 
-	
 }
