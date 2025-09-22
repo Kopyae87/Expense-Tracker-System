@@ -214,20 +214,10 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	}
 
 	public void actualSaveBudget() {
-		/*
-		 * try { System.out.println("in the save budget"); ValidationResult result =
-		 * budgetValidator.validate(currentbudget, timevalue); if (result.isVerified())
-		 * {
-		 */
 		expenseBudgetService.saveBudget(currentbudget);
 		loadBudgets();
 		addInfoMessage("Budget Added Successfully");
 		resetForm();
-		/*
-		 * } else { System.out.println("in error "); for (ErrorMessage e :
-		 * result.getErrorMeesages()) { addErrorMessage(null, e.getErrorcode(),
-		 * e.getParams()); } } } catch (Exception e) { e.printStackTrace(); }
-		 */
 	}
 
 	public void resetForm() {
