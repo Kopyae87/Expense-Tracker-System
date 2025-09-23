@@ -1,5 +1,6 @@
 package org.ace.accounting.expense.Iservices;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface IExpenseDashBoardService {
@@ -26,4 +27,8 @@ public interface IExpenseDashBoardService {
 	public double findMonthlyBudget(String userId, int month, int year);
 
 	public double findYearlyBudget(String userId, int year);
+
+	public double findMonthlyGlobalBudget(String currenseUserId, int currentMonth, int currentYear);
+
+	public double findYearlyGlobalBudget(String currenseUserId, int currentYear);
 }

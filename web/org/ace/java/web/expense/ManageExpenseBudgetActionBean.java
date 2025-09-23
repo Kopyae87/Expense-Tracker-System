@@ -93,21 +93,21 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		try {
 			System.out.println("in the save budget");
 			ValidationResult result = budgetValidator.validate(currentbudget, timevalue, currentUserId);
-			if (result.isVerified()) {
+			if (!result.isVerified()) {
+				System.out.println("in error ");
+				for (ErrorMessage e : result.getErrorMeesages()) {
+					addErrorMessage(null, e.getErrorcode(), e.getParams());
+				}
+			} else {	
 				accordingToTimeValue();
 				currentbudget.setUser(user);
 				Budget existBudget = expenseBudgetService.findIndenticalBudget(currentbudget);
 				if (existBudget != null) {
 //					existBudgetForOverwrite = existBudget;
 //					PrimeFaces.current().executeScript("PF('overwriteDlg').show()");
-					addErrorMessage("The budget is already exist");
+					addErrorMessage("The budget with the same time period is already exist");
 				} else {
 					actualSaveBudget();
-				}
-			} else {
-				System.out.println("in error ");
-				for (ErrorMessage e : result.getErrorMeesages()) {
-					addErrorMessage(null, e.getErrorcode(), e.getParams());
 				}
 			}
 		} catch (Exception e) {
@@ -130,16 +130,16 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		try {
 			System.out.println("in the update budget");
 			ValidationResult result = budgetValidator.validate1(currentbudget, timevalue, currentUserId);
-			if (result.isVerified()) {
-				expenseBudgetService.updateBudget(currentbudget);
-				resetForm();
-				timevalue = "";
-				addInfoMessage("Budget Update Successfully");
-			} else {
+			if (!result.isVerified()) {
 				System.out.println("in error ");
 				for (ErrorMessage e : result.getErrorMeesages()) {
 					addErrorMessage(null, e.getErrorcode(), e.getParams());
 				}
+			}else{
+				expenseBudgetService.updateBudget(currentbudget);
+				resetForm();
+				timevalue = "";
+				addInfoMessage("Budget Update Successfully");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -226,7 +226,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void actualSaveBudget() {
 		expenseBudgetService.saveBudget(currentbudget);
 		loadBudgets();
-		addInfoMessage("Budget Added Successfully");
+		addInfoMessage("Global Budget Added Successfully");
 		resetForm();
 	}
 
@@ -251,7 +251,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 					 * existGlobalBudgetForOverwrite = existBudget;
 					 * PrimeFaces.current().executeScript("PF('globalOverwriteDlg').show()");
 					 */
-					addErrorMessage("The global Budget is already exist");
+					addErrorMessage("The global Budget 'is already exist");
 				} else {
 					actualSaveGlobalBudget();
 				}
@@ -274,7 +274,8 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 			if (result.isVerified()) {
 				expenseBudgetService.updateGlobalBudget(globalBudget);
 				resetGlobalForm();
-			}for (ErrorMessage e : result.getErrorMeesages()) {
+			}
+			for (ErrorMessage e : result.getErrorMeesages()) {
 				addErrorMessage(null, e.getErrorcode(), e.getParams());
 			}
 		} catch (Exception e) {

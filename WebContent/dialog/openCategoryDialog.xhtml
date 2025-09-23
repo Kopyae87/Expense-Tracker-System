@@ -4,7 +4,7 @@
 		<title><ui:insert name="title">Select Category</ui:insert></title>
 		<h:form style="margin">
 			<p:dataTable id="categoryTable" paginator="true"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowIndexVar="index" rows="5"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowIndexVar="index" rows="10"
 				rowsPerPageTemplate="5,10,15,20,25,30" value="#{CategoryDialogActionBean.categoryList}" var="cat" widgetVar="categoryTable" emptyMessage="Nothing found with given criteria"
 				style="padding: 10px 10px;" paginatorPosition="bottom">
 				<p:column headerText="No" style="width:50px;">

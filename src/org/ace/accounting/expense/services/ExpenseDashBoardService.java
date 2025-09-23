@@ -109,6 +109,7 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public double findMonthlyBudget(String userId, int month, int year) {
 		try {
 			return dashBoardDAO.findMonthlyBudget(userId,month,year);
@@ -118,11 +119,32 @@ public class ExpenseDashBoardService implements IExpenseDashBoardService{
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public double findYearlyBudget(String userId, int year) {
 		try {
 			return dashBoardDAO.findYearlyBudget(userId,year);
 		} catch (DAOException e) {
 			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total expense by category for month", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findMonthlyGlobalBudget(String currenseUserId, int Month, int Year) {
+		try {
+			return dashBoardDAO.findMonthlyGlobalBudget(currenseUserId,Month,Year);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total global budget for month", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
+	public double findYearlyGlobalBudget(String currenseUserId, int Year) {
+		try {
+			return dashBoardDAO.findYearlyGlobalBudget(currenseUserId,Year);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Something went wrong,Can't find total global budget for year", e);
 		}
 	}
 }

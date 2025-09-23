@@ -23,7 +23,7 @@
 				<textElement>
 					<font size="18"/>
 				</textElement>
-				<text><![CDATA[Expense Tracker Report (Monthly)]]></text>
+				<text><![CDATA[		Expense Tracker Report ]]></text>
 			</staticText>
 		</band>
 	</title>

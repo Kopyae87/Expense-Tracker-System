@@ -4,6 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
+	<ui:param name="header" value="Budget Management"/>
+	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<h:form id="budgetAddForm">
 			<p:growl escape="false" globalOnly="true" life="5000"
@@ -123,18 +125,18 @@
 									styleClass="ui-panelgrid-blank">
 									<p:panelGrid columns="2" style="width:100%;"
 										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'yearly'}">
-										<p:outputLabel value="Yearly Budget:" styleClass="input-label mandatory"/>
-										<p:inputText 
-											value="#{ManageExpenseBudgetActionBean.currentbudget.yearlyLimit}"
-											 />
+										<p:outputLabel value="Yearly Budget:"
+											styleClass="input-label mandatory" />
+										<p:inputText
+											value="#{ManageExpenseBudgetActionBean.currentbudget.yearlyLimit}" />
 									</p:panelGrid>
 
 									<p:panelGrid columns="2" style="width:100%;"
 										rendered="#{ManageExpenseBudgetActionBean.timevalue == 'monthly' }">
-										<p:outputLabel value="Monthly Budget: "  styleClass="input-label mandatory"/>
+										<p:outputLabel value="Monthly Budget: "
+											styleClass="input-label mandatory" />
 										<p:inputText
-											value="#{ManageExpenseBudgetActionBean.currentbudget.monthlyLimit}"
-											/>
+											value="#{ManageExpenseBudgetActionBean.currentbudget.monthlyLimit}" />
 
 									</p:panelGrid>
 
@@ -159,6 +161,9 @@
 										action="#{ManageExpenseBudgetActionBean.cancelBudget}"
 										value="Cancel" process="@form" update="categoryFormWrapper" />
 								</h:panelGroup>
+
+								<h:outputText value="* - mandatory field" style="color: red;" />
+
 							</p:outputPanel>
 						</p:panel>
 					</p:outputPanel>
@@ -182,20 +187,22 @@
 										value="#{b.monthScope != null ? b.monthScope : '-'}" />
 								</p:column>
 								<p:column headerText="Yearly Budget (MMK)">
-									<h:outputText value="#{b.yearlyLimit != null ? b.yearlyLimit : '-'}" />
+									<h:outputText
+										value="#{b.yearlyLimit != null ? b.yearlyLimit : '-'}" />
 								</p:column>
 								<p:column headerText="Monthly Budget (MMK)">
-									<h:outputText value="#{b.monthlyLimit != null ? b.monthlyLimit : '-'}" />
+									<h:outputText
+										value="#{b.monthlyLimit != null ? b.monthlyLimit : '-'}" />
 								</p:column>
 								<p:column headerText="Desc">
 									<h:outputText value="#{b.description}" />
 								</p:column>
 								<p:column headerText="Actions">
-									<p:commandButton value="Edit"
+									<p:commandButton value="Edit" icon="fa fa-brush"
 										action="#{ManageExpenseBudgetActionBean.openEditBudget(b)}"
 										process=":budgetAddForm:budgetTabView:categoryBudgetTableWrapper"
 										update=":budgetAddForm:budgetTabView:categoryBudgetWrapper" />
-									<p:commandButton value="Delete"
+									<p:commandButton value="Delete" icon="fa fa-times"
 										action="#{ManageExpenseBudgetActionBean.deleteBudget(b)}"
 										update=":budgetAddForm:budgetTabView:categoryBudgetWrapper :budgetAddForm:budgetTabView:categoryTablePanel :budgetAddForm:growl"
 										process="@this"
@@ -314,15 +321,17 @@
 											styleClass="input-label mandatory"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'yearly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
 										<p:inputNumber
-											value="#{ManageExpenseBudgetActionBean.globalBudget.yearlyLimit}" maxValue="1000000000" required="true" mode="decimal"
+											value="#{ManageExpenseBudgetActionBean.globalBudget.yearlyLimit}"
+											maxValue="1000000000" required="true" mode="decimal"
 											decimalPlaces="0"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'yearly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
 
 										<p:outputLabel value="Monthly Budget:"
 											styleClass="input-label mandatory"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'monthly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
-										<p:inputNumber 
-											value="#{ManageExpenseBudgetActionBean.globalBudget.monthlyLimit}" maxValue="1000000000" required="true" mode="decimal"
+										<p:inputNumber
+											value="#{ManageExpenseBudgetActionBean.globalBudget.monthlyLimit}"
+											maxValue="1000000000" required="true" mode="decimal"
 											decimalPlaces="0"
 											rendered="#{ManageExpenseBudgetActionBean.globalTimeValue == 'monthly' or ManageExpenseBudgetActionBean.globalTimeValue == 'both'}" />
 									</p:panelGrid>
@@ -348,7 +357,8 @@
 											value="Cancel" process="globalFormPanel"
 											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper" />
 									</h:panelGroup>
-
+									<h:outputText value="* - mandatory field" style="color: red;"/>
+									
 								</p:panelGrid>
 							</p:outputPanel>
 						</p:panel>

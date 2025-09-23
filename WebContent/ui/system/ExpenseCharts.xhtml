@@ -4,22 +4,25 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
+		<ui:param name="header" value="Charts" />
+	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<p:panelGrid columns="2" styleClass="ui-panelgrid-blank ui-fluid"
-			columnClasses="ui-grid-col-3,ui-grid-col-9"
+			columnClasses="ui-grid-col-2,ui-grid-col-10"
 			style="width:100%; gap:14px;">
 
 			<h:form id="expenseCategoriesForm"
-				style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 340px;">
+				style="border:3px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 800px;">
 				<h:outputText value="Categories"
-					style="font-weight:bold; margin-bottom:10px; display:block;" />
-				<!-- <h3>Categories</h3> -->
+					style="font-weight:bold;height: 23px;margin-bottom:10px; display:block;background-color: #00aab4;border-radius: 3px;" />
+				
 				<p:commandButton value="All"
 					action="#{ManageExpenseChartActionBean.selectCategory('All','Allcategories')}"
 					process="@this"
 					update=":expenseChartForm:chartPanel :expenseChartForm:selectedCategoryLabel "
 					style="margin-bottom:8px; width:90%;"
 					styleClass="ui-panelgrid-blank ui-fluid" />
+					
 				<ui:repeat value="#{ManageExpenseChartActionBean.categoryList}"
 					var="cat">
 					<p:commandButton value="#{cat.name}"
@@ -33,7 +36,7 @@
 
 			<!-- Chart Form -->
 			<h:form id="expenseChartForm"
-				style="border:1px solid #ccc; padding:10px; border-radius:8px;height: 450px;">
+				style="border:1px solid #ccc; padding:10px; border-radius:8px;height: 600px;">
 				<p:panelGrid columns="1"
 					style="padding-left:10px; width:100%; justify-content:center;"
 					styleClass="ui-panelgrid-blank">
@@ -54,15 +57,15 @@
 						</p:selectOneMenu>
 
 						<p:outputPanel id="datePickers">
-							
+
 							<!-- pick month and year-->
-							<p:outputLabel value="Range: "/>
+							<p:outputLabel value="Range: " />
 							<p:datePicker id="dayPicker"
 								value="#{ManageExpenseChartActionBean.selectedDate}"
 								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"
-								view="month" showIcon="true"
-								pattern="MM/yyyy">
-								<p:ajax event="dateSelect" listener="#{ManageExpenseChartActionBean.updateChart}"
+								view="month" showIcon="true" pattern="MM/yyyy">
+								<p:ajax event="dateSelect"
+									listener="#{ManageExpenseChartActionBean.updateChart}"
 									update=":expenseChartForm:chartPanel" />
 							</p:datePicker>
 
@@ -82,10 +85,16 @@
 							value="Category: #{ManageExpenseChartActionBean.selectedCategoryName}"></p:outputLabel>
 						<hr />
 						<!-- Chart -->
-						<p:chart type="bar" id="chartPanel"
+						<!-- <p:chart type="bar" id="chartPanel"
 							model="#{ManageExpenseChartActionBean.expenseChart}"
 							widgetVar="expenseChart"
-							style="margin-top: 20px;width:100%;height: 300px;" />
+							style="margin-top: 20px;width:100%;height: 100%;" /> -->
+						<div style="overflow-x: auto; width: 100%;">
+							<p:chart type="bar" id="chartPanel"
+								model="#{ManageExpenseChartActionBean.expenseChart}"
+								widgetVar="expenseChart"
+								style="margin-top: 20px; width:100%; height: 400px;" />
+						</div>
 					</p:panelGrid>
 				</p:panelGrid>
 			</h:form>

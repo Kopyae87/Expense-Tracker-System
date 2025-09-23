@@ -4,13 +4,18 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
+	<ui:param name="header" value="Expense Management"/>
+	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<h:form id="addExpenseForm" style="color: black;">
 			<p:growl id="growl" escape="false" globalOnly="true" life="10000"
 				showDetail="true" />
 			<p:panel id="addExpenseFormPanel"
 				style="margin: 0 auto; width: 70%; border: 1px solid #ccc; border-radius: 8px; padding: 20px;">
-				<h4 style="margin: 0px">Add Expense</h4>
+				<h:outputText value="Add Expense" style="font-weight: bold;font-size: 16px;"
+					rendered="#{!ManageExpenseActionBean.iseditMode}"></h:outputText>
+				<h:outputText value="Update Expense" style="font-weight: bold;font-size: 16px;"
+					rendered="#{ManageExpenseActionBean.iseditMode}"></h:outputText>
 				<p:panelGrid columns="2"
 					columnClasses="ui-grid-col-6,ui-grid-col-6,"
 					styleClass="ui-panelgrid-blank"
@@ -34,7 +39,7 @@
 									</p:commandButton>
 									<p:inputText id="categoryId"
 										value="#{ManageExpenseActionBean.cat.id == null ? '' : ManageExpenseActionBean.cat.name}"
-										readonly="true" style="width: 40%"/>
+										readonly="true" style="width: 40%" />
 									<p:commandButton styleClass="red-button" icon="fa fa-times"
 										action="#{ManageExpenseActionBean.clearSelectedCategory()}"
 										process="@this" update="categoryId" />
@@ -48,11 +53,10 @@
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
 						<h:outputLabel for="expensedate" value="Expense Date: "
 							styleClass="input-label mandatory" />
-						<p:datePicker id="expensedate" style="width: 60%"
-							maxdate="#{ManageExpenseActionBean.maxDate}"
+						<p:datePicker id="expensedate" style="width: 60%" autocomplete="false"
+							maxdate="#{ManageExpenseActionBean.maxDate}" 
 							value="#{ManageExpenseActionBean.currentExpense.expenseDate}"
-							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"
-							></p:datePicker>
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
@@ -90,12 +94,12 @@
 							rows="5" cols="40" autoResize="true" maxlength="200" />
 					</p:panelGrid>
 				</p:panelGrid>
-				
+
 				<p:commandButton action="#{ManageExpenseActionBean.saveExpense}"
 					value="Save" process="addExpenseForm:addExpenseFormPanel"
 					update="@form :recentExpenseTableForm:recentExpenseTablePanel"
 					rendered="#{!ManageExpenseActionBean.iseditMode}"></p:commandButton>
-			
+
 				<p:commandButton action="#{ManageExpenseActionBean.updateExpense}"
 					value="update" process="addExpenseForm:addExpenseFormPanel"
 					update="@form :recentExpenseTableForm:recentExpenseTablePanel"
@@ -104,6 +108,7 @@
 					value="Cancel" process="@this" immediate="true"
 					update="addExpenseForm:addExpenseFormPanel"></p:commandButton>
 				<!--  -->
+				<h:outputText value="* - mandatory field" style="color: red;" />
 			</p:panel>
 		</h:form>
 		<h:form id="recentExpenseTableForm" style="margin-top: 20px;">
@@ -142,7 +147,7 @@
 
 					<p:column headerText="Expense date" sortBy="#{expense.expenseDate}"
 						sortable="true">
-						<h:outputText value="#{expense.expenseDate}">
+						<h:outputText value="#{expense.expenseDate.time+1*24*60*60*1000}">
 							<f:convertDateTime pattern="dd-MM-yyyy" />
 						</h:outputText>
 					</p:column>
@@ -155,7 +160,7 @@
 						<p:commandButton value="Edit"
 							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
 							process="@this" update=":addExpenseForm:addExpenseFormPanel"></p:commandButton>
-						
+
 						<p:commandButton value="Delete"
 							action="#{ManageExpenseActionBean.deleteExpense(expense)}"
 							update=":recentExpenseTableForm:recentExpenseTablePanel :addExpenseForm:addExpenseFormPanel"

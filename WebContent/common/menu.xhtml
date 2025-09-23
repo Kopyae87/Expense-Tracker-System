@@ -3,25 +3,32 @@
 	<h:form id="menuForm">
 		<style type="text/css">
 			.ui-menubar, .ui-menu-child, .ui-menu {
-				background: #00aab4 !important;
-				border: 1px solid #00aab5 !important;
+				background: #FFFFFF !important;
+				padding: 10px !important;
 			}
 			.ui-menu .ui-menuitem-text {
-				color: white;
+				color: black;
+				font-size: 18px;
+			}
+			.ui-menu-child {
+				margin: auto 10px !important;
 			}
 			
 			.ui-menu .ui-state-hover {
-				background: #75807a !important;
+				background: #00aab4 !important;
+				border: 1px solid #00aab5 !important;
+				color: #FFFFFF !important;
 			}
 		</style>
-		<p:menubar autoDisplay="false" rendered="#{empty sessionScope.LoginUser ? false : true}" >
+		<!-- <p:menubar autoDisplay="false" rendered="#{empty sessionScope.LoginUser ? false : true}" >
 			<p:menuitem action="home" ajax="false" immediate="true" value="Home" />
 			<p:menuitem action="expense" ajax="false" immediate="true" value="Expense" />
 			<p:menuitem action="enquiryExpense" ajax="false" immediate="true" value="Enquiry Expense" />
 			<p:menuitem action="expenseChart" ajax="false" immediate="true" value="Expense Chart" />
 			<p:menuitem action="expenseBudget" ajax="false" immediate="true" value="Expense Budget" />
 			
-		</p:menubar>
+		</p:menubar> -->
+			<hr />
 	
 	</h:form>
 </ui:composition>

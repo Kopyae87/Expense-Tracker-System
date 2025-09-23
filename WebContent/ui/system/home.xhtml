@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
-
+	<ui:param name="header" value="Home DashBoard" />
+	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<style>
 .progress-green .ui-progressbar-value {
@@ -19,19 +20,14 @@
 			<!-- top is for quick actions + alerts -->
 			<p:growl id="growl" globalOnly="true" escape="false" life="22000"
 				showDetail="true"></p:growl>
-			<p:panelGrid columns="2" columnClasses="ui-grid-col-9,ui-grid-col-3"
-				styleClass="ui-panelgrid-blank"
-				style="width:100%; gap:12px; margin-bottom:14px;">
+			<!-- <p:panelGrid columns="2" style="width:100%; margin-bottom:14px;"
+				columnClasses="ui-grid-col-12, ui-grid-col-12" styleClass="ui-panelgrid-blank">
 				<p:commandButton value="Add Expense" icon="pi pi-plus"
 					styleClass="ui-button-success" action="expense" ajax="false"
 					style="margin-right:8px;" />
 				<p:commandButton value="Set Budget" icon="pi pi-cog"
 					styleClass="ui-button-primary" action="expenseBudget" ajax="false" />
-
-				<!-- <div style="text-align: right;">
-					<p:messages id="msgs" autoUpdate="true" showDetail="true" />
-				</div> -->
-			</p:panelGrid>
+			</p:panelGrid> -->
 
 			<!-- summary cards of expense -->
 			<p:panelGrid columns="3" styleClass="ui-panelgrid-blank ui-fluid"
@@ -42,17 +38,21 @@
 					<h:outputText value="This Month"
 						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
 					<h:outputText
-						value="#{ManageExpenseDashBoardActionBean.monthlyExpense} MMK "
+						value="#{ManageExpenseDashBoardActionBean.monthlyExpense}"
 						style="font-size:18px; color:#e74c3c; font-weight:bold;">
-						<f:convertNumber type="number" groupingUsed="true"
-							maxFractionDigits="1" />
+						<f:convertNumber type="number" maxFractionDigits="0"
+							groupingUsed="true" />
 					</h:outputText>
+					<h:outputText value=" MMK "
+						style="font-size:18px; color:#e74c3c; font-weight:bold;" />
 					<h:outputText
-						value="Budget: #{ManageExpenseDashBoardActionBean.monthlyBudget} MMK"
+						value="Budget: #{ManageExpenseDashBoardActionBean.monthlyBudget}"
 						style="font-size:12px; color:#666; margin-bottom:8px;">
 						<f:convertNumber type="number" groupingUsed="true"
 							maxFractionDigits="1" />
 					</h:outputText>
+					<h:outputText value=" MMK "
+						style="font-size:12px; color:#666;" />
 					<p:progressBar
 						value="#{ManageExpenseDashBoardActionBean.monthlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.monthlyPercent}"
 						labelTemplate="#{ManageExpenseDashBoardActionBean.monthlyPercent}%"
@@ -64,17 +64,21 @@
 					<h:outputText value="This Year"
 						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
 					<h:outputText
-						value="#{ManageExpenseDashBoardActionBean.yearlyExpense} MMK "
+						value="#{ManageExpenseDashBoardActionBean.yearlyExpense}"
 						style="font-size:18px; color:#2980b9; font-weight:bold;">
-						<f:convertNumber type="number" groupingUsed="true"
-							minFractionDigits="1" />
+						<f:convertNumber type="number" maxFractionDigits="0"
+							groupingUsed="true" />
 					</h:outputText>
+					<h:outputText value=" MMK "
+						style="font-size:18px; color:#2980b9; font-weight:bold;" />
 					<h:outputText
-						value="Budget: #{ManageExpenseDashBoardActionBean.yearlyBudget} MMK"
+						value="Budget: #{ManageExpenseDashBoardActionBean.yearlyBudget}"
 						style="font-size:12px; color:#666; margin-bottom:8px;">
 						<f:convertNumber type="number" groupingUsed="true"
 							minFractionDigits="1" />
 					</h:outputText>
+					<h:outputText value=" MMK "
+						style="font-size:12px; color:#666;" />
 					<p:progressBar
 						value="#{ManageExpenseDashBoardActionBean.yearlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.yearlyPercent}"
 						labelTemplate="#{ManageExpenseDashBoardActionBean.yearlyPercent}%"
@@ -87,11 +91,16 @@
 					<h:outputText value="Top Category"
 						style="font-weight:bold; font-size:14px; display:block; margin-bottom:8px;" />
 					<h:outputText
-						value="#{ManageExpenseDashBoardActionBean.topCategoryName} "
+						value="#{ManageExpenseDashBoardActionBean.topCategoryName}"
 						style="font-size:18px; color:#8e44ad; font-weight:bold;" />
-					<h:outputText
-						value=" Spent: #{ManageExpenseDashBoardActionBean.topCategoryExpense} MMK"
+					<h:outputText value=" Spent:"
 						style="font-size:12px; color:#666;" />
+					<h:outputText
+						value="#{ManageExpenseDashBoardActionBean.topCategoryExpense}"
+						style="font-size:12px; color:#666;" >
+						<f:convertNumber type="number" groupingUsed="true"
+							minFractionDigits="1" />
+					</h:outputText>
 				</p:panel>
 			</p:panelGrid>
 
@@ -113,7 +122,7 @@
 						value="#{ManageExpenseDashBoardActionBean.recentExpenses}"
 						var="exp" rows="6" paginator="true"
 						style="width:100%;height: 100%;" emptyMessage="No recent expenses">
-						<p:column headerText="Date" style="width:100px;">
+						<p:column headerText="Expense Date" style="width:100px;">
 							<h:outputText value="#{exp.expenseDate}">
 								<f:convertDateTime pattern="dd-MM-yyyy" />
 							</h:outputText>
@@ -121,8 +130,8 @@
 						<p:column headerText="Category">
 							<h:outputText value="#{exp.category.name}" />
 						</p:column>
-						<p:column headerText="Amount">
-							<h:outputText value="#{exp.amount} MMK" />
+						<p:column headerText="Amount (MMK)">
+							<h:outputText value="#{exp.amount}" />
 						</p:column>
 						<p:column headerText="Payment">
 							<h:outputText value="#{exp.paymentType}" />

@@ -1,5 +1,6 @@
 package org.ace.accounting.expense.IDAO;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface IExpenseDashBoardDAO {
@@ -23,5 +24,9 @@ public interface IExpenseDashBoardDAO {
 	double findTotalExpenseByCategoryForYear(String userId, String id, int currentyear);
 
 	double findBudgetByCategoryForYear(String userId, String id, int currentyear);
+
+	double findMonthlyGlobalBudget(String currenseUserId, int month, int year);
+
+	double findYearlyGlobalBudget(String currenseUserId, int year);
 	
 }

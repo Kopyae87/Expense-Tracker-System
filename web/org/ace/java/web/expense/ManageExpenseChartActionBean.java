@@ -242,7 +242,12 @@ public class ManageExpenseChartActionBean extends BaseBean {
 				"FFCE56", // yellow
 				"FF9F40", // orange
 				"2ecc71", // green
-				"e74c3c" // dark red
+				"e74c3c", // dark red
+				"8E44AD", // violet
+		        "1ABC9C", // turquoise
+		        "F39C12", // amber
+		        "3498DB", // sky blue
+		        "C0392B"  // crimson
 		};
 		for (Category c : categoryList) {
 			String color = palette[i % palette.length];

@@ -22,7 +22,7 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public double findTotalExpenseForMonth(String userId, int currentmonth, int currentyear) {
 		double result = 0.00;
-		
+
 		try {
 			String str = "select COALESCE(sum(e.amount), 0) from Expense e where e.user.id = :userId "
 					+ "and function('MONTH', e.expenseDate) = :month " + "and function('YEAR', e.expenseDate) = :year";
@@ -120,9 +120,8 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 	public double findBudgetByCategoryForMonth(String userId, String categoryid, int currentmonth, int currentyear) {
 		try {
 			String str = "select sum(b.monthlyLimit) from Budget b where b.user.id = :userId "
-					+ "and b.category.id = :categoryid and b.monthScope = :month "
-					+ "and b.yearScope = :year ";
-					
+					+ "and b.category.id = :categoryid and b.monthScope = :month " + "and b.yearScope = :year ";
+
 			Query q = em.createQuery(str);
 			q.setParameter("userId", userId);
 			q.setParameter("categoryid", categoryid);
@@ -140,18 +139,17 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 	public double findMonthlyBudget(String userId, int month, int year) {
 		try {
 			String str = "select b.monthlyLimit from GlobalBudget b where b.user.id = :userId "
-					+ "and b.monthScope = :month "
-					+ "and b.yearScope = :year ";
-					
+					+ "and b.monthScope = :month " + "and b.yearScope = :year ";
+
 			Query q = em.createQuery(str);
 			q.setParameter("userId", userId);
 			q.setParameter("month", month);
 			q.setParameter("year", year);
 			List<Number> results = q.getResultList();
-	        if (results.isEmpty() || results.get(0) == null) {
-	            return 0.0;
-	        }
-	        return results.get(0).doubleValue();
+			if (results.isEmpty() || results.get(0) == null) {
+				return 0.0;
+			}
+			return results.get(0).doubleValue();
 		} catch (PersistenceException e) {
 			throw translate("Failed to find global budget for month", e);
 		}
@@ -167,10 +165,10 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 			q.setParameter("userId", userId);
 			q.setParameter("year", year);
 			List<Number> results = q.getResultList();
-	        if (results.isEmpty() || results.get(0) == null) {
-	            return 0.0;
-	        }
-	        return results.get(0).doubleValue();
+			if (results.isEmpty() || results.get(0) == null) {
+				return 0.0;
+			}
+			return results.get(0).doubleValue();
 		} catch (PersistenceException e) {
 			throw translate("Failed to find global budget for year", e);
 		}
@@ -199,13 +197,46 @@ public class ExpenseDashBoardDAO extends BasicDAO implements IExpenseDashBoardDA
 	public double findBudgetByCategoryForYear(String userId, String categoryid, int currentyear) {
 		try {
 			String str = "select sum(b.monthlyLimit) from Budget b where b.user.id = :userId "
-					+ "and b.category.id = :categoryid "
-					+ "and b.yearScope = :year ";
-					
+					+ "and b.category.id = :categoryid " + "and b.yearScope = :year ";
+
 			Query q = em.createQuery(str);
 			q.setParameter("userId", userId);
 			q.setParameter("categoryid", categoryid);
 			q.setParameter("year", currentyear);
+			Number result = ((Number) q.getSingleResult());
+			return result != null ? result.doubleValue() : 0.0;
+		} catch (PersistenceException e) {
+			throw translate("Failed to find budget by category for month", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findMonthlyGlobalBudget(String currenseUserId, int month, int year) {
+		try {
+			String str = "SELECT COALESCE(SUM(g.monthlyLimit), 0) " + "FROM GlobalBudget g "
+					+ "WHERE g.user.id = :userId " + "AND g.yearScope = :year " + "AND g.monthScope = :month";
+			Query q = em.createQuery(str);
+			q.setParameter("userId", currenseUserId);
+			q.setParameter("year", year);
+			q.setParameter("month", month);
+			Number result = ((Number) q.getSingleResult());
+			return result != null ? result.doubleValue() : 0.0;
+		} catch (PersistenceException e) {
+			throw translate("Failed to find budget by category for month", e);
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findYearlyGlobalBudget(String currenseUserId, int year) {
+		try {
+			String str = "SELECT COALESCE(SUM(g.yearlyLimit), 0) " + "FROM GlobalBudget g "
+					+ "WHERE g.user.id = :userId " + "AND g.yearScope = :year";
+
+			Query q = em.createQuery(str);
+			q.setParameter("userId", currenseUserId);
+			q.setParameter("year", year);
 			Number result = ((Number) q.getSingleResult());
 			return result != null ? result.doubleValue() : 0.0;
 		} catch (PersistenceException e) {

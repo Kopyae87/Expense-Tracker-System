@@ -36,9 +36,11 @@ public class ExpenseValidator implements IDataValidator<Expense> {
 			result.addErrorMessage(formId + ":paymenttype", "Payment type is required.");
 		}
 
-		if (expense.getDescription() == null || expense.getDescription().trim().isEmpty()) {
-			result.addErrorMessage(formId + ":desc", "Description is required.");
-		}
+		/*
+		 * if (expense.getDescription() == null ||
+		 * expense.getDescription().trim().isEmpty()) { result.addErrorMessage(formId +
+		 * ":desc", "Description is required."); }
+		 */
 
 		return result;
 	}

@@ -4,6 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
+	<ui:param name="header" value="Enquiry"/>
+	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<h:form id="enquiryExpenseForm">
 			<p:growl globalOnly="true" escape="false" life="3000"
@@ -97,22 +99,24 @@
 
 					<f:facet name="header">
 						<h:panelGroup
-							style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+							style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+
+							<!-- Title on the left -->
 							<h:outputText value="Expenses"
 								style="font-weight:bold; font-size:14px;" />
-							<p:commandButton value="Export all to excel"
-								styleClass="ui-button-primary"
-								action="#{ManageEnquiryExpenseActionBean.exportToExcel}"
-								ajax="false" />
-							<p:commandButton value="Generate as report"
-								styleClass="ui-button-primary"
-								action="#{ManageEnquiryExpenseActionBean.generateExpenseReport}"
-								ajax="false" />
-							<!-- <p:commandButton value="Export to Excel"
-								styleClass="ui-button-primary" ajax="false">
-								<p:dataExporter type="xlsx" target="allExpenseTable"
-									fileName="expenses" />
-							</p:commandButton> -->
+
+							<!-- Buttons on the right, side by side -->
+							<h:panelGroup style="display:flex; gap:8px;">
+								<p:commandButton value="Export all to excel"
+									styleClass="ui-button-primary"
+									action="#{ManageEnquiryExpenseActionBean.exportToExcel}"
+									ajax="false" />
+
+								<p:commandButton value="Generate as report"
+									styleClass="ui-button-primary"
+									action="#{ManageEnquiryExpenseActionBean.generateExpenseReport}"
+									ajax="false" />
+							</h:panelGroup>
 						</h:panelGroup>
 					</f:facet>
 
@@ -130,7 +134,7 @@
 					</p:column>
 
 					<p:column headerText="Expense date">
-						<h:outputText value="#{expense.expenseDate}">
+						<h:outputText value="#{expense.expenseDate.time+1*24*60*60*1000}">
 							<f:convertDateTime pattern="dd-MM-yyyy" />
 						</h:outputText>
 					</p:column>
@@ -140,7 +144,7 @@
 					</p:column>
 
 					<p:column headerText="Actions">
-						<p:commandButton value="Details"
+						<p:commandButton value="Details" icon="fa fa-eye"
 							action="#{ManageEnquiryExpenseActionBean.viewExpenseDetails(expense)}"
 							update="allExpenseTableForm:enquiryDetailDialogPanel"
 							oncomplete="PF('enquiryDetailDialog').show()" process="@this" />
