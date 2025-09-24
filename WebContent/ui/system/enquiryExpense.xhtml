@@ -94,7 +94,7 @@
 					paginator="true"
 					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
-					paginatorPosition="top" rowKey="#{expense.id}" border="4" rows="10"
+					paginatorPosition="both" rowKey="#{expense.id}" border="4" rows="10"
 					style="width:100%;border: black;">
 
 					<f:facet name="header">
@@ -129,10 +129,6 @@
 						<h:outputText value="#{expense.amount} MMK" />
 					</p:column>
 
-					<p:column headerText="Description" width="25%">
-						<h:outputText value="#{expense.description}" />
-					</p:column>
-
 					<p:column headerText="Expense date">
 						<h:outputText value="#{expense.expenseDate.time+1*24*60*60*1000}">
 							<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -143,6 +139,10 @@
 						<h:outputText value="#{expense.paymentType}" />
 					</p:column>
 
+					<p:column headerText="Description" width="15%">
+						<h:outputText value="#{expense.description}" />
+					</p:column>
+					
 					<p:column headerText="Actions">
 						<p:commandButton value="Details" icon="fa fa-eye"
 							action="#{ManageEnquiryExpenseActionBean.viewExpenseDetails(expense)}"
@@ -193,7 +193,7 @@
 
 								<h:outputText value="Description:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.selectedExpense.description}" />
+									value="#{ManageEnquiryExpenseActionBean.selectedExpense.description != null ? ManageEnquiryExpenseActionBean.selectedExpense.description : '-'}" />
 							</h:panelGrid>
 						</p:tab>
 
@@ -205,7 +205,7 @@
 
 								<h:outputText value="Description:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.selectedCategory.description}" />
+									value="#{ManageEnquiryExpenseActionBean.selectedCategory.description }" />
 
 								<!--<h:outputText value="Created Date:" />
 							 <h:outputText
@@ -219,37 +219,37 @@
 							<h:panelGrid columns="2" cellpadding="5"
 								rendered="#{not empty ManageEnquiryExpenseActionBean.correspondingBudgets}">
 
-								<h:outputText value="Category:" />
+								<!-- <h:outputText value="Category:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryName}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryName}" /> -->
 
 								<h:outputText value="Budget Year:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.yearScope}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.yearScope != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.yearScope : '-'}" />
 
 								<h:outputText value="Budget Month:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.monthScope}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.monthScope != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.monthScope : '-'}" />
 
 								<h:outputText value="Category Monthly Limit:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryMonthlyLimit}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryMonthlyLimit != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.categoryMonthlyLimit : '-'}" />
 
 								<h:outputText value="Category Yearly Limit:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryYearlyLimit}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.categoryYearlyLimit} != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.categoryYearlyLimit : '-'" />
 
 								<h:outputText value="Global Monthly Limit:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalMonthlyLimit}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalMonthlyLimit} != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.globalMonthlyLimit : '-'" />
 
 								<h:outputText value="Global Yearly Limit:" />
 								<h:outputText
-									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalYearlyLimit}" />
+									value="#{ManageEnquiryExpenseActionBean.correspondingBudgets.globalYearlyLimit} != null ? ManageEnquiryExpenseActionBean.correspondingBudgets.globalYearlyLimit : '-'" />
 							</h:panelGrid>
 
 							<h:outputText value="No budget set for this period."
-								rendered="#{empty ManageEnquiryExpenseActionBean.correspondingBudgets}"
+								rendered="#{ManageEnquiryExpenseActionBean.correspondingBudgets == null}"
 								style="color:red;" />
 						</p:tab>
 					</p:tabView>

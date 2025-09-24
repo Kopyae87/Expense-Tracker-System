@@ -114,10 +114,10 @@
 		<h:form id="recentExpenseTableForm" style="margin-top: 20px;">
 			<p:panel id="recentExpenseTablePanel">
 				<p:dataTable id="recentExpenseTable"
-					widgetVar="recentExpenseTableWidget" paginator="true"
+					widgetVar="recentExpenseTableWidget" paginator="true" 
 					paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
-					rows="5" rowsPerPageTemplate="5,10,15" reflow="true"
-					rowIndexVar="var" paginatorPosition="bottom"
+					rows="10" rowsPerPageTemplate="5,10,15" reflow="true"
+					rowIndexVar="var" paginatorPosition="both"
 					value="#{ManageExpenseActionBean.allExpenses}" var="expense"
 					rowKey="#{expense.id}" border="4" style="width:100%;border: black;">
 
@@ -141,10 +141,6 @@
 						<h:outputText value="#{expense.amount} MMK" />
 					</p:column>
 
-					<p:column headerText="Description" width="25%">
-						<h:outputText value="#{expense.description}" />
-					</p:column>
-
 					<p:column headerText="Expense date" sortBy="#{expense.expenseDate}"
 						sortable="true">
 						<h:outputText value="#{expense.expenseDate.time+1*24*60*60*1000}">
@@ -156,30 +152,35 @@
 						<h:outputText value="#{expense.paymentType}" />
 					</p:column>
 
+					<p:column headerText="Description" width="15%">
+						<h:outputText value="#{expense.description}" />
+					</p:column>
+					
 					<p:column headerText="Actions">
-						<p:commandButton value="Edit"
+						<p:commandButton value="Edit" icon="fa fa-edit"
 							action="#{ManageExpenseActionBean.openeditExpense(expense)}"
 							process="@this" update=":addExpenseForm:addExpenseFormPanel"></p:commandButton>
 
-						<p:commandButton value="Delete"
+						<p:commandButton value="Delete" icon="fa fa-times"
 							action="#{ManageExpenseActionBean.deleteExpense(expense)}"
-							update=":recentExpenseTableForm:recentExpenseTablePanel :addExpenseForm:addExpenseFormPanel"
-							oncomplete="PF('recentExpenseTableWidget').clearFilters();"
+							update=":recentExpenseTableForm :addExpenseForm:addExpenseFormPanel"
 							process="@this">
-							<p:confirm header="Confirmation"
+							<!-- oncomplete="PF('recentExpenseTableWidget').clearFilters();" -->
+							
+							<!-- <p:confirm header="Confirmation"
 								message="Are you sure want to delete this expense?"
-								icon="fa fa-exclamation-triangle" />
+								icon="fa fa-exclamation-triangle" /> -->
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 			</p:panel>
 		</h:form>
 
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		<!-- <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 			<p:commandButton value="Yes" type="button"
 				styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
 			<p:commandButton value="No" type="button"
 				styleClass="ui-confirmdialog-no" icon="fa fa-times" />
-		</p:confirmDialog>
+		</p:confirmDialog> -->
 	</ui:define>
 </ui:composition>

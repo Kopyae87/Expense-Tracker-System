@@ -4,7 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	template="/common/commonLayout.xhtml">
-	<ui:param name="header" value="Budget Management"/>
+	<ui:param name="header" value="Budget Management" />
 	<ui:param name="headerRendered" value="true" />
 	<ui:define name="content">
 		<h:form id="budgetAddForm">
@@ -172,7 +172,10 @@
 						<p:panel id="categoryTablePanel" style="margin-top: 20px;">
 							<p:dataTable
 								value="#{ManageExpenseBudgetActionBean.categoryBudgetsList}"
-								var="b" paginator="true" rows="5"
+								var="b" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" reflow="true" rowIndexVar="var"
+								paginatorPosition="both" rows="10"
 								widgetVar="categoryBudgetWidget"
 								style="width:100%;border: black;" border="1">
 								<p:column headerText="Category">
@@ -198,7 +201,7 @@
 									<h:outputText value="#{b.description}" />
 								</p:column>
 								<p:column headerText="Actions">
-									<p:commandButton value="Edit" icon="fa fa-brush"
+									<p:commandButton value="Edit" icon="fa fa-edit"
 										action="#{ManageExpenseBudgetActionBean.openEditBudget(b)}"
 										process=":budgetAddForm:budgetTabView:categoryBudgetTableWrapper"
 										update=":budgetAddForm:budgetTabView:categoryBudgetWrapper" />
@@ -357,8 +360,8 @@
 											value="Cancel" process="globalFormPanel"
 											update=":budgetAddForm:budgetTabView:globalFormPanelWrapper" />
 									</h:panelGroup>
-									<h:outputText value="* - mandatory field" style="color: red;"/>
-									
+									<h:outputText value="* - mandatory field" style="color: red;" />
+
 								</p:panelGrid>
 							</p:outputPanel>
 						</p:panel>
@@ -392,12 +395,12 @@
 										value="#{g.monthlyLimit != null ? g.monthlyLimit : '-'}" />
 								</p:column>
 								<p:column headerText="Actions">
-									<p:commandButton value="Edit"
+									<p:commandButton value="Edit" icon="fa fa-edit"
 										action="#{ManageExpenseBudgetActionBean.openEditGlobalBudget(g)}"
 										update=":budgetAddForm:budgetTabView:globalFormPanelWrapper"
 										process=":budgetAddForm:budgetTabView:globalTableWrapper" />
 
-									<p:commandButton value="Delete"
+									<p:commandButton value="Delete" icon="fa fa-times"
 										action="#{ManageExpenseBudgetActionBean.deleteGlobalBudget(g)}"
 										update=":budgetAddForm:budgetTabView:globalTableWrapper :budgetAddForm:budgetTabView:globalFormPanelWrapper :budgetAddForm:growl"
 										process="@this"

@@ -156,7 +156,7 @@ public class ManageEnquiryExpenseActionBean extends BaseBean {
 
 				// fetch budget for this category & date
 				correspondingBudgets = expenseBudgetService.findBudgetByCategoryAndDate(expense.getCategory().getId(),
-						expense.getExpenseDate());
+						expense.getExpenseDate(), userid);
 				/* this.selectedExpense = expenseService.findByExpenseId(expense.getId()); */
 				System.out.println("Expense loaded: " + selectedExpense.getDescription());
 			} catch (Exception e) {

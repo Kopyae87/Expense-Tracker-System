@@ -46,7 +46,7 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void updateBudget(Budget currentbudget) {
 		try {
-			expenseBudgetDAO.updateBuget(currentbudget);
+			expenseBudgetDAO.updateBudget(currentbudget);
 		} catch (DAOException e) {
 			// TODO: handle exception
 			throw new SystemException(e.getErrorCode(), "Cant update Budget", e);
@@ -132,53 +132,90 @@ public class ExpenseBudgetService implements IExpenseBudgetService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
-	public BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate) {
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate, String userid) {
 		try {
-			return expenseBudgetDAO.findBudgetByCategoryAndDate(id, expenseDate);
+			return expenseBudgetDAO.findBudgetByCategoryAndDate(id, expenseDate,userid);
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+			throw new SystemException(e.getErrorCode(), "Cant find budget by category and date", e);
 		}
 		
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public double findTotalCategoryBudgetForMonth(String userid, String categoryid, Integer monthScope, Integer yearScope) {
 		try {
 			return expenseBudgetDAO.findTotalCategoryBudgetForMonth(userid, categoryid, monthScope, yearScope);
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+			throw new SystemException(e.getErrorCode(), "Cant find total budget by category and month", e);
 		}
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public double findTotalCategoryBudgetForYear(String userid, String categoryid, Integer yearScope) {
 		try {
 			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, categoryid, yearScope);
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+			throw new SystemException(e.getErrorCode(), "Cant find total budget by category and year", e);
 		}
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public double findTotalAllCategoryBudgetForMonth(String userid, Integer monthScope, Integer yearScope) {
 		try {
-			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, monthScope, yearScope);
+			return expenseBudgetDAO.findTotalAllCategoryBudgetForMonth(userid, monthScope, yearScope);
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+			throw new SystemException(e.getErrorCode(), "Cant find total all category budget by month", e);
 		}
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.REQUIRED)
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
 	public double findTotalAllCategoryBudgetForYear(String userid, Integer yearScope) {
 		try {
-			return expenseBudgetDAO.findTotalCategoryBudgetForYear(userid, yearScope);
+			return expenseBudgetDAO.findTotalAllCategoryBudgetForYear(userid, yearScope);
 		} catch (DAOException e) {
-			throw new SystemException(e.getErrorCode(), "Cant save global budget", e);
+			throw new SystemException(e.getErrorCode(), "Cant find total all category budget by year", e);
+		}
+	}
+
+	@Override
+	public double findYearlyBudget(String userId, int year) {
+		try {
+			return expenseBudgetDAO.findYearlyBudget(userId, year);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find budget by year", e);
+		}
+	}
+
+	@Override
+	public double findTotalMonthlyGlobalBudgetForYearExcludingMonth(String userid, Integer yearScope,
+			Integer monthScope) {
+		try {
+			return expenseBudgetDAO.findTotalMonthlyGlobalBudgetForYearExcludingMonth(userid, yearScope, monthScope);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find total monthly global for budget by year excluding currentmonth", e);
+		}
+	}
+
+	@Override
+	public double findTotalMonthlyGlobalBudgetForYear(String userid, Integer yearScope) {
+		try {
+			return expenseBudgetDAO.findTotalMonthlyGlobalBudgetForYear(userid, yearScope);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find total monthly global budget by year", e);
+		}
+	}
+
+	@Override
+	public double findMonthlyGlobalBudgetById(String id) {
+		try {
+			return expenseBudgetDAO.findMonthlyGlobalBudgetById(id);
+		} catch (DAOException e) {
+			throw new SystemException(e.getErrorCode(), "Cant find total monthly global budget by year", e);
 		}
 	}
 

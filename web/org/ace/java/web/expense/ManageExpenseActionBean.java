@@ -95,9 +95,8 @@ public class ManageExpenseActionBean extends BaseBean {
 		}
 	}
 
-	public boolean checkWithAllBudgets() {
+	public void checkWithAllBudgets() {
 		try {
-			int count = 0;
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(currentexpense.getExpenseDate());
 			int currentMonth = cal.get(Calendar.MONTH) + 1;
@@ -113,22 +112,16 @@ public class ManageExpenseActionBean extends BaseBean {
 					+ currentexpense.getAmount();
 
 			if (globalMonthlyLimit > 0 && totalMonthlyExpenses > globalMonthlyLimit) {
-				addErrorMessage(
-						"Adding this expense exceeds the monthly global budget (" + globalMonthlyLimit + " MMK).");
-				count += 1;
+				addWranningMessage(
+						"Warnning: expenses exceeds the monthly global budget (" + globalMonthlyLimit + " MMK).");
 			}
 			if (globalYearlyLimit > 0 && totalYearlyExpenses > globalYearlyLimit) {
-				addErrorMessage(
-						"Adding this expense exceeds the yearly global budget (" + globalYearlyLimit + " MMK).");
-				count += 1;
-			}
-			if (count > 0) {
-				return true;
+				addWranningMessage(
+						"Warnning: expenses exceeds the yearly global budget (" + globalYearlyLimit + " MMK).");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
 
 	}
 
@@ -169,9 +162,7 @@ public class ManageExpenseActionBean extends BaseBean {
 				}
 				return;
 			}
-			if (checkWithAllBudgets()) {
-				return;
-			}
+			checkWithAllBudgets();
 			System.out.println("in save");
 			getMonthlyPercentAndYearlyPercent();
 			expenseService.saveExpense(currentexpense);
@@ -197,9 +188,8 @@ public class ManageExpenseActionBean extends BaseBean {
 				}
 				return;
 			}
-			if (checkWithAllBudgets()) {
-				return;
-			}
+			checkWithAllBudgets();
+				
 			getMonthlyPercentAndYearlyPercent();
 			currentexpense.setCategory(cat);
 			expenseService.updateExpense(currentexpense);

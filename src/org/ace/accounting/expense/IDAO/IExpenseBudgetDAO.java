@@ -17,7 +17,7 @@ public interface IExpenseBudgetDAO {
 	 * Budget findBudget(String id, String timevalue, String userid, Integer scope);
 	 */
 
-	void updateBuget(Budget currentbudget);
+	void updateBudget(Budget currentbudget);
 
 	void deleteBudget(Budget currentbudget);
 
@@ -40,7 +40,7 @@ public interface IExpenseBudgetDAO {
 	void saveGlobalBudget(GlobalBudget globalBudget);
 	
 
-	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate);
+	BudgetDTO findBudgetByCategoryAndDate(String id, Date expenseDate, String userid);
 	
 	/*
 	 * 
@@ -52,8 +52,16 @@ public interface IExpenseBudgetDAO {
 
 	double findTotalCategoryBudgetForYear(String userid, String id, Integer yearScope);
 
-	double findTotalCategoryBudgetForYear(String userid, Integer monthScope, Integer yearScope);
+	double findTotalAllCategoryBudgetForMonth(String userid, Integer monthScope, Integer yearScope);
 
-	double findTotalCategoryBudgetForYear(String userid, Integer yearScope);
+	double findTotalAllCategoryBudgetForYear(String userid, Integer yearScope);
+
+	double findYearlyBudget(String userId, int year);
+
+	double findTotalMonthlyGlobalBudgetForYear(String userid, Integer yearScope);
+
+	double findTotalMonthlyGlobalBudgetForYearExcludingMonth(String userid, Integer yearScope, Integer monthScope);
+
+	double findMonthlyGlobalBudgetById(String id);
 
 }

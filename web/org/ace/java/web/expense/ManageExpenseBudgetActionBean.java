@@ -103,9 +103,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 				currentbudget.setUser(user);
 				Budget existBudget = expenseBudgetService.findIndenticalBudget(currentbudget);
 				if (existBudget != null) {
-//					existBudgetForOverwrite = existBudget;
-//					PrimeFaces.current().executeScript("PF('overwriteDlg').show()");
-					addErrorMessage("The budget with the same time period is already exist");
+					addErrorMessage("The budget with the same category and the same time period is already exist");
 				} else {
 					actualSaveBudget();
 				}
@@ -272,8 +270,8 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 
 	public void updateGlobalBudget() {
 		try {
-			System.out.println("in the save global budget");
-			ValidationResult result = globalBudgetValidator.validate(globalBudget, globalTimeValue, currentUserId);
+			System.out.println("in the update global budget");
+			ValidationResult result = globalBudgetValidator.validateForUpdate(globalBudget, globalTimeValue, currentUserId);
 			if (result.isVerified()) {
 				accordingToGlobalTimeValue();
 				expenseBudgetService.updateGlobalBudget(globalBudget);
@@ -326,6 +324,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void actualSaveGlobalBudget() {
 		expenseBudgetService.saveGlobalBudget(globalBudget);
 		loadGlobalBudgets();
+		addInfoMessage("Global Budget Successfully");
 		resetGlobalForm();
 	}
 

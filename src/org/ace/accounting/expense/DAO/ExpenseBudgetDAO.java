@@ -4,7 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.ace.accounting.expense.Entity.Budget;
 import org.ace.accounting.expense.Entity.BudgetDTO;
@@ -42,7 +44,7 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public void updateBuget(Budget currentbudget) {
+	public void updateBudget(Budget currentbudget) {
 		try {
 			Budget existBudget = em.find(Budget.class, currentbudget.getId());
 			if (existBudget != null) {
@@ -81,12 +83,14 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 		try {
 			StringBuilder str = new StringBuilder("select b from Budget b where b.category.id = :id"
 					+ " and b.yearScope = :yearscope" + " and b.user.id = :userid");
-			/*
-			 * if (currentbudget.getMonthlyLimit() != null) {
-			 * str.append(" and b.monthlyLimit is not null"); } if
-			 * (currentbudget.getYearlyLimit() != null) {
-			 * str.append(" and b.yearlyLimit is not null"); }
-			 */
+
+			if (currentbudget.getMonthlyLimit() != null) {
+				str.append(" and b.monthlyLimit is not null");
+			}
+			if (currentbudget.getYearlyLimit() != null) {
+				str.append(" and b.yearlyLimit is not null");
+			}
+
 			if (currentbudget.getMonthScope() != null) {
 				str.append(" and b.monthScope = :monthscope");
 			}
@@ -128,6 +132,12 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 		try {
 			StringBuilder str = new StringBuilder(
 					"select b from GlobalBudget b where b.yearScope = :yearscope " + " and b.user.id = :userid");
+			if (globalBudget.getMonthlyLimit() != null) {
+				str.append(" and b.monthlyLimit is not null");
+			}
+			if (globalBudget.getYearlyLimit() != null) {
+				str.append(" and b.yearlyLimit is not null");
+			}
 
 			if (globalBudget.getMonthScope() != null) {
 				str.append(" and b.monthScope = :monthscope");
@@ -194,7 +204,7 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
-	public BudgetDTO findBudgetByCategoryAndDate(String categoryId, Date expenseDate) {
+	public BudgetDTO findBudgetByCategoryAndDate(String categoryId, Date expenseDate, String userid) {
 		try {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(expenseDate);
@@ -202,8 +212,10 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 			int month = cal.get(Calendar.MONTH) + 1;
 
 			Budget categoryBudget = em
-					.createQuery("SELECT b FROM Budget b WHERE b.category.id = :categoryId "
-							+ "AND b.yearScope = :year AND b.monthScope = :month", Budget.class)
+					.createQuery(
+							"SELECT b FROM Budget b WHERE b.category.id = :categoryId "
+									+ "AND b.yearScope = :year AND b.monthScope = :month AND g.user.id = :userId",
+							Budget.class)
 					.setParameter("categoryId", categoryId).setParameter("year", year).setParameter("month", month)
 					.getResultStream().findFirst().orElse(null);
 
@@ -211,7 +223,8 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 					.createQuery(
 							"SELECT g FROM GlobalBudget g WHERE g.yearScope = :year " + "AND g.monthScope = :month",
 							GlobalBudget.class)
-					.setParameter("year", year).setParameter("month", month).getResultStream().findFirst().orElse(null);
+					.setParameter("year", year).setParameter("month", month).setParameter("userId", userid)
+					.getResultStream().findFirst().orElse(null);
 
 			BudgetDTO dto = new BudgetDTO(
 					categoryBudget != null ? categoryBudget.getYearScope()
@@ -272,7 +285,7 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 	}
 
 	@Override
-	public double findTotalCategoryBudgetForYear(String userid, Integer monthScope, Integer yearScope) {
+	public double findTotalAllCategoryBudgetForMonth(String userid, Integer monthScope, Integer yearScope) {
 		try {
 			TypedQuery<Number> query = em.createQuery("SELECT COALESCE(SUM(b.monthlyLimit), 0) " + "FROM Budget b "
 					+ "WHERE b.user.id = :userId " + "AND b.yearScope = :yearScope " + "AND b.monthScope = :monthScope",
@@ -290,7 +303,7 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 	}
 
 	@Override
-	public double findTotalCategoryBudgetForYear(String userid, Integer yearScope) {
+	public double findTotalAllCategoryBudgetForYear(String userid, Integer yearScope) {
 		try {
 			TypedQuery<Number> query = em.createQuery("SELECT COALESCE(SUM(b.yearlyLimit), 0) " + "FROM Budget b "
 					+ "WHERE b.user.id = :userId " + "AND b.yearScope = :yearScope", Number.class);
@@ -305,4 +318,76 @@ public class ExpenseBudgetDAO extends BasicDAO implements IExpenseBudgetDAO {
 		}
 	}
 
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findYearlyBudget(String userId, int year) {
+		try {
+			String jpql = "SELECT b.yearlyLimit FROM GlobalBudget b "
+					+ "WHERE b.user.id = :userId AND b.yearScope = :year AND b.monthScope IS NULL";
+			Query query = em.createQuery(jpql);
+			query.setParameter("userId", userId);
+			query.setParameter("year", year);
+			List<Number> results = query.getResultList();
+	        if (results.isEmpty() || results.get(0) == null) {
+	            return 0.0;
+	        }
+	        return results.get(0).doubleValue();
+		} catch (NoResultException e) {
+			return 0.0; // no yearly budget found
+		} catch (PersistenceException e) {
+			throw translate("Failed to find yearly global budget", e);
+		}
+	}
+
+
+	@Override
+	public double findTotalMonthlyGlobalBudgetForYear(String userid, Integer yearScope) {
+		try {
+			String jpql = "SELECT COALESCE(SUM(b.monthlyLimit), 0) " + "FROM GlobalBudget b "
+					+ "WHERE b.user.id = :userId " + "AND b.yearScope = :year " + "AND b.monthScope IS NOT NULL"; // only
+																													// monthly
+																													// budgets
+			Query query = em.createQuery(jpql);
+			query.setParameter("userId", userid);
+			query.setParameter("year", yearScope);
+			Number result = (Number) query.getSingleResult();
+			return result != null ? result.doubleValue() : 0.0;
+		} catch (PersistenceException e) {
+			throw translate("Failed to calculate total monthly global budget for year", e);
+		}
+	}
+
+	@Override
+	public double findTotalMonthlyGlobalBudgetForYearExcludingMonth(String userid, Integer yearScope , Integer month) {
+	    try {
+	        String jpql = "SELECT COALESCE(SUM(b.monthlyLimit), 0) " +
+	                      "FROM GlobalBudget b " +
+	                      "WHERE b.user.id = :userId " +
+	                      "AND b.yearScope = :year " +
+	                      "AND b.monthScope IS NOT NULL " +
+	                      "AND b.monthScope != :month";
+	        Query query = em.createQuery(jpql);
+	        query.setParameter("userId", userid);
+	        query.setParameter("year", yearScope);
+	        query.setParameter("month", month);
+	        Number result = (Number) query.getSingleResult();
+	        return result != null ? result.doubleValue() : 0.0;
+	    } catch (PersistenceException e) {
+	        throw translate("Failed to calculate total monthly global budget for year excluding month", e);
+	    }
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+	public double findMonthlyGlobalBudgetById(String budgetId) {
+	    try {
+	        String q = "SELECT b.monthlyLimit FROM GlobalBudget b WHERE b.id = :id";
+	        Query query = em.createQuery(q);
+	        query.setParameter("id", budgetId);
+	        Double result = (Double) query.getSingleResult();
+	        return result != null ? result : 0.0;
+	    } catch (PersistenceException e) {
+	        throw translate("Failed to find monthly global budget by ID", e);
+	    }
+	}
 }

@@ -83,7 +83,7 @@
 						value="#{ManageExpenseDashBoardActionBean.yearlyPercent > 100 ? 100 : ManageExpenseDashBoardActionBean.yearlyPercent}"
 						labelTemplate="#{ManageExpenseDashBoardActionBean.yearlyPercent}%"
 						style="height:18px;"
-						styleClass="#{ManageExpenseDashBoardActionBean.monthlyPercent gt 100 ? 'progress-red' : 'progress-green'}" />
+						styleClass="#{ManageExpenseDashBoardActionBean.yearlyPercent gt 100 ? 'progress-red' : 'progress-green'}" />
 				</p:panel>
 
 				<!-- Top category -->
@@ -123,7 +123,7 @@
 						var="exp" rows="6" paginator="true"
 						style="width:100%;height: 100%;" emptyMessage="No recent expenses">
 						<p:column headerText="Expense Date" style="width:100px;">
-							<h:outputText value="#{exp.expenseDate}">
+							<h:outputText value="#{exp.expenseDate.time+1*24*60*60*1000}">
 								<f:convertDateTime pattern="dd-MM-yyyy" />
 							</h:outputText>
 						</p:column>
