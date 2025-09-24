@@ -113,12 +113,12 @@ public class ManageExpenseActionBean extends BaseBean {
 					+ currentexpense.getAmount();
 
 			if (globalMonthlyLimit > 0 && totalMonthlyExpenses > globalMonthlyLimit) {
-				addWranningMessage(
+				addErrorMessage(
 						"Adding this expense exceeds the monthly global budget (" + globalMonthlyLimit + " MMK).");
 				count += 1;
 			}
 			if (globalYearlyLimit > 0 && totalYearlyExpenses > globalYearlyLimit) {
-				addWranningMessage(
+				addErrorMessage(
 						"Adding this expense exceeds the yearly global budget (" + globalYearlyLimit + " MMK).");
 				count += 1;
 			}
@@ -148,8 +148,6 @@ public class ManageExpenseActionBean extends BaseBean {
 			Category c = new Category(categoryNames[i], categoryDescs[i]);
 			expenseService.saveCategory(c);
 		}
-
-		// Reload the category list after insertion
 		categoryList = expenseService.findAllCategory();
 	}
 

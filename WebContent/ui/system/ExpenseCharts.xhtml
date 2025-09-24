@@ -12,7 +12,7 @@
 			style="width:100%; gap:14px;">
 
 			<h:form id="expenseCategoriesForm"
-				style="border:3px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 800px;">
+				style="border:3px solid #ccc; padding:15px; border-radius:8px; margin-right:10px;height: 600px;">
 				<h:outputText value="Categories"
 					style="font-weight:bold;height: 23px;margin-bottom:10px; display:block;background-color: #00aab4;border-radius: 3px;" />
 				
@@ -59,7 +59,7 @@
 						<p:outputPanel id="datePickers">
 
 							<!-- pick month and year-->
-							<p:outputLabel value="Range: " />
+							<p:outputLabel value="Range: " rendered="#{ManageExpenseChartActionBean.timeperiod ne 'YEARLY'}"/>
 							<p:datePicker id="dayPicker"
 								value="#{ManageExpenseChartActionBean.selectedDate}"
 								style="width:200px; display:#{ManageExpenseChartActionBean.timeperiod eq 'DAILY' ? 'block':'none'}"

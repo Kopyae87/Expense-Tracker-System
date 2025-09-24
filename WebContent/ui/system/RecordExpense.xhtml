@@ -53,10 +53,10 @@
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
 						<h:outputLabel for="expensedate" value="Expense Date: "
 							styleClass="input-label mandatory" />
-						<p:datePicker id="expensedate" style="width: 60%" autocomplete="false"
-							maxdate="#{ManageExpenseActionBean.maxDate}" 
+						<p:calendar id="expensedate" style="width: 60%" autocomplete="false" 
+							maxdate="#{ManageExpenseActionBean.maxDate}" navigator="true"
 							value="#{ManageExpenseActionBean.currentExpense.expenseDate}"
-							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:calendar>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"

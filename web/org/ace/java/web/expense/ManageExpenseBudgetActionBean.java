@@ -112,6 +112,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			addErrorMessage("Failed to save budget");
 		}
 	}
 
@@ -143,6 +144,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			addErrorMessage("Failed to update budget");
 		}
 	}
 
@@ -154,7 +156,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 			}
 			loadBudgets();
 			System.out.println("delete succcessfully");
-			addInfoMessage("Budget Delete Successfully");
+			addInfoMessage("Budget delete successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -226,7 +228,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void actualSaveBudget() {
 		expenseBudgetService.saveBudget(currentbudget);
 		loadBudgets();
-		addInfoMessage("Global Budget Added Successfully");
+		addInfoMessage("Budget added successfully");
 		resetForm();
 	}
 
@@ -251,7 +253,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 					 * existGlobalBudgetForOverwrite = existBudget;
 					 * PrimeFaces.current().executeScript("PF('globalOverwriteDlg').show()");
 					 */
-					addErrorMessage("The global Budget 'is already exist");
+					addErrorMessage("The global Budget is already exist");
 				} else {
 					actualSaveGlobalBudget();
 				}
@@ -263,6 +265,7 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			addErrorMessage("Failed to save global budget");
 		}
 
 	}
@@ -272,14 +275,18 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 			System.out.println("in the save global budget");
 			ValidationResult result = globalBudgetValidator.validate(globalBudget, globalTimeValue, currentUserId);
 			if (result.isVerified()) {
+				accordingToGlobalTimeValue();
 				expenseBudgetService.updateGlobalBudget(globalBudget);
+				addInfoMessage("Global Budget Updated Successfully");
 				resetGlobalForm();
-			}
-			for (ErrorMessage e : result.getErrorMeesages()) {
+			}else {
+				for (ErrorMessage e : result.getErrorMeesages()) {
 				addErrorMessage(null, e.getErrorcode(), e.getParams());
+			}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			addErrorMessage("Failed to update global budget");
 		}
 
 	}
@@ -308,11 +315,11 @@ public class ManageExpenseBudgetActionBean extends BaseBean {
 	public void deleteGlobalBudget(GlobalBudget globalBudget) {
 		expenseBudgetService.deleteGlobalBudget(globalBudget);
 
-		if (iseditMode && currentbudget.getId().equals(globalBudget.getId())) {
+		if (isGlobalEditMode && this.globalBudget.getId().equals(globalBudget.getId())) {
 			cancelGlobalBudget();
 		}
 		loadGlobalBudgets();
-		addInfoMessage("global budget delete succcessfully");
+		addInfoMessage("Global budget delete succcessfully");
 		System.out.println("global budget delete succcessfully");
 	}
 

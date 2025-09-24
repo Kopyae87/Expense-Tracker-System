@@ -47,19 +47,19 @@
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
 						<h:outputLabel for="startdate" value="Start Date: " />
-						<p:datePicker id="startdate" style="width:80%;"
+						<p:calendar id="startdate" navigator="true" style="width: 100%;"
 							value="#{ManageEnquiryExpenseActionBean.startDate}"
-							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy"></p:calendar>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
 						columnClasses="ui-grid-col-3,ui-grid-col-9"
 						styleClass="ui-panelgrid-blank" style="width: 100%;">
 						<h:outputLabel for="enddate" value="End Date: " />
-						<p:datePicker id="enddate" style="width:80%;" readonlyInput="true"
-							showButtonBar="true"
-							value="#{ManageEnquiryExpenseActionBean.endDate}"
-							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:datePicker>
+						<p:calendar id="enddate" style="width:80%;" 
+							showButtonBar="true" navigator="true"
+							value="#{ManageEnquiryExpenseActionBean.endDate}" 
+							pattern="dd-MM-yyyy" placeholder="dd-MM-yyyy" showIcon="true"></p:calendar>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2"
